@@ -22,7 +22,7 @@ function css() {
         .pipe(sass())
         .pipe(postcss([autoprefixer()]))
         .pipe(cleancss())
-        .pipe(dest(info.cssdir))
+        .pipe(dest(info.dist.cssdir))
 	.pipe(touch());
 }
 function cssdev() {
@@ -31,7 +31,7 @@ function cssdev() {
         })
         .pipe(sass())
         .pipe(postcss([autoprefixer()]))
-        .pipe(dest(info.cssdir))
+        .pipe(dest(info.dist.cssdir))
 	.pipe(touch());
 }
 
@@ -41,7 +41,7 @@ function js() {
             presets: ['@babel/env']
 	}))
 	.pipe(uglify())
-	.pipe(dest(info.jsdir))
+	.pipe(dest(info.dist.jsdir))
 	.pipe(touch());
 }
 

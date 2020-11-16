@@ -50,8 +50,8 @@ class Main
         global $post_type;
 
         wp_enqueue_style(
-            'rrze-greetings-admin-menu',
-            plugins_url('assets/css/admin-menu.css', plugin()->getBasename()),
+            'rrze-greetings-admin',
+            plugins_url('assets/css/rrze-greetings-admin.css', plugin()->getBasename()),
             [],
             plugin()->getVersion()
         );
@@ -60,11 +60,6 @@ class Main
             return;
         }
 
-        wp_enqueue_style(
-            'rrze-greetings-admin',
-            plugins_url('assets/css/admin.css', plugin()->getBasename()),
-            [],
-            plugin()->getVersion()
-        );
+     
     }
 }

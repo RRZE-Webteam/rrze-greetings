@@ -1,6 +1,6 @@
 {
   "name": "rrze-greetings",
-  "version": "0.0.1",
+  "version": "0.0.2-1",
   "description": "WordPress-Plugin zum Versand von Grußkarten und Newslettern",
   "main": "rrze-greetings.php",
   "textdomain": "rrze-greetings",
@@ -8,8 +8,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dist": {
-	"jsdir": "./js/",
-	"cssdir": "./css/"
+    "jsdir": "./assets/js/",
+    "cssdir": "./assets/css/"
   },
   "repository": {
     "type": "git",
@@ -44,6 +44,5 @@
     "node-sass": "^4.14.1",
     "semver": "^6.3.0"
   },
-
   "homepage": "https://github.com/RRZE-Webteam/rrze-greetings#readme"
 }
