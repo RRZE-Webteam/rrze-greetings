@@ -1,0 +1,38 @@
+table {
+    td {
+        vertical-align: middle;
+    }
+
+    &.wp-list-table {
+
+        table-layout: auto;
+
+        th {
+            padding: 8px 10px;
+            font-weight: 400;
+        }
+
+        td.action {
+            text-align: center;
+            width: 20%;
+
+            a,
+            button {
+                margin: 2px 4px;
+                min-width: calc(50% - 10px);
+                text-align: center;
+            }
+
+            .delete {
+                color: #a00;
+            }
+
+            .time_left {
+                display: block;
+                text-align: center;
+                opacity: 0.6;
+            }
+        }
+    }
+
+}
