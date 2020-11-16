@@ -1,0 +1,49 @@
+{
+  "name": "rrze-greetings",
+  "version": "0.0.1",
+  "description": "WordPress-Plugin zum Versand von Grußkarten und Newslettern",
+  "main": "rrze-greetings.php",
+  "textdomain": "rrze-greetings",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dist": {
+	"jsdir": "./js/",
+	"cssdir": "./css/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RRZE-Webteam/rrze-greetings.git",
+    "issues": "https://github.com/RRZE-Webteam/rrze-greetings/issues",
+    "clone": "git+https://github.com/RRZE-Webteam/rrze-greetings.git",
+    "bugs": "https://github.com/RRZE-Webteam/rrze-greetings/issues"
+  },
+  "browserslist": [
+    "last 3 years",
+    "ie 11"
+  ],
+  "supports": {
+    "email": "webmaster@fau.de"
+  },
+  "author": "RRZE-Webteam <webmaster@fau.de> (https://www.wordpress.rrze.fau.de/person/webmaster)",
+  "license": "GPL-3.0-or-later",
+  "devDependencies": {
+    "@babel/core": "^7.11.1",
+    "@babel/preset-env": "^7.11.0",
+    "autoprefixer": "^9.8.6",
+    "gulp": "^4.0.2",
+    "gulp-babel": "^8.0.0",
+    "gulp-bump": "^3.2.0",
+    "gulp-clean-css": "^4.3.0",
+    "gulp-csso": "^3.0.1",
+    "gulp-postcss": "^8.0.0",
+    "gulp-sass": "^4.1.0",
+    "gulp-touch-cmd": "0.0.1",
+    "gulp-uglify": "^3.0.2",
+    "gulp-wp-pot": "^2.4.3",
+    "node-sass": "^4.14.1",
+    "semver": "^6.3.0"
+  },
+
+  "homepage": "https://github.com/RRZE-Webteam/rrze-greetings#readme"
+}
