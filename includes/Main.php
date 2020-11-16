@@ -32,6 +32,10 @@ class Main
         $this->cpt = new CPT;
         $this->cpt->onLoaded();
 
+        // Actions
+        $actions = new Actions;
+        $actions->onLoaded();
+
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
