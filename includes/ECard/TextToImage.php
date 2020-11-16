@@ -1,6 +1,6 @@
 <?php
 
-namespace RRZE\Greetings;
+namespace RRZE\Greetings\ECard;
 
 defined('ABSPATH') || exit;
 
