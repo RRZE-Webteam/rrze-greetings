@@ -18,13 +18,13 @@ class Settings
      * Optionsname
      * @var string
      */
-    protected $optionName;
+    protected static $optionName;
 
     /**
      * Einstellungsoptionen
      * @var array
      */
-    protected $options;
+    protected static $options;
 
     /**
      * Settings-Menü
@@ -42,7 +42,7 @@ class Settings
      * Settings-Felder
      * @var array
      */
-    protected $settingsFields;
+    protected static $settingsFields;
 
     /**
      * Alle Registerkarte
@@ -87,8 +87,8 @@ class Settings
         $this->setFields();
         $this->setTabs();
 
-        $this->optionName = getOptionName();
-        $this->options = $this->getOptions();
+        self::$optionName = getOptionName();
+        self::$options = self::getOptions();
 
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_menu', [$this, 'adminMenu']);
@@ -121,7 +121,7 @@ class Settings
      */
     protected function setFields()
     {
-        $this->settingsFields = getFields();
+        self::$settingsFields = getFields();
     }
 
     /**
@@ -139,18 +139,18 @@ class Settings
         );
 
         $arg = wp_parse_args($field, $defaults);
-        $this->settingsFields[$section][] = $arg;
+        self::$settingsFields[$section][] = $arg;
     }
 
     /**
      * Gibt die Standardeinstellungen zurück.
      * @return array
      */
-    protected function defaultOptions(): array
+    protected static function defaultOptions(): array
     {
         $options = [];
 
-        foreach ($this->settingsFields as $section => $field) {
+        foreach (self::$settingsFields as $section => $field) {
             foreach ($field as $option) {
                 $name = $option['name'];
                 $default = isset($option['default']) ? $option['default'] : '';
@@ -165,11 +165,11 @@ class Settings
      * Gibt die Einstellungen zurück.
      * @return array
      */
-    public function getOptions(): array
+    public static function getOptions(): array
     {
-        $defaults = $this->defaultOptions();
+        $defaults = self::defaultOptions();
 
-        $options = (array) get_option($this->optionName);
+        $options = (array) get_option(self::$optionName);
         $options = wp_parse_args($options, $defaults);
         $options = array_intersect_key($options, $defaults);
 
@@ -187,8 +187,8 @@ class Settings
     {
         $option = $section . '_' . $name;
 
-        if (isset($this->options[$option])) {
-            return $this->options[$option];
+        if (isset(self::$options[$option])) {
+            return self::$options[$option];
         }
 
         return $default;
@@ -205,14 +205,14 @@ class Settings
         }
 
         foreach ($options as $key => $value) {
-            $this->options[$key] = $value;
+            self::$options[$key] = $value;
             $sanitizeCallback = $this->getSanitizeCallback($key);
             if ($sanitizeCallback) {
-                $this->options[$key] = call_user_func($sanitizeCallback, $value);
+                self::$options[$key] = call_user_func($sanitizeCallback, $value);
             }
         }
 
-        return $this->options;
+        return self::$options;
     }
 
     /**
@@ -226,7 +226,7 @@ class Settings
             return false;
         }
 
-        foreach ($this->settingsFields as $section => $options) {
+        foreach (self::$settingsFields as $section => $options) {
             foreach ($options as $option) {
                 if ($section . '_' . $option['name'] != $key) {
                     continue;
@@ -323,7 +323,7 @@ class Settings
         }
 
         // Hinzufügen von Einstellungsfelder
-        foreach ($this->settingsFields as $section => $field) {
+        foreach (self::$settingsFields as $section => $field) {
             foreach ($field as $option) {
                 $name = $option['name'];
                 $type = isset($option['type']) ? $option['type'] : 'text';
@@ -354,7 +354,7 @@ class Settings
 
         // Registrieren der Einstellungen
         foreach ($this->settingsSections as $section) {
-            register_setting($this->settingsPrefix . $section['id'], $this->optionName, [$this, 'sanitizeOptions']);
+            register_setting($this->settingsPrefix . $section['id'], self::$optionName, [$this, 'sanitizeOptions']);
         }
     }
 
@@ -364,7 +364,7 @@ class Settings
      */
     public function adminMenu()
     {
-        $this->optionsPage = add_options_page(
+        add_options_page(
             $this->settingsMenu['page_title'],
             $this->settingsMenu['menu_title'],
             $this->settingsMenu['capability'],
@@ -418,7 +418,7 @@ class Settings
             '<input type="%1$s" class="%2$s-text" id="%4$s-%5$s" name="%3$s[%4$s_%5$s]" value="%6$s"%7$s>',
             $type,
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id'],
             $value,
@@ -447,7 +447,7 @@ class Settings
             '<input type="%1$s" class="%2$s-number" id="%4$s-%5$s" name="%3$s[%4$s_%5$s]" value="%6$s"%7$s%8$s%9$s%10$s>',
             $type,
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id'],
             $value,
@@ -477,13 +477,13 @@ class Settings
         );
         $html .= sprintf(
             '<input type="hidden" name="%1$s[%2$s_%3$s]" value="off">',
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id']
         );
         $html .= sprintf(
             '<input type="checkbox" class="checkbox" id="%2$s-%3$s" name="%1$s[%2$s_%3$s]" value="on" %4$s>',
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id'],
             checked($value, 'on', false)
@@ -507,7 +507,7 @@ class Settings
         $html = '<fieldset>';
         $html .= sprintf(
             '<input type="hidden" name="%1$s[%2$s_%3$s]" value="">',
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id']
         );
@@ -521,7 +521,7 @@ class Settings
             );
             $html .= sprintf(
                 '<input type="checkbox" class="checkbox" id="%2$s-%3$s-%4$s" name="%1$s[%2$s_%3$s][%4$s]" value="%4$s" %5$s>',
-                $this->optionName,
+                self::$optionName,
                 $args['section'],
                 $args['id'],
                 $key,
@@ -554,7 +554,7 @@ class Settings
             );
             $html .= sprintf(
                 '<input type="radio" class="radio" id="%2$s-%3$s-%4$s" name="%1$s[%2$s_%3$s]" value="%4$s" %5$s>',
-                $this->optionName,
+                self::$optionName,
                 $args['section'],
                 $args['id'],
                 $key,
@@ -583,7 +583,7 @@ class Settings
         $html  = sprintf(
             '<select class="%1$s" id="%3$s-%4$s" name="%2$s[%3$s_%4$s]">',
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id']
         );
@@ -614,7 +614,7 @@ class Settings
         $html  = sprintf(
             '<select class="%1$s" id="%3$s-%4$s" name="%2$s[%3$s_%4$s][]" multiple="multiple">',
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id']
         );
@@ -648,7 +648,7 @@ class Settings
         $html = sprintf(
             '<textarea rows="5" cols="55" class="%1$s-text" id="%3$s-%4$s" name="%2$s[%3$s_%4$s]"%5$s>%6$s</textarea>',
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id'],
             $placeholder,
@@ -671,7 +671,7 @@ class Settings
         $html = sprintf(
             '<input type="password" class="%1$s-text" id="%3$s-%4$s" name="%2$s[%3$s_%4$s]" value="%5$s">',
             $size,
-            $this->optionName,
+            self::$optionName,
             $args['section'],
             $args['id'],
             $value

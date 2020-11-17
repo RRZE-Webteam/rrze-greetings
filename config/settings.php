@@ -84,9 +84,9 @@ function getFields(): array
                 'sanitize_callback' => 'sanitize_text_field'
             ],
             [
-                'name'  => 'checkbox',
-                'label' => __('Use authentication', 'rrze-greetings'),
-                'desc'  => __('Authentication is required to access the server', 'rrze-greetings'),
+                'name'  => 'auth',
+                'label' => __('Authentication', 'rrze-greetings'),
+                'desc'  => __('Authentication is required to access the SMTP server', 'rrze-greetings'),
                 'type'  => 'checkbox'
             ],
             [
