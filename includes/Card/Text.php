@@ -27,8 +27,8 @@ class Text
     protected $image;
 
     /**
-     * Array of TextToImage functions
-     * @var array [functions]
+     * TextToImage object
+     * @var obbject RRZE\Greetings\Card\TextToImage
      */    
     protected $textToImage;
 
@@ -107,6 +107,8 @@ class Text
         $this->image = new Image($this->source);
         $this->image->setImageResource();
 
+        $this->textToImage = TextToImage::setImage($this->source);
+
         $this->text = $text;
         $this->width = $width;
 
@@ -118,7 +120,7 @@ class Text
      */
     public function addLines()
     {
-        $lines = explode(PHP_EOL, explode(' ', $this->text));
+        $lines = explode(PHP_EOL, $this->text);
         foreach ($lines as $line) {
             $this->lines[] = [
                 'words' => explode(' ', preg_replace('/\s+/', ' ', $line))
@@ -188,29 +190,23 @@ class Text
                     'offsetY' => $offsetY,
                     'font' => $this->font,
                     'fontSize' => $this->size,
-                    'colorR' => $this->color['r'],
-                    'colorG' => $this->color['g'],
-                    'colorB' => $this->color['b']
+                    'colorR' => $this->color[0],
+                    'colorG' => $this->color[1],
+                    'colorB' => $this->color[2]
                 ];
 
                 // Render text onto image
-                $this->textToImage[] = function (TextToImage $handler) use ($atts) {
+                $this->textToImage->open(function (TextToImage $handler) use ($atts) {
                     extract($atts);
                     $handler->add($text)
                             ->position($offsetX, $offsetY)
                             ->font($fontSize, $font)
                             ->color($colorR, $colorG, $colorB)
                             ->shadow(1, 2, [0, 0, 0]);
-                };
+                });
             }
         }
 
-        $this->saveImage();
-    }
-
-    public function saveImage()
-    {
-        $closure = call_user_func_array(['RRZE\Greetings\Card\TextToImage', 'open'], $this->textToImage);
-        TextToImage::setImage($this->source)->{$closure}->close($this->target);
+        $this->textToImage->close($this->target);
     }
 }
