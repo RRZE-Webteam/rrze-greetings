@@ -58,18 +58,13 @@ class Image
         }
     }
 
-    public function resource()
-    {
-        return $this->resource;
-    }
-
     public function getWidth()
     {
-        return imagesx($this->image);
+        return imagesx($this->resource);
     }
 
     public function getHeight()
     {
-        return imagesy($this->image);
+        return imagesy($this->resource);
     }    
 }
