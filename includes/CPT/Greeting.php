@@ -228,8 +228,7 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1',
-                'value' => '80'
+                'min' => '1'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -244,7 +243,7 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1'
+                'min' => '0'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -259,7 +258,7 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1'
+                'min' => '0'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
