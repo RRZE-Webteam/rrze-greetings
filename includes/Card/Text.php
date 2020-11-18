@@ -87,6 +87,24 @@ class Text
     public $size = 16;
 
     /**
+     * The shadow's X position.
+     * @var null|integer
+     */
+    protected $shadowX = null;
+
+    /**
+     * The shadow's Y position.
+     * @var null|integer
+     */
+    protected $shadowY = null;
+
+    /**
+     * The shadow's color (RGB).
+     * @var array
+     */
+    protected $shadowColor = [];
+
+    /**
      * Array of available lines, with character counts and allocated words
      * @var array
      */
@@ -189,7 +207,10 @@ class Text
                     'fontSize' => $this->size,
                     'colorR' => $this->color[0],
                     'colorG' => $this->color[1],
-                    'colorB' => $this->color[2]
+                    'colorB' => $this->color[2],
+                    'shadowX' => $this->shadowX,
+                    'shadowY' => $this->shadowY,
+                    'shadowColor' => $this->shadowColor
                 ];
 
                 // Render text onto image
@@ -199,7 +220,7 @@ class Text
                             ->position($offsetX, $offsetY)
                             ->font($fontSize, $font)
                             ->color($colorR, $colorG, $colorB)
-                            ->shadow(1, 2, [0, 0, 0]);
+                            ->shadow($shadowX, $shadowY, $shadowColor);
                 });
             }
         }
