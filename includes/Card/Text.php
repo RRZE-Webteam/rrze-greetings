@@ -109,7 +109,9 @@ class Text
 
         $this->text = $text;
         $this->width = $width;
+        
         $this->addLines();
+        $this->renderToImage();
     }
 
     /**
@@ -127,10 +129,8 @@ class Text
 
     /**
      * Render text on image
-     * @param resource $image The image on which the text will be rendered
-     * @return mixed \WP_Error If text is too long otherwise true
      */
-    public function renderToImage($image)
+    public function renderToImage()
     {
         // Calculate maximum line width in pixels
         $maxWidthString = implode('', array_fill(0, $this->width, 'x'));
