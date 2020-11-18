@@ -284,7 +284,7 @@ class Greeting
         ]);
 
         $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'assets/fonts');
-        sort($fonts);
+        asort($fonts);
         $cmb->add_field([
             'id'   => 'rrze_greetings_imagetext_font',
             'name' => __('Text font', 'rrze-greetings'),
