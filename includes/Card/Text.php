@@ -9,6 +9,18 @@ use function RRZE\Greetings\plugin;
 class Text
 {
     /**
+     * Source image path
+     * @var string
+     */
+    public $source = '';
+
+    /**
+     * Target image path
+     * @var string
+     */
+    public $target = '';
+
+    /**
      * Image object
      * @var object RRZE\Greetings\Card\Image
      */
@@ -82,13 +94,17 @@ class Text
 
     /**
      * Construct
-     * @param string  $imagePath The path to image
+     * @param string  $source The path to source image
+     * @param string  $target The path to target image
      * @param string  $text      The text
      * @param integer $width     The maximum number of characters avaiable per line
      */    
-    public function __construct(string $imagePath, string $text, int $width = 80)
+    public function __construct(string $source, string $target, string $text, int $width = 80)
     {
-        $this->image = new Image($imagePath);
+        $this->source = $source;
+        $this->target = $target;
+
+        $this->image = new Image($this->source);
         $this->image->setImageResource();
 
         $this->text = $text;
@@ -190,12 +206,12 @@ class Text
             }
         }
 
-        return true;
+        $this->saveImage();
     }
 
-    public function saveImage(string $source, string $target)
+    public function saveImage()
     {
         $closure = call_user_func_array(['RRZE\Greetings\Card\TextToImage', 'open'], $this->textToImage);
-        TextToImage::setImage($source)->{$closure}->close($target);
+        TextToImage::setImage($this->source)->{$closure}->close($this->target);
     }
 }
