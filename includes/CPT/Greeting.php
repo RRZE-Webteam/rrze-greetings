@@ -10,6 +10,7 @@ defined('ABSPATH') || exit;
 
 use RRZE\Greetings\Functions;
 use RRZE\Greetings\Mail\Queue;
+use RRZE\Greetings\Card\Text;
 use function RRZE\Greetings\plugin;
 
 class Greeting
@@ -71,7 +72,8 @@ class Greeting
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
         // Fires once a post has been saved.
-        add_action('save_post_greeting', [$this, 'savePost'], 10, 3);
+        add_action('save_post_greeting', [$this, 'saveImage'], 10, 2);
+        add_action('save_post_greeting', [$this, 'saveQueue'], 10, 3);
     }
 
     public function registerPostType()
@@ -517,7 +519,59 @@ class Greeting
         // @todo
     }
 
-    public function savePost($postId, $post, $update)
+    public function saveImage($postId, $post)
+    {
+        if (!has_post_thumbnail()) {
+            return;
+        }
+
+        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+        wp_delete_attachment($cardId, true);
+
+        $thumb = wp_get_attachment_image_src(get_post_thumbnail_id());
+        $url = $thumb[0];
+        $uploads = wp_upload_dir();
+        $source = str_replace($uploads['baseurl'], $uploads['basedir'], $url);
+
+        $cardId = $this->uploadImage($url, $postId);
+        if (!is_wp_error($cardId)) {
+            update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
+        }
+
+        $thumb = wp_get_attachment_image_src($cardId);
+        $url = $thumb[0];
+        $uploads = wp_upload_dir();
+        $target = str_replace($uploads['baseurl'], $uploads['basedir'], $url);
+        $ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        $target = rtrim($target, $ext);
+
+        $atts = [];
+        $text = New Text($source, $target, $post->post_excerpt, $atts);
+        $text->renderToImage();        
+
+    }
+
+    protected function uploadImage(string $url, int $postId)
+    {
+        $attachmentId = 0;
+        $file = [];
+        $file['name'] = 'greetings-card-' . $postId . '.jpg';
+        $file['tmp_name'] = download_url($url);
+
+        if (is_wp_error($file['tmp_name'])) {
+            @unlink($file['tmp_name']);
+            return $file['tmp_name'];
+        } else {
+            $attachmentId = media_handle_sideload($file, $postId);
+            if (is_wp_error($attachmentId)) {
+                @unlink($file['tmp_name']);
+                return $attachmentId;
+            }
+        }
+        return $attachmentId;
+    }
+
+    public function saveQueue($postId, $post, $update)
     {
         if ($post->post_status != 'publish' || $update || wp_is_post_revision($postId)) {
             return;
