@@ -110,14 +110,15 @@ class Text
      */
     protected $lines;
 
+
     /**
      * Construct
      * @param string  $source The path to source image
      * @param string  $target The path to target image
-     * @param string  $text      The text
-     * @param integer $width     The maximum number of characters avaiable per line
+     * @param string  $text   The text
+     * @param array   $atts   The text attributes
      */    
-    public function __construct(string $source, string $target, string $text, int $width = 80)
+    public function __construct(string $source, string $target, string $text, $atts)
     {
         $this->source = $source;
         $this->target = $target;
@@ -128,7 +129,19 @@ class Text
         $this->textToImage = TextToImage::setImage($this->source);
 
         $this->text = $text;
-        $this->width = $width;
+
+        extract($atts);
+        $this->width = isset($width) ? (int) $width : $this->width;
+        $this->startX = isset($startX) ? (int) $startX : $this->startX;
+        $this->startY = isset($startY) ? (int) $startY : $this->startY;
+        $this->align = isset($align) ? (string) $align : $this->align;
+        $this->color = isset($color) ? (array) $color : $this->color;
+        $this->font = isset($font) ? (string) $font : $this->font;
+        $this->lineHeight = isset($lineHeight) ? (int) $lineHeight : $this->lineHeight;
+        $this->size = isset($size) ? (int) $size : $this->size;
+        $this->shadowX = isset($shadowX) ? (int) $shadowX : $this->shadowX;
+        $this->shadowY = isset($shadowY) ? (int) $shadowY : $this->shadowY;
+        $this->shadowColor = isset($shadowColor) ? (array) $shadowColor : $this->shadowColor;
 
         $this->addLines();
     }
