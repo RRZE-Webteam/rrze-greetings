@@ -1,7 +1,7 @@
 <?php
 
 /* ---------------------------------------------------------------------------
- * Custom Post Type 'greeting'
+ * Custom Post Type self::$postType
  * ------------------------------------------------------------------------- */
 
 namespace RRZE\Greetings\CPT;
@@ -9,18 +9,44 @@ namespace RRZE\Greetings\CPT;
 defined('ABSPATH') || exit;
 
 use RRZE\Greetings\Functions;
+use RRZE\Greetings\Mail\Queue;
+use function RRZE\Greetings\plugin;
 
 class Greeting
 {
-    protected $date;
+    /**
+     * Custom post type
+     * @var string
+     */
+    protected static $postType = 'greeting';
+
+    /**
+     * Category taxonomy
+     * @var string
+     */
+    protected static $categoryTaxonomy = 'greetings_category';
+
+    /**
+     * Category taxonomy
+     * @var string
+     */
+    protected static $mailListTaxonomy = 'greetings_mail_list';
+
+    /**
+     * Queue
+     * @var object RRZE\Greetings\Mail\Queue
+     */
+    protected $queue;
+
     protected $mailList;
+
     protected $filterMailListIds;
+
     protected $filterDate;
 
     public function __construct()
     {
-        $this->date = 'rrze_greeting_date';
-        $this->mailList = 'rrze_greeting_room';
+        //
     }
 
     public function onLoaded()
@@ -44,6 +70,8 @@ class Greeting
         add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
+        // Fires once a post has been saved.
+        add_action('save_post_greeting', [$this, 'savePost'], 10, 3);
     }
 
     public function registerPostType()
@@ -90,12 +118,12 @@ class Greeting
             'publicly_queryable'        => false,
             'delete_with_user'          => false,
             'show_in_rest'              => false,
-            'capability_type'           => Capabilities::getCptCapabilityType('greeting'),
-            'capabilities'              => (array) Capabilities::getCptCaps('greeting'),
-            'map_meta_cap'              => Capabilities::getCptMapMetaCap('greeting')
+            'capability_type'           => Capabilities::getCptCapabilityType(self::$postType),
+            'capabilities'              => (array) Capabilities::getCptCaps(self::$postType),
+            'map_meta_cap'              => Capabilities::getCptMapMetaCap(self::$postType)
         ];
 
-        register_post_type('greeting', $args);
+        register_post_type(self::$postType, $args);
     }
 
     public function registerTaxonomies()
@@ -107,7 +135,7 @@ class Greeting
         $args = array(
             'labels' => $labels,
             'hierarchical' => true,
-            'rewrite' => 'greetings_category',
+            'rewrite' => self::$categoryTaxonomy,
             'capabilities' => [
                 'manage_terms' => 'edit_greetings',
                 'edit_terms' => 'edit_greetings',
@@ -115,7 +143,7 @@ class Greeting
                 'assign_terms' => 'edit_greetings'
             ]
         );
-        register_taxonomy('greetings_category', 'greeting', $args);
+        register_taxonomy(self::$categoryTaxonomy, self::$postType, $args);
 
         $labels = array(
             'name'          => _x('Mail Lists', 'taxonomy general name', 'rrze-greetings'),
@@ -124,7 +152,7 @@ class Greeting
         $args = array(
             'labels' => $labels,
             'hierarchical' => true,
-            'rewrite' => 'greetings_mail_list',
+            'rewrite' => self::$mailListTaxonomy,
             'capabilities' => [
                 'manage_terms' => 'edit_greetings',
                 'edit_terms' => 'edit_greetings',
@@ -132,7 +160,7 @@ class Greeting
                 'assign_terms' => 'edit_greetings'
             ]
         );
-        register_taxonomy('greetings_mail_list', 'greeting', $args);
+        register_taxonomy(self::$mailListTaxonomy, self::$postType, $args);
     }
 
     public function metaboxes()
@@ -140,7 +168,7 @@ class Greeting
         $cmb = new_cmb2_box([
             'id' => 'rrze_greetings_mail',
             'title' => __('Mail', 'rrze-greetings'),
-            'object_types' => ['greeting'],
+            'object_types' => [self::$postType],
             'context' => 'normal',
             'priority' => 'low',
             'show_names' => true,
@@ -158,28 +186,144 @@ class Greeting
                         'timeFormat' => 'HH:mm',
                         'stepMinute' => 10,
                     ]
-                ),                
+                ),
                 'required' => 'required',
             ],
         ]);
 
-        $cmb->add_field(array(
+        $cmb->add_field([
             'name' => __('From Name', 'rrze-greetings'),
             'id' => 'rrze_greetings_from_name',
             'type' => 'text_medium',
             'attributes' =>  [
                 'required' => 'required',
             ],
-        ));
+        ]);
 
-        $cmb->add_field(array(
+        $cmb->add_field([
             'name' => __('From Email Address', 'rrze-greetings'),
             'id' => 'rrze_greetings_from_email_address',
             'type' => 'text_email',
             'attributes' =>  [
                 'required' => 'required',
             ],
-        ));
+        ]);
+
+        // Image text
+        $cmb = new_cmb2_box([
+            'id' => 'rrze_greetings_imagetext',
+            'title' => __('Image Text', 'rrze-greetings'),
+            'object_types' => [self::$postType],
+            'context' => 'normal',
+            'priority' => 'low',
+            'show_names' => true,
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_width',
+            'name' => __('Line width', 'rrze-greetings'),
+            'desc' => __('Number of characters per line.', 'rrze-greetings'),
+            'type' => 'text_small',
+            'default' => '80',
+            'attributes' => [
+                'type' => 'number',
+                'pattern' => '\d*',
+                'min' => '1',
+                'value' => '80'
+            ],
+            'sanitization_cb' => 'absint',
+            'escape_cb' => 'absint',
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_startx',
+            'name' => __('X coordinate offset', 'rrze-greetings'),
+            'desc' => __('X coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
+            'type' => 'text_small',
+            'default' => '0',
+            'attributes' => [
+                'type' => 'number',
+                'pattern' => '\d*',
+                'min' => '1'
+            ],
+            'sanitization_cb' => 'absint',
+            'escape_cb' => 'absint',
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_starty',
+            'name' => __('Y coordinate offset', 'rrze-greetings'),
+            'desc' => __('Y coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
+            'type' => 'text_small',
+            'default' => '0',
+            'attributes' => [
+                'type' => 'number',
+                'pattern' => '\d*',
+                'min' => '1'
+            ],
+            'sanitization_cb' => 'absint',
+            'escape_cb' => 'absint',
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_align',
+            'name' => __('Text alignment', 'rrze-greetings'),
+            'type' => 'radio',
+            'default' => 'left',
+            'options' => [
+                'left' => __('Left', 'rrze-greetings'),
+                'center' => __('Center', 'rrze-greetings'),
+                'right' => __('Right', 'rrze-greetings'),
+            ],
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_color',
+            'name' => __('Font color', 'rrze-greetings'),
+            'type' => 'colorpicker',
+            'default' => '#000000',
+        ]);
+
+        $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'assets/fonts');
+        sort($fonts);
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_font',
+            'name' => __('Text font', 'rrze-greetings'),
+            'desc' => __('Select a font', 'rrze-greetings'),
+            'type' => 'select',
+            'show_option_none' => true,
+            'options'          => $fonts,
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_lineheight',
+            'name' => __('Text line height', 'rrze-greetings'),
+            'desc' => __('Text line height (pts).', 'rrze-greetings'),
+            'type' => 'text_small',
+            'default' => '24',
+            'attributes' => [
+                'type' => 'number',
+                'pattern' => '\d*',
+                'min' => '1'
+            ],
+            'sanitization_cb' => 'absint',
+            'escape_cb' => 'absint',
+        ]);
+
+        $cmb->add_field([
+            'id'   => 'rrze_greetings_imagetext_size',
+            'name' => __('Text size', 'rrze-greetings'),
+            'desc' => __('Text size (pts).', 'rrze-greetings'),
+            'type' => 'text_small',
+            'default' => '16',
+            'attributes' => [
+                'type' => 'number',
+                'pattern' => '\d*',
+                'min' => '1'
+            ],
+            'sanitization_cb' => 'absint',
+            'escape_cb' => 'absint',
+        ]);
     }
 
     public function addFormFields($taxonomy)
@@ -251,8 +395,8 @@ class Greeting
             get_the_time(__('g:i a'), $post)
         );
 
-        $data['categories'] = self::getTermsList($post->ID, 'greetings_category');
-        $data['mail_lists'] = self::getTermsList($post->ID, 'greetings_mail_list');
+        $data['categories'] = self::getTermsList($post->ID, self::$categoryTaxonomy);
+        $data['mail_lists'] = self::getTermsList($post->ID, self::$mailListTaxonomy);
 
         $data['status'] = get_post_meta($post->ID, 'rrze_greeting_status', true);
         $data['post_status'] = $post->post_status;
@@ -320,7 +464,7 @@ class Greeting
                         $cancelledButton = '<button class="button button-secondary" disabled>' . _x('Cancelled', 'Greeting', 'rrze-greetings') . '</button>';
                         $restoreButton = sprintf(
                             '<a href="edit.php?post_type=%1$s&action=restore&id=%2$d&_wpnonce=%3$s" class="button">%4$s</a>',
-                            'greeting',
+                            self::$postType,
                             $data['id'],
                             $_wpnonce,
                             _x('Restore', 'Greeting', 'rrze-greetings')
@@ -329,7 +473,7 @@ class Greeting
                     } else {
                         $cancelButton = sprintf(
                             '<a href="edit.php?post_type=%1$s&action=cancel&id=%2$d&_wpnonce=%3$s" class="button button-secondary" data-id="%2$d">%4$s</a>',
-                            'greeting',
+                            self::$postType,
                             $data['id'],
                             $_wpnonce,
                             _x('Cancel', 'Greeting', 'rrze-greetings')
@@ -339,7 +483,7 @@ class Greeting
                         } else {
                             $button = $cancelButton . sprintf(
                                 '<a href="edit.php?post_type=%1$s&action=confirm&id=%2$d&_wpnonce=%3$s" class="button button-primary" data-id="%2$d">%4$s</a>',
-                                'greeting',
+                                self::$postType,
                                 $data['id'],
                                 $_wpnonce,
                                 _x('Send', 'Greeting', 'rrze-greetings')
@@ -358,13 +502,13 @@ class Greeting
 
     public function removeMonthsDropdown($months, $postType)
     {
-        if ($postType == 'greeting') {
+        if ($postType == self::$postType) {
             $months = [];
         }
         return $months;
     }
 
-    public function applyFilters($post_type)
+    public function applyFilters($postType)
     {
         // @todo
     }
@@ -372,5 +516,39 @@ class Greeting
     public function filterQuery($query)
     {
         // @todo
+    }
+
+    public function savePost($postId, $post, $update)
+    {
+        if ($post->post_status != 'publish' || $update || wp_is_post_revision($postId)) {
+            return;
+        }
+
+        $mailList = [];
+        $termList = wp_get_post_terms(
+            $postId,
+            'rrze_greetings_mail_list',
+            ['fields' => 'ids']
+        );
+        foreach ($termList as $term) {
+            $termMeta = get_term_meta($term->term_id, 'rrze_greetings_mail_list', true);
+            $termMetaAry = array_filter(explode(PHP_EOL, $termMeta));
+            if (!empty($termMetaAry)) {
+                $mailList[$term->term_id][] = $termMetaAry;
+            }
+        }
+
+        $subject = $post->post_title;
+        $message = $post->post_content;
+        $headers = [
+            'Content-Type: text/html; charset=UTF-8',
+            'Content-Transfer-Encoding: 8bit'
+        ];
+
+        $mailAtts = [
+            'subject' => $subject,
+            'message' => $message,
+            'headers' => $headers,
+        ];
     }
 }
