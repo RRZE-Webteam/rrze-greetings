@@ -53,6 +53,12 @@ class TextToImage
     protected $fontSize = 5;
 
     /**
+     * The default font color (RGB).
+     * @var array
+     */
+    protected $color = [255, 255, 255];
+
+    /**
      * The default X position.
      * @var integer
      */
@@ -65,13 +71,7 @@ class TextToImage
     protected $positionY = 0;
 
     /**
-     * The default shadow's color.
-     * @var array
-     */
-    protected $color = [255, 255, 255];
-
-    /**
-     * The shadow's color.
+     * The shadow's color (RGB).
      * @var array
      */
     protected $shadowColor = [];
@@ -95,29 +95,6 @@ class TextToImage
     public function __construct(string $imagePath)
     {
         $this->imagePath = $imagePath;
-        $this->setImageResource();
-    }
-
-    /**
-     * Set image resource.
-     */
-    public function setImageResource()
-    {
-        if (!is_readable($this->imagePath)) {
-            throw new \RuntimeException('Image to write text does not exist.');
-        }
-
-        $this->ext = strtolower(pathinfo($this->imagePath, PATHINFO_EXTENSION));
-
-        if ($this->ext == 'jpg' || $this->ext == 'jpeg') {
-            $this->image = imagecreatefromjpeg($this->imagePath);
-        } elseif ($this->ext == 'png') {
-            $this->image = imagecreatefrompng($this->imagePath);
-        } elseif ($this->ext == 'gif') {
-            $this->image = imagecreatefromgif($this->imagePath);
-        } else {
-            throw new \RuntimeException("{$this->ext} not supported.");
-        }
     }
 
     /**
@@ -157,16 +134,32 @@ class TextToImage
      */
     public function close(string $savePath = null)
     {
+        if (!is_readable($this->imagePath)) {
+            throw new \RuntimeException('Image to write text does not exist.');
+        }
+
+        $this->ext = strtolower(pathinfo($this->imagePath, PATHINFO_EXTENSION));
+
+        if ($this->ext == 'jpg' || $this->ext == 'jpeg') {
+            $this->image = imagecreatefromjpeg($this->imagePath);
+        } elseif ($this->ext == 'png') {
+            $this->image = imagecreatefrompng($this->imagePath);
+        } elseif ($this->ext == 'gif') {
+            $this->image = imagecreatefromgif($this->imagePath);
+        } else {
+            throw new \RuntimeException("{$this->ext} not supported.");
+        }
+
         foreach ($this->maps as $closure) {
             $closure($map = new self(''));
 
             if ($map->font !== null && !is_readable($map->font)) {
-                return new \WP_Error('font_not_found', sprintf(__('Font "%s" not found.', 'rrze-greetings'), $map->font));
+                throw new \RuntimeException("Font \"{$map->font}\" not found.");
             }
 
             $newColor = imagecolorallocate($this->image, $map->color[0], $map->color[1], $map->color[2]);
 
-            if (count($map->shadowColor) != 0) {
+            if (!empty($map->shadowColor)) {
                 $shadow = imagecolorallocate($this->image, $map->shadowColor[0], $map->shadowColor[1], $map->shadowColor[2]);
                 $this->write(
                     $this->image,
@@ -228,7 +221,7 @@ class TextToImage
         int $fontSize = 5,
         int $shadowPositionX = null,
         int $shadowPositionY = null,
-        array $shadowColor = [0, 0, 0]
+        array $shadowColor = []
     ): self {
         $this->text = $text;
         $this->positionX = $positionX;
