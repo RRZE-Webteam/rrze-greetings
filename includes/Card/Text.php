@@ -109,9 +109,8 @@ class Text
 
         $this->text = $text;
         $this->width = $width;
-        
+
         $this->addLines();
-        $this->renderToImage();
     }
 
     /**
