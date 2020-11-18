@@ -186,7 +186,7 @@ class Text
                     'text' => $line['text'],
                     'offsetX' => $offsetX,
                     'offsetY' => $offsetY,
-                    'fontPath' => $this->fontPath,
+                    'font' => $this->font,
                     'fontSize' => $this->size,
                     'colorR' => $this->color['r'],
                     'colorG' => $this->color['g'],
@@ -198,7 +198,7 @@ class Text
                     extract($atts);
                     $handler->add($text)
                             ->position($offsetX, $offsetY)
-                            ->font($fontSize, $fontPath)
+                            ->font($fontSize, $font)
                             ->color($colorR, $colorG, $colorB)
                             ->shadow(1, 2, [0, 0, 0]);
                 };
