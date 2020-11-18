@@ -72,7 +72,7 @@ class Text
      * Text font (path to TTF or OTF file)
      * @var string
      */
-    public $font = plugin()->getPath('fonts/Roboto/Roboto-Italic');
+    public $font = '';
 
     /**
      * Text line height (pts)
@@ -136,7 +136,7 @@ class Text
         $this->startY = isset($startY) ? (int) $startY : $this->startY;
         $this->align = isset($align) ? (string) $align : $this->align;
         $this->color = isset($color) ? (array) $color : $this->color;
-        $this->font = isset($font) ? (string) $font : $this->font;
+        $this->font = isset($font) ? (string) $font : plugin()->getPath('assets/fonts/Roboto') . 'Roboto-Italic.ttf';
         $this->lineHeight = isset($lineHeight) ? (int) $lineHeight : $this->lineHeight;
         $this->size = isset($size) ? (int) $size : $this->size;
         $this->shadowX = isset($shadowX) ? (int) $shadowX : $this->shadowX;
@@ -170,12 +170,9 @@ class Text
         $maxLineWidth = abs($maxWidthBoundingBox[0] - $maxWidthBoundingBox[2]);
 
         // Calculate each line width in pixels for alignment
-        foreach ($this->lines as $key => $line) {
-            // Remove empty lines
-            if (empty($line['words'])) {
-                unset($this->lines[$key]);
-                continue;
-            }
+        for ($j = 0; $j < count($this->lines); $j++) {
+            // Fetch line
+            $line = &$this->lines[$j];
 
             // Calculate width
             $lineText = implode(' ', $line['words']);
