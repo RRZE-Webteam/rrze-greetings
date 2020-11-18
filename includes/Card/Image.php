@@ -54,7 +54,7 @@ class Image
         } elseif ($this->ext == 'gif') {
             $this->resource = imagecreatefromgif($this->imagePath);
         } else {
-            return new \WP_Error('path_ext_not supported', sprintf(__('%s not supported', 'rrze-greetings'), $this->ext));
+            return new \WP_Error('image_ext_not_supported', sprintf(__('%s not supported', 'rrze-greetings'), $this->ext));
         }
     }
 
