@@ -97,8 +97,7 @@ class Text
     }
 
     /**
-     * Add available lines of text
-     * @param integer $numLines The number of available lines to add
+     * Add lines of text (from a textarea field)
      */
     public function addLines()
     {
