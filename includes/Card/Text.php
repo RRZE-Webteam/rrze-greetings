@@ -120,7 +120,7 @@ class Text
      */
     public function addLines()
     {
-        $lines = explode(PHP_EOL, $this->text);
+        $lines = array_filter(explode(PHP_EOL, $this->text));
         foreach ($lines as $line) {
             $this->lines[] = [
                 'words' => explode(' ', preg_replace('/\s+/', ' ', $line))
@@ -139,13 +139,10 @@ class Text
         $maxLineWidth = abs($maxWidthBoundingBox[0] - $maxWidthBoundingBox[2]);
 
         // Calculate each line width in pixels for alignment
-        for ($j = 0; $j < count($this->lines); $j++) {
-            // Fetch line
-            $line = &$this->lines[$j];
-
-            // Remove unused lines
+        foreach ($this->lines as $key => $line) {
+            // Remove empty lines
             if (empty($line['words'])) {
-                unset($this->lines[$j]);
+                unset($this->lines[$key]);
                 continue;
             }
 
