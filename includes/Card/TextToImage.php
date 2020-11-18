@@ -1,6 +1,6 @@
 <?php
 
-namespace RRZE\Greetings\ECard;
+namespace RRZE\Greetings\Card;
 
 defined('ABSPATH') || exit;
 
@@ -11,22 +11,28 @@ defined('ABSPATH') || exit;
 class TextToImage
 {
     /**
-     * Array of TextToImage objects
-     * @var array [\RRZE\Greetings\ECard\TextToImage]
+     * Image resource
+     * @var resource
      */
-    protected $maps = [];
+    protected $image;
 
     /**
-     * The path to image to write text onto.
+     * Path to image.
      * @var null|string
      */
     protected $imagePath = null;
 
     /**
-     * An an array of properties for creating new image if $imagePath is ''.
-     * @var array
+     * Image file extension.
+     * @var null|string
      */
-    protected $create = [];
+    protected $ext = null;
+
+    /**
+     * Array of TextToImage objects
+     * @var array [\RRZE\Greetings\Card\TextToImage]
+     */
+    protected $maps = [];
 
     /**
      * The text to add to image.
@@ -47,13 +53,13 @@ class TextToImage
     protected $fontSize = 5;
 
     /**
-     * The default shadow's X position.
+     * The default X position.
      * @var integer
      */
     protected $positionX = 0;
 
     /**
-     * The default shadow's Y position.
+     * The default Y position.
      * @var integer
      */
     protected $positionY = 0;
@@ -84,13 +90,34 @@ class TextToImage
 
     /**
      * TextToImage constructor.
-     * @param string $imagePath    The path to image to modify.
-     * @param array $create        An an array of properties for creating new image if $imagePath is ''.
+     * @param string $imagePath The path to image to modify.
      */
-    public function __construct(string $imagePath, array $create = [])
+    public function __construct(string $imagePath)
     {
         $this->imagePath = $imagePath;
-        $this->create = $create;
+        $this->setImageResource();
+    }
+
+    /**
+     * Set image resource.
+     */
+    public function setImageResource()
+    {
+        if (!is_readable($this->imagePath)) {
+            throw new \RuntimeException('Image to write text does not exist.');
+        }
+
+        $this->ext = strtolower(pathinfo($this->imagePath, PATHINFO_EXTENSION));
+
+        if ($this->ext == 'jpg' || $this->ext == 'jpeg') {
+            $this->image = imagecreatefromjpeg($this->imagePath);
+        } elseif ($this->ext == 'png') {
+            $this->image = imagecreatefrompng($this->imagePath);
+        } elseif ($this->ext == 'gif') {
+            $this->image = imagecreatefromgif($this->imagePath);
+        } else {
+            throw new \RuntimeException("{$this->ext} not supported.");
+        }
     }
 
     /**
@@ -130,28 +157,6 @@ class TextToImage
      */
     public function close(string $savePath = null)
     {
-        if (count($this->create) != 0) {
-            $ext   = $this->create[2];
-            $image = @imagecreate($this->create[0], $this->create[1]);
-            imagecolorallocate($image, ...$this->create[3]);
-        } else {
-            if (!is_readable($this->imagePath)) {
-                return new \WP_Error('image_does_not_exist', __('Image to write text does not exist.', 'rrze-greetings'));
-              }
-
-            $ext = strtolower(pathinfo($this->imagePath, PATHINFO_EXTENSION));
-
-            if ($ext == 'jpg' || $ext == 'jpeg') {
-                $image = imagecreatefromjpeg($this->imagePath);
-            } elseif ($ext == 'png') {
-                $image = imagecreatefrompng($this->imagePath);
-            } elseif ($ext == 'gif') {
-                $image = imagecreatefromgif($this->imagePath);
-            } else {
-                return new \WP_Error('path_ext_not supported', sprintf(__('%s not supported', 'rrze-greetings'), $ext));
-            }
-        }
-
         foreach ($this->maps as $closure) {
             $closure($map = new self(''));
 
@@ -159,12 +164,12 @@ class TextToImage
                 return new \WP_Error('font_not_found', sprintf(__('Font "%s" not found.', 'rrze-greetings'), $map->font));
             }
 
-            $newColor = imagecolorallocate($image, $map->color[0], $map->color[1], $map->color[2]);
+            $newColor = imagecolorallocate($this->image, $map->color[0], $map->color[1], $map->color[2]);
 
             if (count($map->shadowColor) != 0) {
-                $shadow = imagecolorallocate($image, $map->shadowColor[0], $map->shadowColor[1], $map->shadowColor[2]);
+                $shadow = imagecolorallocate($this->image, $map->shadowColor[0], $map->shadowColor[1], $map->shadowColor[2]);
                 $this->write(
-                    $image,
+                    $this->image,
                     $map->fontSize,
                     $map->shadowPositionX + $map->positionX,
                     $map->shadowPositionY + $map->positionY,
@@ -174,19 +179,19 @@ class TextToImage
                 );
             }
 
-            $this->write($image, $map->fontSize, $map->positionX, $map->positionY, $map->text, $newColor, $map->font);
+            $this->write($this->image, $map->fontSize, $map->positionX, $map->positionY, $map->text, $newColor, $map->font);
         }
 
-        $saveAs = $savePath ? "$savePath.{$ext}" : null;
+        $saveAs = $savePath ? "$savePath.{$this->ext}" : null;
 
-        if ($ext == 'jpg' || $ext == 'jpeg') {
-            imagejpeg($image, $saveAs);
-        } elseif ($ext == 'png') {
-            imagepng($image, $saveAs);
-        } elseif ($ext == 'gif') {
-            imagegif($image, $saveAs);
+        if ($this->ext == 'jpg' || $this->ext == 'jpeg') {
+            imagejpeg($this->image, $saveAs);
+        } elseif ($this->ext == 'png') {
+            imagepng($this->image, $saveAs);
+        } elseif ($this->ext == 'gif') {
+            imagegif($this->image, $saveAs);
         }
-        imagedestroy($image);
+        imagedestroy($this->image);
 
         return $savePath;
     }
@@ -202,19 +207,6 @@ class TextToImage
     }
 
     /**
-     * Create a new image for modification.
-     * @param int $width       The width of the image.
-     * @param int $height      The height of the image.
-     * @param string $ext      The image format e.g png, jpeg or gif
-     * @param array $bgColor   An array [r, g, b] of image background color.
-     * @return self
-     */
-    public static function createImage(int $width, int $height, string $ext = 'png', array $bgColor = [255, 255, 255]): self
-    {
-        return new self('', [$width, $height, $ext, $bgColor]);
-    }
-
-    /**
      * Standard Set.
      * @param string $text                 Text to add.
      * @param int $positionX               Text X position.
@@ -225,7 +217,7 @@ class TextToImage
      * @param int|null $shadowPositionX    Text shadow position x.
      * @param int|null $shadowPositionY    Text shadow position y.
      * @param array $shadowColor           Text shadow color.
-     * @return $this                       \RRZE\Greetings\ECard\TextToImage
+     * @return $this                       \RRZE\Greetings\Card\TextToImage
      */
     public function set(
         string $text,
