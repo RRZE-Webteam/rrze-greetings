@@ -242,7 +242,6 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -257,7 +256,6 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '0'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -272,7 +270,6 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '0'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -317,7 +314,6 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
@@ -332,7 +328,6 @@ class Greeting
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
-                'min' => '1'
             ],
             'sanitization_cb' => 'absint',
             'escape_cb' => 'absint',
