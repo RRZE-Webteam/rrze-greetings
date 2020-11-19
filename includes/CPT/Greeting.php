@@ -72,8 +72,9 @@ class Greeting
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
         // Fires once a post has been saved.
-        add_action('save_post_greeting', [$this, 'saveImage'], 10, 2);
         add_action('save_post_greeting', [$this, 'saveQueue'], 10, 3);
+        // Render the image
+        add_action('add_meta_boxes', [$this, 'renderImage']);
     }
 
     public function registerPostType()
@@ -90,10 +91,10 @@ class Greeting
             'view_item'                 => __('View Greeting', 'rrze-greetings'),
             'all_items'                 => __('All Greetings', 'rrze-greetings'),
             'search_items'              => __('Search Greetings', 'rrze-greetings'),
-            'featured_image'            => _x('Greeting Image', 'Overrides the “Featured Image” phrase for this post type.', 'rrze-greetings'),
-            'set_featured_image'        => _x('Set Greeting Image', 'Overrides the “Set featured image” phrase for this post type.', 'rrze-greetings'),
-            'remove_featured_image'        => _x('Remove Greeting Image', 'Overrides the “Remove featured image” phrase for this post type.', 'rrze-greetings'),
-            'use_featured_image'        => _x('Use as Greeting image', 'Overrides the “Use as featured image” phrase for this post type.', 'rrze-greetings'),
+            'featured_image'            => _x('Source Image', 'Overrides the “Featured Image” phrase for this post type.', 'rrze-greetings'),
+            'set_featured_image'        => _x('Set Source Image', 'Overrides the “Set featured image” phrase for this post type.', 'rrze-greetings'),
+            'remove_featured_image'        => _x('Remove Source Image', 'Overrides the “Remove featured image” phrase for this post type.', 'rrze-greetings'),
+            'use_featured_image'        => _x('Use as source image', 'Overrides the “Use as featured image” phrase for this post type.', 'rrze-greetings'),
             'not_found'                 => __('No Greetings found.', 'rrze-greetings'),
             'not_found_in_trash'        => __('No Greetings found in Trash.', 'rrze-greetings'),
             'archives'                  => _x('Greeting archives', 'The post type archive label used in nav menus.', 'rrze-greetings'),
@@ -130,11 +131,11 @@ class Greeting
 
     public function registerTaxonomies()
     {
-        $labels = array(
+        $labels = [
             'name' => _x('Categories', 'taxonomy general name', 'rrze-greetings'),
             'singular_name' => _x('Category', 'taxonomy singular name', 'rrze-greetings'),
-        );
-        $args = array(
+        ];
+        $args = [
             'labels' => $labels,
             'hierarchical' => true,
             'rewrite' => self::$categoryTaxonomy,
@@ -144,14 +145,14 @@ class Greeting
                 'delete_terms' => 'edit_greetings',
                 'assign_terms' => 'edit_greetings'
             ]
-        );
+        ];
         register_taxonomy(self::$categoryTaxonomy, self::$postType, $args);
 
-        $labels = array(
-            'name'          => _x('Mail Lists', 'taxonomy general name', 'rrze-greetings'),
+        $labels = [
+            'name' => _x('Mail Lists', 'taxonomy general name', 'rrze-greetings'),
             'singular_name' => _x('Mail List', 'taxonomy singular name', 'rrze-greetings'),
-        );
-        $args = array(
+        ];
+        $args = [
             'labels' => $labels,
             'hierarchical' => true,
             'rewrite' => self::$mailListTaxonomy,
@@ -161,15 +162,16 @@ class Greeting
                 'delete_terms' => 'edit_greetings',
                 'assign_terms' => 'edit_greetings'
             ]
-        );
+        ];
         register_taxonomy(self::$mailListTaxonomy, self::$postType, $args);
     }
 
     public function metaboxes()
     {
+        // Mail
         $cmb = new_cmb2_box([
             'id' => 'rrze_greetings_mail',
-            'title' => __('Mail', 'rrze-greetings'),
+            'title' => __('Mail Settings', 'rrze-greetings'),
             'object_types' => [self::$postType],
             'context' => 'normal',
             'priority' => 'low',
@@ -211,10 +213,10 @@ class Greeting
             ],
         ]);
 
-        // Image text
+        // Image text settings
         $cmb = new_cmb2_box([
             'id' => 'rrze_greetings_imagetext',
-            'title' => __('Image Text', 'rrze-greetings'),
+            'title' => __('Image Text Settings', 'rrze-greetings'),
             'object_types' => [self::$postType],
             'context' => 'normal',
             'priority' => 'low',
@@ -285,15 +287,15 @@ class Greeting
             'default' => '#000000',
         ]);
 
-        $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'assets/fonts');
+        $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'fonts');
         asort($fonts);
         $cmb->add_field([
             'id'   => 'rrze_greetings_imagetext_font',
             'name' => __('Text font', 'rrze-greetings'),
             'desc' => __('Select a font', 'rrze-greetings'),
             'type' => 'select',
-            'show_option_none' => true,
-            'options'          => $fonts,
+            'default' => 'fonts/Roboto/Roboto-LightItalic.ttf',
+            'options' => $fonts,
         ]);
 
         $cmb->add_field([
@@ -519,43 +521,78 @@ class Greeting
         // @todo
     }
 
-    public function saveImage($postId, $post)
-    {
-        if (!has_post_thumbnail()) {
+    public function renderImage()
+    {   
+        $screen = get_current_screen();
+        if (!$screen->base == 'post' || $screen->post_type != self::$postType) {
+            return;
+        }
+        
+        global $post;
+        $postId = $post->ID;
+        if (!has_post_thumbnail($postId)) {
             return;
         }
 
         $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
         wp_delete_attachment($cardId, true);
 
-        $thumb = wp_get_attachment_image_src(get_post_thumbnail_id());
-        $url = $thumb[0];
+        $sourceUrl = wp_get_attachment_image_url(get_post_thumbnail_id(), 'full');
         $uploads = wp_upload_dir();
-        $source = str_replace($uploads['baseurl'], $uploads['basedir'], $url);
+        $source = str_replace($uploads['baseurl'], $uploads['basedir'], $sourceUrl);
+        $sourceExt = strtolower(pathinfo($source, PATHINFO_EXTENSION));
 
-        $cardId = $this->uploadImage($url, $postId);
-        if (!is_wp_error($cardId)) {
-            update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
+        $cardId = $this->uploadImage($sourceUrl, $postId, $sourceExt);
+        if (is_wp_error($cardId)) {
+            return;
         }
 
-        $thumb = wp_get_attachment_image_src($cardId);
-        $url = $thumb[0];
+        update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
+
+        $targetUrl = wp_get_attachment_image_url($cardId, 'full');
         $uploads = wp_upload_dir();
-        $target = str_replace($uploads['baseurl'], $uploads['basedir'], $url);
-        $ext = strtolower(pathinfo($target, PATHINFO_EXTENSION));
-        $target = rtrim($target, $ext);
+        $target = str_replace($uploads['baseurl'], $uploads['basedir'], $targetUrl);
+        $targetExt = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        $target = rtrim($target, '.' . $targetExt);
 
-        $atts = [];
-        $text = New Text($source, $target, $post->post_excerpt, $atts);
-        $text->renderToImage();        
+        $font = get_post_meta($postId, 'rrze_greetings_imagetext_font', true);
+        $color = Functions::hexToRgb(get_post_meta($postId, 'rrze_greetings_imagetext_color', true));
+        $atts = [
+            'width' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_width', true)),
+            'startX' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_startx', true)),
+            'startY' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_starty', true)),
+            'align' => get_post_meta($postId, 'rrze_greetings_imagetext_align', true),
+            'font' => plugin()->getPath('assets') . $font,
+            'lineHeight' => get_post_meta($postId, 'rrze_greetings_imagetext_lineheight', true),
+            'size' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_size', true)),
+            'color' => $color
+        ];
 
+        $text = new Text($source, $target, $post->post_excerpt, $atts);
+        $text->renderToImage();
+        // Add metabox to display rendered image
+        add_meta_box (
+            'rrze_greetings_greetings_image', 
+            __('Processed Image', 'rrze-greetings'),
+            [$this, 'displayRenderedImage'],
+            self::$postType,
+            'advanced',
+            'high',
+            [$targetUrl]
+        );
     }
 
-    protected function uploadImage(string $url, int $postId)
+    public function displayRenderedImage($post, $callbackArgs)
+    {
+        $imageUrl = $callbackArgs['args'][0];
+        echo '<img src="' . $imageUrl . '">';
+    }    
+
+    protected function uploadImage(string $url, int $postId, string $ext)
     {
         $attachmentId = 0;
         $file = [];
-        $file['name'] = 'greetings-card-' . $postId . '.jpg';
+        $file['name'] = 'greetings-card-' . $postId . '.' . $ext;
         $file['tmp_name'] = download_url($url);
 
         if (is_wp_error($file['tmp_name'])) {
