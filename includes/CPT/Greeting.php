@@ -64,8 +64,6 @@ class Greeting
         add_filter('months_dropdown_results', [$this, 'removeMonthsDropdown'], 10, 2);
         add_action('restrict_manage_posts', [$this, 'applyFilters'], 10, 1);
         add_filter('parse_query', [$this, 'filterQuery'], 10);
-        // Metaboxes
-        add_action('cmb2_admin_init', [$this, 'metaboxes']);
         // Taxonomy Terms Fields.
         add_action('greetings_mail_list_add_form_fields', [$this, 'addFormFields']);
         add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
@@ -73,7 +71,8 @@ class Greeting
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
         // Fires once a post has been saved.
         add_action('save_post_greeting', [$this, 'saveQueue'], 10, 3);
-        // Render the image
+        // Metaboxes
+        add_action('cmb2_admin_init', [$this, 'cmb2Metaboxes']);
         add_action('add_meta_boxes', [$this, 'renderImage']);
     }
 
@@ -166,7 +165,7 @@ class Greeting
         register_taxonomy(self::$mailListTaxonomy, self::$postType, $args);
     }
 
-    public function metaboxes()
+    public function cmb2Metaboxes()
     {
         // Mail
         $cmb = new_cmb2_box([
@@ -212,6 +211,17 @@ class Greeting
                 'required' => 'required',
             ],
         ]);
+
+        $postId = null;
+        if (isset($_GET['post'])) {
+            $postId = $_GET['post'];
+        } elseif (isset($_POST['post_ID'])) {
+            $postId = $_POST['post_ID'];
+        }
+
+        if (!$postId || !has_post_thumbnail($postId)) {
+            return;
+        }
 
         // Image text settings
         $cmb = new_cmb2_box([
@@ -522,12 +532,12 @@ class Greeting
     }
 
     public function renderImage()
-    {   
+    {
         $screen = get_current_screen();
         if (!$screen->base == 'post' || $screen->post_type != self::$postType) {
             return;
         }
-        
+
         global $post;
         $postId = $post->ID;
         if (!has_post_thumbnail($postId)) {
@@ -571,8 +581,8 @@ class Greeting
         $text = new Text($source, $target, $post->post_excerpt, $atts);
         $text->renderToImage();
         // Add metabox to display rendered image
-        add_meta_box (
-            'rrze_greetings_greetings_image', 
+        add_meta_box(
+            'rrze_greetings_greetings_image',
             __('Processed Image', 'rrze-greetings'),
             [$this, 'displayRenderedImage'],
             self::$postType,
@@ -586,7 +596,7 @@ class Greeting
     {
         $imageUrl = $callbackArgs['args'][0];
         echo '<img src="' . $imageUrl . '">';
-    }    
+    }
 
     protected function uploadImage(string $url, int $postId, string $ext)
     {
