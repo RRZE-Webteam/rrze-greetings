@@ -57,7 +57,7 @@ class Text
     public $startY = 0;
 
     /**
-     * Text alignment (one of "left", "center", or "right")
+     * Text alignment ("left", "center", or "right")
      * @var string
      */
     public $align = 'left';
@@ -136,7 +136,7 @@ class Text
         $this->startY = isset($startY) ? (int) $startY : $this->startY;
         $this->align = isset($align) ? (string) $align : $this->align;
         $this->color = isset($color) ? (array) $color : $this->color;
-        $this->font = isset($font) ? (string) $font : plugin()->getPath('assets/fonts/Roboto') . 'Roboto-Italic.ttf';
+        $this->font = isset($font) ? (string) $font : plugin()->getPath('assets/fonts/Roboto') . 'Roboto-LightItalic.ttf';
         $this->lineHeight = isset($lineHeight) ? (int) $lineHeight : $this->lineHeight;
         $this->size = isset($size) ? (int) $size : $this->size;
         $this->shadowX = isset($shadowX) ? (int) $shadowX : $this->shadowX;
