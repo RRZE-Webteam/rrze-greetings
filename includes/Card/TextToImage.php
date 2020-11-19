@@ -50,13 +50,13 @@ class TextToImage
      * The font size of text
      * @var integer
      */
-    protected $fontSize = 5;
+    protected $fontSize = 16;
 
     /**
      * The default font color (RGB).
      * @var array
      */
-    protected $color = [255, 255, 255];
+    protected $color = [0, 0, 0];
 
     /**
      * The default X position.
@@ -216,9 +216,9 @@ class TextToImage
         string $text,
         int $positionX = 0,
         int $positionY = 0,
-        array $color = [255, 255, 255],
+        array $color = [0, 0, 0],
         string $font = null,
-        int $fontSize = 5,
+        int $fontSize = 16,
         int $shadowPositionX = null,
         int $shadowPositionY = null,
         array $shadowColor = []
@@ -280,7 +280,7 @@ class TextToImage
      * @param int $b    Blue.
      * @return $this
      */
-    public function color(int $r = 255, int $g = 255, int $b = 255): self
+    public function color(int $r = 0, int $g = 0, int $b = 0): self
     {
         $this->color = [$r, $g, $b];
         return $this;
