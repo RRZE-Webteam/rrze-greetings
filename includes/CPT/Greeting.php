@@ -563,7 +563,7 @@ class Greeting
             'startY' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_starty', true)),
             'align' => get_post_meta($postId, 'rrze_greetings_imagetext_align', true),
             'font' => plugin()->getPath('assets') . $font,
-            'lineHeight' => get_post_meta($postId, 'rrze_greetings_imagetext_lineheight', true),
+            'lineHeight' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_lineheight', true)),
             'size' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_size', true)),
             'color' => $color
         ];
