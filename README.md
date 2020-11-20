@@ -1,6 +1,6 @@
 # RRZE Greetings
 
-WordPress-Plugin zum Versand von Grußkarten und Newslettern
+WordPress-Plugin zum Versand von Grußkarten und Newsletter Mails
 
 ## Download 
 
@@ -17,6 +17,6 @@ GNU General Public License (GPL) Version 3
 
 ## Status
 
-Das Plugin befindet sich derzeit in der ENtwicklungsphase und soll im 
+Das Plugin befindet sich derzeit in der Entwicklungsphase und soll im 
 Winter 2020 zunächst nur für einen eigeschränkten Kreis an Nutzern freigegeben 
 werden.
