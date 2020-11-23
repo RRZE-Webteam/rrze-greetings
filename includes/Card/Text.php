@@ -131,17 +131,17 @@ class Text
         $this->text = $text;
 
         extract($atts);
-        $this->width = isset($width) ? (int) $width : $this->width;
-        $this->startX = isset($startX) ? (int) $startX : $this->startX;
-        $this->startY = isset($startY) ? (int) $startY : $this->startY;
-        $this->align = isset($align) ? (string) $align : $this->align;
-        $this->color = isset($color) ? (array) $color : $this->color;
-        $this->font = isset($font) ? (string) $font : plugin()->getPath('assets/fonts/Roboto') . 'Roboto-LightItalic.ttf';
-        $this->lineHeight = isset($lineHeight) ? (int) $lineHeight : $this->lineHeight;
-        $this->size = isset($size) ? (int) $size : $this->size;
-        $this->shadowX = isset($shadowX) ? (int) $shadowX : $this->shadowX;
-        $this->shadowY = isset($shadowY) ? (int) $shadowY : $this->shadowY;
-        $this->shadowColor = isset($shadowColor) ? (array) $shadowColor : $this->shadowColor;
+        $this->width = empty($width) ? (int) $width : $this->width;
+        $this->startX = empty($startX) ? (int) $startX : $this->startX;
+        $this->startY = empty($startY) ? (int) $startY : $this->startY;
+        $this->align = empty($align) ? (string) $align : $this->align;
+        $this->color = empty($color) ? (array) $color : $this->color;
+        $this->font = empty($font) ? (string) $font : plugin()->getPath('assets/fonts/Roboto') . 'Roboto-LightItalic.ttf';
+        $this->lineHeight = empty($lineHeight) ? (int) $lineHeight : $this->lineHeight;
+        $this->size = empty($size) ? (int) $size : $this->size;
+        $this->shadowX = empty($shadowX) ? (int) $shadowX : $this->shadowX;
+        $this->shadowY = empty($shadowY) ? (int) $shadowY : $this->shadowY;
+        $this->shadowColor = empty($shadowColor) ? (array) $shadowColor : $this->shadowColor;
 
         $this->addLines();
     }
