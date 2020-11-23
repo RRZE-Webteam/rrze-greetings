@@ -1,16 +1,18 @@
 <?php
 
 /*
-Plugin Name:     RRZE Greetings
-Plugin URI:      https://github.com/RRZE-Webteam/rrze-greetings
-Description:     Plugin for creating and sending HTML greeting cards.
-Version:         0.0.3-2
-Author:          RRZE-Webteam
-Author URI:      https://blogs.fau.de/webworking/
-License:         GNU General Public License v2
-License URI:     http://www.gnu.org/licenses/gpl-2.0.html
-Domain Path:     /languages
-Text Domain:     rrze-greetings
+Plugin Name:      RRZE Greetings
+Plugin URI:       https://github.com/RRZE-Webteam/rrze-greetings
+Description:      Plugin for creating and sending HTML greeting cards.
+Version:          0.0.3-2
+Author:           RRZE-Webteam
+Author URI:       https://blogs.fau.de/webworking/
+License:          GNU General Public License v2
+License URI:      http://www.gnu.org/licenses/gpl-2.0.html
+Font License:     Open Font License
+Font License URI: https://scripts.sil.org/cms/scripts/page.php?site_id=nrsi&id=OFL
+Domain Path:      /languages
+Text Domain:      rrze-greetings
 */
 
 namespace RRZE\Greetings;
