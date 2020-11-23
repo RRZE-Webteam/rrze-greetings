@@ -169,6 +169,10 @@ class Text
         $maxWidthBoundingBox = imagettfbbox($this->size, 0, $this->font, $maxWidthString);
         $maxLineWidth = abs($maxWidthBoundingBox[0] - $maxWidthBoundingBox[2]);
 
+        if (empty($this->lines)) {
+            return;
+        }
+        
         // Calculate each line width in pixels for alignment
         for ($j = 0; $j < count($this->lines); $j++) {
             // Fetch line
