@@ -249,13 +249,12 @@ class Greeting
             'name' => __('Line width', 'rrze-greetings'),
             'desc' => __('Number of characters per line.', 'rrze-greetings'),
             'type' => 'text_small',
-            'default' => '80',
+            'default' => '40',
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
             ],
-            'sanitization_cb' => 'absint',
-            'escape_cb' => 'absint',
+            'sanitization_cb' => 'absint'
         ]);
 
         $cmb->add_field([
@@ -268,8 +267,7 @@ class Greeting
                 'type' => 'number',
                 'pattern' => '\d*',
             ],
-            'sanitization_cb' => 'absint',
-            'escape_cb' => 'absint',
+            'sanitization_cb' => 'absint'
         ]);
 
         $cmb->add_field([
@@ -282,8 +280,7 @@ class Greeting
                 'type' => 'number',
                 'pattern' => '\d*',
             ],
-            'sanitization_cb' => 'absint',
-            'escape_cb' => 'absint',
+            'sanitization_cb' => 'absint'
         ]);
 
         $cmb->add_field([
@@ -326,8 +323,7 @@ class Greeting
                 'type' => 'number',
                 'pattern' => '\d*',
             ],
-            'sanitization_cb' => 'absint',
-            'escape_cb' => 'absint',
+            'sanitization_cb' => 'absint'
         ]);
 
         $cmb->add_field([
@@ -340,8 +336,7 @@ class Greeting
                 'type' => 'number',
                 'pattern' => '\d*',
             ],
-            'sanitization_cb' => 'absint',
-            'escape_cb' => 'absint',
+            'sanitization_cb' => 'absint'
         ]);
     }
 
