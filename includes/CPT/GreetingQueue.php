@@ -12,6 +12,12 @@ use RRZE\Greetings\Functions;
 
 class GreetingQueue
 {
+    /**
+     * Custom post type
+     * @var string
+     */
+	protected static $postType = 'greeting_queue';
+		
 	public function __construct()
 	{
 		//
@@ -71,12 +77,12 @@ class GreetingQueue
 			'publicly_queryable' 		=> false,
 			'delete_with_user'          => false,
 			'show_in_rest'              => false,
-			'capability_type' 			=> Capabilities::getCptCapabilityType('greeting_queue'),
-			'capabilities'              => (array) Capabilities::getCptCaps('greeting_queue'),
-			'map_meta_cap'              => Capabilities::getCptMapMetaCap('greeting_queue')
+			'capability_type' 			=> Capabilities::getCptCapabilityType(self::$postType),
+			'capabilities'              => (array) Capabilities::getCptCaps(self::$postType),
+			'map_meta_cap'              => Capabilities::getCptMapMetaCap(self::$postType)
 		];
 
-		register_post_type('greeting_queue', $args);
+		register_post_type(self::$postType, $args);
 	}
 
 	public function registerCustomStatus()
@@ -182,7 +188,7 @@ class GreetingQueue
 
 	public function removeMonthsDropdown($months, $postType)
 	{
-		if ($postType == 'greeting_queue') {
+		if ($postType == self::$postType) {
 			$months = [];
 		}
 		return $months;
