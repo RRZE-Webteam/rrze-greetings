@@ -1,7 +1,7 @@
 <?php
 
 /* ---------------------------------------------------------------------------
- * Custom Post Type self::$postType
+ * Custom Post Type 'greetings'
  * ------------------------------------------------------------------------- */
 
 namespace RRZE\Greetings\CPT;
@@ -150,6 +150,17 @@ class Greeting
         $labels = [
             'name' => _x('Mail Lists', 'taxonomy general name', 'rrze-greetings'),
             'singular_name' => _x('Mail List', 'taxonomy singular name', 'rrze-greetings'),
+            'all_items' => __('All Lists', 'rrze-greetings'),
+            'edit_item' => __('Edit List', 'rrze-greetings'),
+            'view_item' => __('View List', 'rrze-greetings'),
+            'update_item' => __('Update List', 'rrze-greetings'),
+            'add_new_item' => __('Add New List', 'rrze-greetings'),
+            'new_item_name' => __('New List Name', 'rrze-greetings'),
+            'parent_item' => __('Main List', 'rrze-greetings'),
+            'parent_item_colon' => __('Main List:', 'rrze-greetings'),
+            'search_items' => __('Search Lists', 'rrze-greetings'),
+            'not_found' => __('No lists found', 'rrze-greetings'),
+            'back_to_items' => __('Back to lists', 'rrze-greetings'),
         ];
         $args = [
             'labels' => $labels,
@@ -337,7 +348,7 @@ class Greeting
     public function addFormFields($taxonomy)
     {
         echo '<div class="form-field">
-        <label for="greetings_mail_list">' . __('Mail List', 'rrze-greetings') . '</label>
+        <label for="greetings_mail_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
         <textarea id="greetings_mail_list" rows="5" cols="40" name="rrze_greetings_mail_list"></textarea>
         <p>' . __('Enter one email address per line.', 'rrze-greetings') . '</p>
         </div>';
@@ -349,7 +360,7 @@ class Greeting
 
         echo '<tr class="form-field">
         <th>
-            <label for="greetings_mail_list">' . __('Mail List', 'rrze-greetings') . '</label>
+            <label for="greetings_mail_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
         </th>
         <td>
             <textarea id="greetings_mail_list" rows="5" cols="50" name="rrze_greetings_mail_list">' . esc_attr($value) . '</textarea>
@@ -581,8 +592,8 @@ class Greeting
             __('Processed Image', 'rrze-greetings'),
             [$this, 'displayRenderedImage'],
             self::$postType,
-            'advanced',
-            'high',
+            'side',
+            'low',
             [$targetUrl]
         );
     }
@@ -590,7 +601,7 @@ class Greeting
     public function displayRenderedImage($post, $callbackArgs)
     {
         $imageUrl = $callbackArgs['args'][0];
-        echo '<img src="' . $imageUrl . '">';
+        echo '<img class="thumbnail" src="' . $imageUrl . '" style="max-width:100%">';
     }
 
     protected function uploadImage(string $url, int $postId, string $ext)
