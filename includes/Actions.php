@@ -15,10 +15,32 @@ class Actions
 
 	public function onLoaded()
 	{
-		add_action('admin_init', [$this, 'handleActions']);
+		add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
+		add_filter('post_type_link', [$this, 'postLink'], 10, 2);
+
+		add_action('wp', [$this, 'listActions']);
+
+		add_action('template_redirect', [$this, 'previewTemplate']);
+		add_action('template_redirect', [$this, 'showTemplate']);
 	}
 
-	public function handleActions()
+	public function previewLink(string $url, \WP_Post $post): string
+	{
+		if ($post->post_type == 'greeting') {
+			$url = Functions::virtualUrl($post->ID, 'greetings-card-preview');
+		}
+		return $url;
+	}
+
+	public function postLink(string $url, \WP_Post $post): string
+	{
+		if ($post->post_type == 'greeting') {
+			$url = Functions::virtualUrl($post->ID, 'greetings-card');
+		}
+		return $url;
+	}
+
+	public function listActions()
 	{
 		if (isset($_GET['action']) && isset($_GET['id']) && wp_verify_nonce($_REQUEST['_wpnonce'], 'action')) {
 			$postId = absint($_GET['id']);
@@ -40,4 +62,30 @@ class Actions
 			exit;
 		}
 	}
+
+	public function previewTemplate()
+	{
+		if (!isset($_GET['id']) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'greetings-card-preview')) {
+			return;
+		}		
+
+		$postId = absint($_GET['id']);
+		if ($postId && ($post = get_post($postId))) {
+			echo $post->post_content;
+			exit;
+		}
+	}
+
+	public function showTemplate()
+	{
+		if (!isset($_GET['id']) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'greetings-card')) {
+			return;
+		}		
+
+		$postId = absint($_GET['id']);
+		if ($postId && ($post = get_post($postId))) {
+			echo $post->post_content;
+			exit;
+		}
+	}	
 }
