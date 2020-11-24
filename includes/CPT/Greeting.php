@@ -111,7 +111,7 @@ class Greeting
 
         $args = [
             'label'                     => __('Greeting', 'rrze-greetings'),
-            'description'               => __('Add and edit Greeting data', 'rrze-greetings'),
+            'description'               => __('Add and edit Greetings Cards', 'rrze-greetings'),
             'labels'                    => $labels,
             'supports'                  => ['title', 'thumbnail'],
             'hierarchical'              => false,
