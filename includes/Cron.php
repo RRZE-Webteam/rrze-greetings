@@ -59,7 +59,7 @@ class Cron
         // @todo
     }
 
-    protected function clearSchedule()
+    public static function clearSchedule()
     {
         wp_clear_scheduled_hook('rrze_greetings_every10minutes_event');
     }
