@@ -69,7 +69,7 @@ function getFields(): array
                 'name'              => 'host',
                 'label'             => __('Host', 'rrze-greetings'),
                 'desc'              => __('Host ip address.', 'rrze-greetings'),
-                'placeholder'       => __('127.0.0.1', 'rrze-greetings'),
+                'placeholder'       => '127.0.0.1',
                 'type'              => 'text',
                 'default'           => '127.0.0.1',
                 'sanitize_callback' => 'sanitize_text_field'
@@ -78,7 +78,7 @@ function getFields(): array
                 'name'              => 'port',
                 'label'             => __('Port', 'rrze-greetings'),
                 'desc'              => __('Host port.', 'rrze-greetings'),
-                'placeholder'       => __('587', 'rrze-greetings'),
+                'placeholder'       => '587',
                 'type'              => 'text',
                 'default'           => '587',
                 'sanitize_callback' => 'sanitize_text_field'
