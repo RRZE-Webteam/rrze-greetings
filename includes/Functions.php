@@ -54,4 +54,38 @@ class Functions
         $rgb[] = hexdec($length == 6 ? substr($hex, 4, 2) : ($length == 3 ? str_repeat(substr($hex, 2, 1), 2) : 0));
         return $rgb;
     }
+
+    public static function virtualUrl(int $id, string $action, bool $crypt = false): string
+    {
+        return sprintf(
+            '/greetings-card/?id=%d&nonce=%s',
+            $id,
+            $crypt ? self::crypt($action) : wp_create_nonce($action)
+        );
+    }
+
+    public static function crypt(string $string, string $action = 'encrypt')
+    {
+        $secretKey = AUTH_KEY;
+        $secretSalt = AUTH_SALT;
+
+        $output = false;
+        $encryptMethod = 'AES-256-CBC';
+        $key = hash('sha256', $secretKey);
+        $salt = substr(hash('sha256', $secretSalt), 0, 16);
+
+        if ($action == 'encrypt') {
+            $output = base64_encode(openssl_encrypt($string, $encryptMethod, $key, 0, $salt));
+        } else if ($action == 'decrypt') {
+            $output = openssl_decrypt(base64_decode($string), $encryptMethod, $key, 0, $salt);
+        }
+
+        return $output;
+    }
+
+    public static function decrypt(string $string)
+    {
+        return self::crypt($string, 'decrypt');
+    }
+
 }
