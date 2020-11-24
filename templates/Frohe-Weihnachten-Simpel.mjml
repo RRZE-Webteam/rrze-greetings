@@ -11,11 +11,13 @@
     </mj-style>
   </mj-head>
   <mj-body background-color="#F4F4F4" color="#55575d" font-family="Arial, sans-serif">
+    <mj-raw>{{logo}}</mj-raw>
     <mj-section background-color="#ffffff" background-repeat="repeat" padding-bottom="0px" padding-top="30px" padding="20px 0" text-align="center" vertical-align="top">
       <mj-column>
         <mj-image align="center" padding="10px 25px" src="{{=logo}}" target="_blank" width="214px"></mj-image>
       </mj-column>
     </mj-section>
+    <mj-raw>{{/logo}}</mj-raw>
     <mj-section background-repeat="repeat" padding-bottom="0px" padding-top="0px" padding="20px 0" text-align="center" vertical-align="top">
       <mj-column>
         <mj-image align="center" padding-bottom="0px" padding-left="0px" padding-right="0px" padding-top="0px" padding="10px 25px" src="https://www.site.de.localhost/wp-content/uploads/sites/2/2020/11/greetings-card-2260091.png" target="_blank" width="600px"></mj-image>
@@ -35,11 +37,13 @@
         </mj-text>
       </mj-column>
     </mj-section>
+    <mj-raw>{{logo}}</mj-raw>
     <mj-section background-color="#ffffff" background-repeat="repeat" padding="20px 0" text-align="center" vertical-align="top">
       <mj-column>
         <mj-image align="center" padding="10px 25px" src="{{=logo}}" target="_blank" width="202px"></mj-image>
       </mj-column>
     </mj-section>
+    <mj-raw>{{/logo}}</mj-raw>
     <mj-section padding="10px 0 20px 0">
       <mj-column>
         <mj-text align="center" color="#9B9B9B" font-size="11px">{{=footer}}</mj-text>
