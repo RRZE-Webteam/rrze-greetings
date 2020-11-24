@@ -11,6 +11,9 @@ defined('ABSPATH') || exit;
 use RRZE\Greetings\Functions;
 use RRZE\Greetings\Mail\Queue;
 use RRZE\Greetings\Card\Text;
+use RRZE\Greetings\Metaboxes;
+use RRZE\Greetings\Template;
+
 use function RRZE\Greetings\plugin;
 
 class Greeting
@@ -47,7 +50,7 @@ class Greeting
 
     public function __construct()
     {
-        //
+        $this->template = new Template;
     }
 
     public function onLoaded()
@@ -71,9 +74,13 @@ class Greeting
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
         // Fires once a post has been saved.
         add_action('save_post_greeting', [$this, 'saveQueue'], 10, 3);
-        // Metaboxes
-        add_action('cmb2_admin_init', [$this, 'cmb2Metaboxes']);
+        //
+        add_filter('wp_insert_post_data', [$this, 'prePostInsert'], 99, 2);
+        // Card image preview
         add_action('add_meta_boxes', [$this, 'renderImage']);
+        // CMB2 Metaboxes
+        $metaboxes = new Metaboxes;
+        $metaboxes->onLoaded();
     }
 
     public function registerPostType()
@@ -106,7 +113,7 @@ class Greeting
             'label'                     => __('Greeting', 'rrze-greetings'),
             'description'               => __('Add and edit Greeting data', 'rrze-greetings'),
             'labels'                    => $labels,
-            'supports'                  => ['title', 'editor', 'thumbnail', 'excerpt', 'revisions'],
+            'supports'                  => ['title', 'thumbnail'],
             'hierarchical'              => false,
             'public'                    => true,
             'show_ui'                   => true,
@@ -117,7 +124,7 @@ class Greeting
             'can_export'                => false,
             'has_archive'               => false,
             'exclude_from_search'       => true,
-            'publicly_queryable'        => false,
+            'publicly_queryable'        => true,
             'delete_with_user'          => false,
             'show_in_rest'              => false,
             'capability_type'           => Capabilities::getCptCapabilityType(self::$postType),
@@ -174,170 +181,6 @@ class Greeting
             ]
         ];
         register_taxonomy(self::$mailListTaxonomy, self::$postType, $args);
-    }
-
-    public function cmb2Metaboxes()
-    {
-        // Mail
-        $cmb = new_cmb2_box([
-            'id' => 'rrze_greetings_mail',
-            'title' => __('Mail Settings', 'rrze-greetings'),
-            'object_types' => [self::$postType],
-            'context' => 'normal',
-            'priority' => 'low',
-            'show_names' => true,
-        ]);
-
-        $cmb->add_field([
-            'name' => __('Send Date/Time', 'rrze-greetings'),
-            'id' => 'rrze_greetings_send_date',
-            'type' => 'text_datetime_timestamp',
-            'date_format' => __('d-m-Y', 'rrze-greetings'),
-            'time_format' => __('H:i', 'rrze-greetings'),
-            'attributes' => [
-                'data-timepicker' => json_encode(
-                    [
-                        'timeFormat' => 'HH:mm',
-                        'stepMinute' => 10,
-                    ]
-                ),
-                'required' => 'required',
-            ],
-        ]);
-
-        $cmb->add_field([
-            'name' => __('From Name', 'rrze-greetings'),
-            'id' => 'rrze_greetings_from_name',
-            'type' => 'text_medium',
-            'attributes' =>  [
-                'required' => 'required',
-            ],
-        ]);
-
-        $cmb->add_field([
-            'name' => __('From Email Address', 'rrze-greetings'),
-            'id' => 'rrze_greetings_from_email_address',
-            'type' => 'text_email',
-            'attributes' =>  [
-                'required' => 'required',
-            ],
-        ]);
-
-        $postId = null;
-        if (isset($_GET['post'])) {
-            $postId = $_GET['post'];
-        } elseif (isset($_POST['post_ID'])) {
-            $postId = $_POST['post_ID'];
-        }
-
-        if (!$postId || !has_post_thumbnail($postId)) {
-            return;
-        }
-
-        // Image text settings
-        $cmb = new_cmb2_box([
-            'id' => 'rrze_greetings_imagetext',
-            'title' => __('Image Text Settings', 'rrze-greetings'),
-            'object_types' => [self::$postType],
-            'context' => 'normal',
-            'priority' => 'low',
-            'show_names' => true,
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_width',
-            'name' => __('Line width', 'rrze-greetings'),
-            'desc' => __('Number of characters per line.', 'rrze-greetings'),
-            'type' => 'text_small',
-            'default' => '40',
-            'attributes' => [
-                'type' => 'number',
-                'pattern' => '\d*',
-            ],
-            'sanitization_cb' => 'absint'
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_startx',
-            'name' => __('X coordinate offset', 'rrze-greetings'),
-            'desc' => __('X coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
-            'type' => 'text_small',
-            'default' => '0',
-            'attributes' => [
-                'type' => 'number',
-                'pattern' => '\d*',
-            ],
-            'sanitization_cb' => 'absint'
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_starty',
-            'name' => __('Y coordinate offset', 'rrze-greetings'),
-            'desc' => __('Y coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
-            'type' => 'text_small',
-            'default' => '0',
-            'attributes' => [
-                'type' => 'number',
-                'pattern' => '\d*',
-            ],
-            'sanitization_cb' => 'absint'
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_align',
-            'name' => __('Text alignment', 'rrze-greetings'),
-            'type' => 'radio',
-            'default' => 'left',
-            'options' => [
-                'left' => __('Left', 'rrze-greetings'),
-                'center' => __('Center', 'rrze-greetings'),
-                'right' => __('Right', 'rrze-greetings'),
-            ],
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_color',
-            'name' => __('Font color', 'rrze-greetings'),
-            'type' => 'colorpicker',
-            'default' => '#000000',
-        ]);
-
-        $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'fonts');
-        asort($fonts);
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_font',
-            'name' => __('Text font', 'rrze-greetings'),
-            'desc' => __('Select a font', 'rrze-greetings'),
-            'type' => 'select',
-            'default' => 'fonts/Roboto/Roboto-LightItalic.ttf',
-            'options' => $fonts,
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_lineheight',
-            'name' => __('Text line height', 'rrze-greetings'),
-            'desc' => __('Text line height (pts).', 'rrze-greetings'),
-            'type' => 'text_small',
-            'default' => '24',
-            'attributes' => [
-                'type' => 'number',
-                'pattern' => '\d*',
-            ],
-            'sanitization_cb' => 'absint'
-        ]);
-
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_imagetext_size',
-            'name' => __('Text size', 'rrze-greetings'),
-            'desc' => __('Text size (pts).', 'rrze-greetings'),
-            'type' => 'text_small',
-            'default' => '16',
-            'attributes' => [
-                'type' => 'number',
-                'pattern' => '\d*',
-            ],
-            'sanitization_cb' => 'absint'
-        ]);
     }
 
     public function addFormFields($taxonomy)
@@ -584,7 +427,7 @@ class Greeting
         // Add metabox to display rendered image
         add_meta_box(
             'rrze_greetings_greetings_image',
-            __('Processed Image', 'rrze-greetings'),
+            __('Card Image', 'rrze-greetings'),
             [$this, 'displayRenderedImage'],
             self::$postType,
             'side',
@@ -617,6 +460,29 @@ class Greeting
             }
         }
         return $attachmentId;
+    }
+
+    public function prePostInsert($postData, $postArr)
+    {
+        $postId = $postArr['ID'];
+        if (get_post_type($postId) !== self::$postType) {
+            return $postData;
+        }
+
+        $data = [
+            'title' => get_post_meta($postId, 'rrze_greetings_title', true),
+            'content' => get_post_meta($postId, 'rrze_greetings_post_content', true),
+            'logo' => get_post_meta($postId, 'rrze_greetings_logo', true),
+            'footer' => get_post_meta($postId, 'rrze_greetings_footer', true)
+        ];
+        $template = get_post_meta($postId, 'rrze_greetings_card_template', true);
+        $content =  $this->template->getContent($template, $data);
+
+        $postData['post_content'] = $content;
+        $postData['post_excerpt'] = (string) get_post_meta($postId, 'rrze_greetings_post_excerpt', true);
+        $postData['post_name'] = Functions::crypt($postId);
+
+        return $postData;
     }
 
     public function saveQueue($postId, $post, $update)
