@@ -69,6 +69,7 @@ class Metaboxes
             'name' => 'Logo (Optional)',
             'desc' => 'The image of the website logo that will be displayed on the greeting card.',
             'type' => 'file',
+            'default' => '',
             'options' => [
                 'url' => false,
             ],
@@ -298,7 +299,8 @@ class Metaboxes
         $allowedHtml = [
             'a' => [
                 'href' => [],
-                'title' => []
+                'title' => [],
+                'style' => []
             ],
             'br' => [],
             'em' => [],
