@@ -1,0 +1,648 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: RRZE Greetings\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-11-24 15:31+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: \n"
+"Language: \n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Loco https://localise.biz/\n"
+"X-Loco-Version: 2.4.4; wp-5.5.3"
+
+#: rrze-greetings.php:57
+#, php-format
+msgid ""
+"The server is running PHP version %s. The Plugin requires at least PHP "
+"version %s."
+msgstr ""
+
+#: rrze-greetings.php:59
+#, php-format
+msgid ""
+"The server is running WordPress version %s. The Plugin requires at least "
+"WordPress version %s."
+msgstr ""
+
+#: rrze-greetings.php:126
+#, php-format
+msgid "Plugins: %s: %s"
+msgstr ""
+
+#: config/settings.php:23 config/settings.php:24
+msgid "Greetings"
+msgstr ""
+
+#: config/settings.php:27
+msgid "Greetings Settings"
+msgstr ""
+
+#: config/settings.php:40
+msgid "SMTP Settings"
+msgstr ""
+
+#: config/settings.php:44
+msgid "Queue Settings"
+msgstr ""
+
+#: config/settings.php:59
+msgid "Encryption"
+msgstr ""
+
+#: config/settings.php:63 includes/Metaboxes.php:286
+msgid "None"
+msgstr ""
+
+#: config/settings.php:64
+msgid "TLS"
+msgstr ""
+
+#: config/settings.php:65
+msgid "SSL"
+msgstr ""
+
+#: config/settings.php:70
+msgid "Host"
+msgstr ""
+
+#: config/settings.php:71
+msgid "Host ip address."
+msgstr ""
+
+#: config/settings.php:79
+msgid "Port"
+msgstr ""
+
+#: config/settings.php:80
+msgid "Host port."
+msgstr ""
+
+#: config/settings.php:88
+msgid "Authentication"
+msgstr ""
+
+#: config/settings.php:89
+msgid "Authentication is required to access the SMTP server"
+msgstr ""
+
+#: config/settings.php:94
+msgid "Username"
+msgstr ""
+
+#: config/settings.php:103
+msgid "Password"
+msgstr ""
+
+#: config/settings.php:112
+msgid "Queue Limit"
+msgstr ""
+
+#: config/settings.php:113
+msgid "Amount of mails processed per cronjob execution."
+msgstr ""
+
+#: config/settings.php:124
+msgid "WP-Cron Interval"
+msgstr ""
+
+#: config/settings.php:125
+msgid "Time in seconds wp_cron waits until next execution."
+msgstr ""
+
+#: config/settings.php:136
+msgid "Min. recipients to enqueue"
+msgstr ""
+
+#: config/settings.php:137
+msgid ""
+"Minimum amount of recipients required to enqueue mail instead of sending "
+"immediately."
+msgstr ""
+
+#: config/settings.php:148
+msgid "Max. retry for mail sending"
+msgstr ""
+
+#: config/settings.php:149
+msgid "Maximum number of retry for mail sending."
+msgstr ""
+
+#: includes/Main.php:39
+msgid "Greetings Card"
+msgstr ""
+
+#: includes/Metaboxes.php:30
+msgid "Card Settings"
+msgstr ""
+
+#: includes/Metaboxes.php:39
+msgid "Templates"
+msgstr ""
+
+#: includes/Metaboxes.php:40
+msgid "Select a greeting card template."
+msgstr ""
+
+#: includes/Metaboxes.php:48 includes/CPT/Greeting.php:283
+msgid "Title"
+msgstr ""
+
+#: includes/Metaboxes.php:49
+msgid "The title of the content of the greeting card."
+msgstr ""
+
+#: includes/Metaboxes.php:57 includes/Metaboxes.php:115
+msgid "Text"
+msgstr ""
+
+#: includes/Metaboxes.php:58
+msgid "Text that will be shown after the greeting card image."
+msgstr ""
+
+#: includes/Metaboxes.php:90
+msgid "Footer"
+msgstr ""
+
+#: includes/Metaboxes.php:91
+msgid "Footer text containing the unsubscribe link."
+msgstr ""
+
+#: includes/Metaboxes.php:105
+msgid "Image Settings"
+msgstr ""
+
+#: includes/Metaboxes.php:116
+msgid "Text to be printed on the card image."
+msgstr ""
+
+#: includes/Metaboxes.php:126
+msgid "Line width"
+msgstr ""
+
+#: includes/Metaboxes.php:127
+msgid "Number of characters per line."
+msgstr ""
+
+#: includes/Metaboxes.php:139
+msgid "X coordinate offset"
+msgstr ""
+
+#: includes/Metaboxes.php:140
+msgid ""
+"X coordinate offset from which text will be positioned relative to the image."
+msgstr ""
+
+#: includes/Metaboxes.php:152
+msgid "Y coordinate offset"
+msgstr ""
+
+#: includes/Metaboxes.php:153
+msgid ""
+"Y coordinate offset from which text will be positioned relative to the image."
+msgstr ""
+
+#: includes/Metaboxes.php:165
+msgid "Text alignment"
+msgstr ""
+
+#: includes/Metaboxes.php:169
+msgid "Left"
+msgstr ""
+
+#: includes/Metaboxes.php:170
+msgid "Center"
+msgstr ""
+
+#: includes/Metaboxes.php:171
+msgid "Right"
+msgstr ""
+
+#: includes/Metaboxes.php:177
+msgid "Font"
+msgstr ""
+
+#: includes/Metaboxes.php:178
+msgid "Select a text font."
+msgstr ""
+
+#: includes/Metaboxes.php:186
+msgid "Font color"
+msgstr ""
+
+#: includes/Metaboxes.php:193
+msgid "Text line height"
+msgstr ""
+
+#: includes/Metaboxes.php:194
+msgid "Text line height (pts)."
+msgstr ""
+
+#: includes/Metaboxes.php:206
+msgid "Text size"
+msgstr ""
+
+#: includes/Metaboxes.php:207
+msgid "Text size (pts)."
+msgstr ""
+
+#: includes/Metaboxes.php:222
+msgid "Mail Settings"
+msgstr ""
+
+#: includes/Metaboxes.php:231
+msgid "Send Date/Time"
+msgstr ""
+
+#: includes/Metaboxes.php:234
+msgid "d-m-Y"
+msgstr ""
+
+#: includes/Metaboxes.php:235
+msgid "H:i"
+msgstr ""
+
+#: includes/Metaboxes.php:248
+msgid "From Name"
+msgstr ""
+
+#: includes/Metaboxes.php:257
+msgid "From Email Address"
+msgstr ""
+
+#: includes/Card/Image.php:45
+msgid "Image to write text does not exist."
+msgstr ""
+
+#: includes/Card/Image.php:57
+#, php-format
+msgid "%s not supported"
+msgstr ""
+
+#: includes/CPT/CPT.php:67 includes/CPT/CPT.php:68
+msgid "Categories"
+msgstr ""
+
+#: includes/CPT/CPT.php:75 includes/CPT/CPT.php:76
+msgid "Mail Lists"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:45
+msgctxt "Post type general name"
+msgid "Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:46
+msgctxt "Post type singular name"
+msgid "Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:47
+msgctxt "Admin Menu text"
+msgid "Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:48
+msgctxt "Add New on Toolbar"
+msgid "Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:49 includes/CPT/Greeting.php:93
+msgid "Add New"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:50
+msgid "Add New Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:51
+msgid "New Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:52
+msgid "Edit Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:53
+msgid "View Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:54
+msgid "All Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:55
+msgid "Search Mail Queue"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:56
+msgid "No Mail Queue found."
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:57
+msgid "No Mail Queue found in Trash."
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:58
+msgctxt ""
+"Screen reader text for the filter links heading on the post type listing "
+"screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4"
+msgid "Filter Mail Queue list"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:59
+msgctxt ""
+"Screen reader text for the pagination heading on the post type listing "
+"screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4"
+msgid "Mail Queue list navigation"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:60
+msgctxt ""
+"Screen reader text for the items list heading on the post type listing "
+"screen. Default “Posts list”/”Pages list”. Added in 4.4"
+msgid "Mail Queue list"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:64
+msgid "Mailing List"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:65
+msgid "Add and edit mailing list data"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:93
+msgctxt "greeting_queue"
+msgid "Sent"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:94
+#, php-format
+msgid "Sent <span class=\"count\">(%s)</span>"
+msgid_plural "Sent <span class=\"count\">(%s)</span>"
+msgstr[0] ""
+msgstr[1] ""
+
+#: includes/CPT/GreetingQueue.php:141 includes/CPT/Greeting.php:113
+msgid "Greeting"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:142 includes/CPT/Greeting.php:286
+msgid "Send Date"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:143
+msgid "To"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:144
+msgid "Subject"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:145
+msgid "Retries"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:146
+msgid "Status"
+msgstr ""
+
+#: includes/CPT/Greeting.php:89
+msgctxt "Post type general name"
+msgid "Greetings"
+msgstr ""
+
+#: includes/CPT/Greeting.php:90
+msgctxt "Post type singular name"
+msgid "Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:91
+msgctxt "Admin Menu text"
+msgid "Greetings"
+msgstr ""
+
+#: includes/CPT/Greeting.php:92
+msgctxt "Add New on Toolbar"
+msgid "Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:94
+msgid "Add New Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:95
+msgid "New Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:96
+msgid "Edit Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:97
+msgid "View Greeting"
+msgstr ""
+
+#: includes/CPT/Greeting.php:98
+msgid "All Greetings"
+msgstr ""
+
+#: includes/CPT/Greeting.php:99
+msgid "Search Greetings"
+msgstr ""
+
+#: includes/CPT/Greeting.php:100
+msgctxt "Overrides the “Featured Image” phrase for this post type."
+msgid "Source Image"
+msgstr ""
+
+#: includes/CPT/Greeting.php:101
+msgctxt "Overrides the “Set featured image” phrase for this post type."
+msgid "Set Source Image"
+msgstr ""
+
+#: includes/CPT/Greeting.php:102
+msgctxt "Overrides the “Remove featured image” phrase for this post type."
+msgid "Remove Source Image"
+msgstr ""
+
+#: includes/CPT/Greeting.php:103
+msgctxt "Overrides the “Use as featured image” phrase for this post type."
+msgid "Use as source image"
+msgstr ""
+
+#: includes/CPT/Greeting.php:104
+msgid "No Greetings found."
+msgstr ""
+
+#: includes/CPT/Greeting.php:105
+msgid "No Greetings found in Trash."
+msgstr ""
+
+#: includes/CPT/Greeting.php:106
+msgctxt "The post type archive label used in nav menus."
+msgid "Greeting archives"
+msgstr ""
+
+#: includes/CPT/Greeting.php:107
+msgctxt ""
+"Screen reader text for the filter links heading on the post type listing "
+"screen."
+msgid "Filter Greetings list"
+msgstr ""
+
+#: includes/CPT/Greeting.php:108
+msgctxt ""
+"Screen reader text for the pagination heading on the post type listing "
+"screen."
+msgid "Greetings list navigation"
+msgstr ""
+
+#: includes/CPT/Greeting.php:109
+msgctxt ""
+"Screen reader text for the items list heading on the post type listing "
+"screen."
+msgid "Greetings list"
+msgstr ""
+
+#: includes/CPT/Greeting.php:114
+msgid "Add and edit Greetings Cards"
+msgstr ""
+
+#: includes/CPT/Greeting.php:141
+msgctxt "taxonomy general name"
+msgid "Categories"
+msgstr ""
+
+#: includes/CPT/Greeting.php:142
+msgctxt "taxonomy singular name"
+msgid "Category"
+msgstr ""
+
+#: includes/CPT/Greeting.php:158
+msgctxt "taxonomy general name"
+msgid "Mail Lists"
+msgstr ""
+
+#: includes/CPT/Greeting.php:159
+msgctxt "taxonomy singular name"
+msgid "Mail List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:160
+msgid "All Lists"
+msgstr ""
+
+#: includes/CPT/Greeting.php:161
+msgid "Edit List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:162
+msgid "View List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:163
+msgid "Update List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:164
+msgid "Add New List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:165
+msgid "New List Name"
+msgstr ""
+
+#: includes/CPT/Greeting.php:166
+msgid "Main List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:167
+msgid "Main List:"
+msgstr ""
+
+#: includes/CPT/Greeting.php:168
+msgid "Search Lists"
+msgstr ""
+
+#: includes/CPT/Greeting.php:169
+msgid "No lists found"
+msgstr ""
+
+#: includes/CPT/Greeting.php:170
+msgid "Back to lists"
+msgstr ""
+
+#: includes/CPT/Greeting.php:189 includes/CPT/Greeting.php:201
+msgid "E-mail Addresses"
+msgstr ""
+
+#: includes/CPT/Greeting.php:191 includes/CPT/Greeting.php:205
+msgid "Enter one email address per line."
+msgstr ""
+
+#: includes/CPT/Greeting.php:284
+msgid "Category"
+msgstr ""
+
+#: includes/CPT/Greeting.php:285
+msgid "Mail List"
+msgstr ""
+
+#: includes/CPT/Greeting.php:287
+msgid "Action"
+msgstr ""
+
+#: includes/CPT/Greeting.php:321
+msgctxt "Greeting"
+msgid "Cancelled"
+msgstr ""
+
+#: includes/CPT/Greeting.php:327
+msgctxt "Greeting"
+msgid "Restore"
+msgstr ""
+
+#: includes/CPT/Greeting.php:336
+msgctxt "Greeting"
+msgid "Cancel"
+msgstr ""
+
+#: includes/CPT/Greeting.php:339
+msgctxt "Greeting"
+msgid "Sent"
+msgstr ""
+
+#: includes/CPT/Greeting.php:346
+msgctxt "Greeting"
+msgid "Send"
+msgstr ""
+
+#: includes/CPT/Greeting.php:430
+msgid "Card Image"
+msgstr ""
+
+#. Name of the plugin
+msgid "RRZE Greetings"
+msgstr ""
+
+#. Description of the plugin
+msgid "Plugin for creating and sending HTML greeting cards."
+msgstr ""
+
+#. URI of the plugin
+msgid "https://github.com/RRZE-Webteam/rrze-greetings"
+msgstr ""
+
+#. Author of the plugin
+msgid "RRZE-Webteam"
+msgstr ""
+
+#. Author URI of the plugin
+msgid "https://blogs.fau.de/webworking/"
+msgstr ""
