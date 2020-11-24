@@ -40,7 +40,8 @@ class Metaboxes
             'desc' => __('Select a greeting card template.', 'rrze-greetings'),
             'type' => 'select',
             'default' => '',
-            'options_cb' => [$this, 'templatesOptions']
+            'options_cb' => [$this, 'templatesOptions'],
+            'sanitization_cb' => 'sanitize_text_field'
         ]);
 
         $cmb->add_field([
@@ -49,7 +50,8 @@ class Metaboxes
             'desc' => __('The title of the content of the greeting card.', 'rrze-greetings'),
             'type' => 'text',
             'default' => '',
-            'sanitization_cb' => 'filterText'
+            'show_on_cb' => [$this, 'showIfTemplate'],
+            'sanitization_cb' => 'sanitize_text_field'
         ]);
 
         $cmb->add_field(array(
@@ -277,7 +279,15 @@ class Metaboxes
 
     public function showIfTemplate($cmb)
     {
-        return get_post_meta($cmb->object_id(), 'rrze_greetings_card_template', true);
+        $template = get_post_meta($cmb->object_id(), 'rrze_greetings_card_template', true);
+
+        switch ($template) {
+            case 'templates/Frohe-Weihnachten-Simpel.html':
+                return true;
+            break;
+            default:
+                return false;
+        }
     }
 
     public function templatesOptions($field)
