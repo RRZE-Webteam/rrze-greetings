@@ -280,10 +280,23 @@ class Metaboxes
     public function showIfTemplate($cmb)
     {
         $template = get_post_meta($cmb->object_id(), 'rrze_greetings_card_template', true);
-
+        if ($template && is_a($cmb, 'CMB2')) {
+            return in_array($cmb->meta_box['id'], [
+                'rrze_greetings_imagetext',
+                'rrze_greetings_mail'
+            ]);
+        }
         switch ($template) {
             case 'templates/Frohe-Weihnachten-Simpel.html':
-                return true;
+                if (is_a($cmb, 'CMB2_Field')) {
+                    return in_array($cmb->args['_id'], [
+                        'rrze_greetings_title',
+                        'rrze_greetings_post_content',
+                        'rrze_greetings_logo',
+                        'rrze_greetings_footer'
+                    ]);
+                }
+                return false;
             break;
             default:
                 return false;
