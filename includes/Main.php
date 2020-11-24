@@ -36,6 +36,9 @@ class Main
         $actions = new Actions;
         $actions->onLoaded();
 
+		$greetingsPreview = new VirtualPage(__('Greetings Card', 'rrze-greetings'), 'greetings-card');
+		$greetingsPreview->onLoaded();        
+
         add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
