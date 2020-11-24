@@ -88,6 +88,8 @@ function deactivation()
     Roles::removeRoleCaps();
     Roles::removeRoles();
 
+    Cron::clearSchedule();
+
     flush_rewrite_rules();
 }
 
