@@ -36,7 +36,7 @@ class Metaboxes
 
         $cmb->add_field([
             'id'   => 'rrze_greetings_card_template',
-            'name' => __('Templates', 'rrze-greetings'),
+            'name' => __('Template', 'rrze-greetings'),
             'desc' => __('Select a greeting card template.', 'rrze-greetings'),
             'type' => 'select',
             'default' => '',
@@ -49,7 +49,6 @@ class Metaboxes
             'name' => __('Title', 'rrze-greetings'),
             'desc' => __('The title of the content of the greeting card.', 'rrze-greetings'),
             'type' => 'text',
-            'default' => '',
             'show_on_cb' => [$this, 'showIfTemplate'],
             'sanitization_cb' => 'sanitize_text_field'
         ]);
@@ -71,7 +70,6 @@ class Metaboxes
             'name' => 'Logo (Optional)',
             'desc' => 'The image of the website logo that will be displayed on the greeting card.',
             'type' => 'file',
-            'default' => '',
             'options' => [
                 'url' => false,
             ],
@@ -286,20 +284,18 @@ class Metaboxes
                 'rrze_greetings_mail'
             ]);
         }
-        switch ($template) {
-            case 'templates/Frohe-Weihnachten-Simpel.html':
-                if (is_a($cmb, 'CMB2_Field')) {
+        if (is_a($cmb, 'CMB2_Field')) {
+            switch ($template) {
+                case 'templates/Frohe-Weihnachten-Simpel.html':
                     return in_array($cmb->args['_id'], [
                         'rrze_greetings_title',
                         'rrze_greetings_post_content',
                         'rrze_greetings_logo',
                         'rrze_greetings_footer'
                     ]);
-                }
-                return false;
-            break;
-            default:
-                return false;
+                default:
+                    return false;
+            }
         }
     }
 
