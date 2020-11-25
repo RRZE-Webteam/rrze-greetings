@@ -483,7 +483,7 @@ class Greeting
 
         $postData['post_content'] = $content;
         $postData['post_excerpt'] = (string) get_post_meta($postId, 'rrze_greetings_post_excerpt', true);
-        $postData['post_name'] = Functions::crypt($postId);
+        $postData['post_name'] = md5($postId);
 
         return $postData;
     }
