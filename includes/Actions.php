@@ -20,14 +20,17 @@ class Actions
 
 		add_action('wp', [$this, 'listActions']);
 
-		add_action('template_redirect', [$this, 'previewTemplate']);
-		add_action('template_redirect', [$this, 'showTemplate']);
+		add_action('template_redirect', [$this, 'redirectTemplate']);
 	}
 
 	public function previewLink(string $url, \WP_Post $post): string
 	{
 		if ($post->post_type == 'greeting') {
-			$url = Functions::virtualUrl($post->ID, 'greetings-card-preview');
+			$url = sprintf(
+				'/greetings-card/?id=%d&nonce=%s',
+				$post->ID,
+				wp_create_nonce('greetings-card-preview')
+			);
 		}
 		return $url;
 	}
@@ -35,7 +38,10 @@ class Actions
 	public function postLink(string $url, \WP_Post $post): string
 	{
 		if ($post->post_type == 'greeting') {
-			$url = Functions::virtualUrl($post->ID, 'greetings-card');
+			$url = sprintf(
+				'/greetings-card/%s',
+				$post->ID
+			);
 		}
 		return $url;
 	}
@@ -63,29 +69,32 @@ class Actions
 		}
 	}
 
-	public function previewTemplate()
+	public function redirectTemplate()
 	{
-		if (!isset($_GET['id']) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'greetings-card-preview')) {
+		if (empty($_SERVER['REQUEST_URI'])) {
 			return;
-		}		
+		}
+		$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+		$segments = array_values(array_filter(explode('/', $path)));
 
-		$postId = absint($_GET['id']);
-		if ($postId && ($post = get_post($postId))) {
-			echo $post->post_content;
+		if ($segments[0] == 'greetings-card' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greetings-card-preview')) {
+			$postId = absint($_GET['id']);
+			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
+				echo $post->post_content;
+				exit;
+			}
+		} elseif ($segments[0] == 'greetings-card' && !empty($segments[1])) {
+			$postId = $segments[1];
+			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
+				echo $post->post_content;
+				exit;
+			}
+		} elseif ($segments[0] == 'greetings-card') {
+			global $wp_query;
+			$wp_query->set_404();
+			status_header(404);
+			get_template_part(404);
 			exit;
 		}
 	}
-
-	public function showTemplate()
-	{
-		if (!isset($_GET['id']) || !isset($_REQUEST['nonce']) || !wp_verify_nonce($_REQUEST['nonce'], 'greetings-card')) {
-			return;
-		}		
-
-		$postId = absint($_GET['id']);
-		if ($postId && ($post = get_post($postId))) {
-			echo $post->post_content;
-			exit;
-		}
-	}	
 }
