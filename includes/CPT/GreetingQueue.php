@@ -27,8 +27,6 @@ class GreetingQueue
 	{
 		// Register CPT.
 		add_action('init', [$this, 'registerPostType']);
-		// Register Custom Status
-		add_action('init', [$this, 'registerCustomStatus']);
 		// CPT Custom Columns.
 		add_filter('manage_greeting_queue_posts_columns', [$this, 'columns']);
 		add_action('manage_greeting_queue_posts_custom_column', [$this, 'customColumn'], 10, 2);
@@ -83,20 +81,6 @@ class GreetingQueue
 		];
 
 		register_post_type(self::$postType, $args);
-	}
-
-	public function registerCustomStatus()
-	{
-		register_post_status(
-			'sent', 
-			[
-				'label'                     => _x('Sent', 'greeting_queue', 'rrze-greetings'),
-				'label_count'               => _n_noop('Sent <span class="count">(%s)</span>', 'Sent <span class="count">(%s)</span>', 'rrze-greetings'),
-				'exclude_from_search'       => true,
-				'show_in_admin_all_list'    => false,
-				'show_in_admin_status_list' => true
-			]
-		);
 	}
 
 	public static function getData(int $postId): array
