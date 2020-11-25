@@ -55,15 +55,6 @@ class Functions
         return $rgb;
     }
 
-    public static function virtualUrl(int $id, string $action, bool $crypt = false): string
-    {
-        return sprintf(
-            '/greetings-card/?id=%d&nonce=%s',
-            $id,
-            $crypt ? self::crypt($action) : wp_create_nonce($action)
-        );
-    }
-
     public static function crypt(string $string, string $action = 'encrypt')
     {
         $secretKey = AUTH_KEY;
