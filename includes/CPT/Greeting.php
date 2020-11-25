@@ -424,16 +424,19 @@ class Greeting
 
         $text = new Text($source, $target, $post->post_excerpt, $atts);
         $text->renderToImage();
+        
         // Add metabox to display rendered image
-        add_meta_box(
-            'rrze_greetings_greetings_image',
-            __('Card Image', 'rrze-greetings'),
-            [$this, 'displayRenderedImage'],
-            self::$postType,
-            'side',
-            'low',
-            [$targetUrl]
-        );
+        if (get_post_meta($postId, 'rrze_greetings_card_template', true)) {
+            add_meta_box(
+                'rrze_greetings_greetings_image',
+                __('Card Image', 'rrze-greetings'),
+                [$this, 'displayRenderedImage'],
+                self::$postType,
+                'side',
+                'low',
+                [$targetUrl]
+            );
+        }
     }
 
     public function displayRenderedImage($post, $callbackArgs)
