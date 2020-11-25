@@ -39,7 +39,7 @@ class Actions
 	{
 		if ($post->post_type == 'greeting') {
 			$url = sprintf(
-				'/greetings-card/%s',
+				'/greetings-card/%d',
 				$post->ID
 			);
 		}
@@ -84,7 +84,7 @@ class Actions
 				exit;
 			}
 		} elseif ($segments[0] == 'greetings-card' && !empty($segments[1])) {
-			$postId = $segments[1];
+			$postId = absint($segments[1]);
 			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
 				echo $post->post_content;
 				exit;
