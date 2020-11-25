@@ -48,12 +48,12 @@ class Actions
 
 	public function listActions()
 	{
-		if (isset($_GET['action']) && isset($_GET['id']) && wp_verify_nonce($_REQUEST['_wpnonce'], 'action')) {
+		if (isset($_GET['id']) && isset($_GET['rrze_greetings_action']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'rrze_greetings_action')) {
 			$postId = absint($_GET['id']);
-			$action = sanitize_text_field($_GET['action']);
+			$action = sanitize_text_field($_GET['rrze_greetings_action']);
 
 			$post = get_post($postId);
-			if ($post->post_type != 'greeting' || $post->post_status != 'publish') {
+			if (is_null($post) || $post->post_type != 'greeting' || $post->post_status != 'publish') {
 				return;
 			}
 
@@ -61,8 +61,19 @@ class Actions
 			if (!$data) {
 				return;
 			}
-
-			// @todo handle action
+	
+			$subject = $post->post_title;
+			$message = $post->post_content;
+			$headers = [
+				'Content-Type: text/html; charset=UTF-8',
+				'Content-Transfer-Encoding: 8bit'
+			];
+	
+			$mailAtts = [
+				'subject' => $subject,
+				'message' => $message,
+				'headers' => $headers,
+			];
 
 			wp_redirect(get_admin_url() . 'edit.php?post_type=greeting');
 			exit;
