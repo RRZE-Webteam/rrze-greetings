@@ -72,12 +72,10 @@ class Greeting
         add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
-        // Fires once a post has been saved.
-        add_action('save_post_greeting', [$this, 'saveQueue'], 10, 3);
-        //
+        // Filters post data just before it is inserted into the database.
         add_filter('wp_insert_post_data', [$this, 'prePostInsert'], 99, 2);
-        // Card image preview
-        add_action('add_meta_boxes', [$this, 'renderImage']);
+        // Card image metabox
+        add_action('add_meta_boxes', [$this, 'cardImage']);
         // CMB2 Metaboxes
         $metaboxes = new Metaboxes;
         $metaboxes->onLoaded();
@@ -235,14 +233,14 @@ class Greeting
         $data['id'] = $post->ID;
 
         $sendDateGmt = absint(get_post_meta($post->ID, 'rrze_greetings_send_date_gmt', true));
-        $data['send_date_gmt'] = date('Y-m-d H:i:s', $sendDateGmt);
+        $data['send_date_gmt'] = $sendDateGmt ? date('Y-m-d H:i:s', $sendDateGmt) : '';
         $sendDate = absint(get_post_meta($post->ID, 'rrze_greetings_send_date', true));
-        $data['send_date'] = date('Y-m-d H:i:s', $sendDate);
-        $data['send_date_format'] = sprintf(
+        $data['send_date'] = $sendDate ? date('Y-m-d H:i:s', $sendDate) : '';
+        $data['send_date_format'] = $sendDate ? sprintf(
             __('%1$s at %2$s'),
             Functions::dateFormat(__('Y/m/d'), $sendDate),
             Functions::timeFormat(__('g:i a'), $sendDate)
-        );
+        ) : '';
 
         $data['post_date_gmt'] = $post->post_date_gmt;
         $data['post_date'] = $post->post_date;
@@ -263,17 +261,22 @@ class Greeting
 
     protected static function getTermsList($postId, $taxonomy)
     {
-        $postTerms = [];
+        $postTerms = [
+            'taxonomy' => $taxonomy,
+            'terms' => null,
+            'links' => null
+        ];
         $postType = get_post_type($postId);
         $terms = get_the_terms($postId, $taxonomy);
-        $termslist = '';
+        $termslinks = [];
         if (!empty($terms)) {
             foreach ($terms as $term) {
-                $postTerms[] = "<a href='edit.php?post_type={$postType}&{$taxonomy}={$term->slug}'> " . esc_html(sanitize_term_field('name', $term->name, $term->term_id, $taxonomy, 'edit')) . "</a>";
+                $termslinks[] = "<a href='edit.php?post_type={$postType}&{$taxonomy}={$term->slug}'> " . esc_html(sanitize_term_field('name', $term->name, $term->term_id, $taxonomy, 'edit')) . "</a>";
             }
-            $termslist = implode(', ', $postTerms);
+            $postTerms['terms'] = $terms;
+            $postTerms['links'] = implode(', ', $termslinks);
         }
-        return $termslist ? $termslist : '&mdash;';
+        return $postTerms;
     }
 
     public function columns($columns)
@@ -302,10 +305,10 @@ class Greeting
 
         switch ($column) {
             case 'category':
-                echo $data['categories'];
+                echo $data['categories']['links'] ?? '&mdash;';
                 break;
             case 'mail_list':
-                echo $data['mail_lists'];
+                echo $data['mail_lists']['links'] ?? '&mdash;';
                 break;
             case 'send_date':
                 echo $data['send_date_format'];
@@ -315,34 +318,34 @@ class Greeting
                 $publish = ($data['post_status'] == 'publish');
 
                 if ($publish) {
-                    $_wpnonce = wp_create_nonce('action');
+                    $nonce = wp_create_nonce('rrze_greetings_action');
 
                     if ($status == 'cancelled') {
                         $cancelledButton = '<button class="button button-secondary" disabled>' . _x('Cancelled', 'Greeting', 'rrze-greetings') . '</button>';
                         $restoreButton = sprintf(
-                            '<a href="edit.php?post_type=%1$s&action=restore&id=%2$d&_wpnonce=%3$s" class="button">%4$s</a>',
+                            '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=restore&nonce=%s" class="button">%s</a>',
                             self::$postType,
                             $data['id'],
-                            $_wpnonce,
+                            $nonce,
                             _x('Restore', 'Greeting', 'rrze-greetings')
                         );
                         $button = $cancelledButton . $restoreButton;
                     } else {
                         $cancelButton = sprintf(
-                            '<a href="edit.php?post_type=%1$s&action=cancel&id=%2$d&_wpnonce=%3$s" class="button button-secondary" data-id="%2$d">%4$s</a>',
+                            '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=cancel&nonce=%s" class="button button-secondary" data-id="%1$d">%s</a>',
                             self::$postType,
                             $data['id'],
-                            $_wpnonce,
+                            $nonce,
                             _x('Cancel', 'Greeting', 'rrze-greetings')
                         );
                         if ($status == 'sent') {
                             $button = $cancelButton . '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting', 'rrze-greetings') . '</button>';
                         } else {
                             $button = $cancelButton . sprintf(
-                                '<a href="edit.php?post_type=%1$s&action=confirm&id=%2$d&_wpnonce=%3$s" class="button button-primary" data-id="%2$d">%4$s</a>',
+                                '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=confirm&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
                                 self::$postType,
                                 $data['id'],
-                                $_wpnonce,
+                                $nonce,
                                 _x('Send', 'Greeting', 'rrze-greetings')
                             );
                         }
@@ -375,7 +378,7 @@ class Greeting
         // @todo
     }
 
-    public function renderImage()
+    public function cardImage()
     {
         $screen = get_current_screen();
         if (!$screen->base == 'post' || $screen->post_type != self::$postType) {
@@ -424,13 +427,13 @@ class Greeting
 
         $text = new Text($source, $target, $post->post_excerpt, $atts);
         $text->renderToImage();
-        
-        // Add metabox to display rendered image
+
+        // Add metabox to display the card image
         if (get_post_meta($postId, 'rrze_greetings_card_template', true)) {
             add_meta_box(
                 'rrze_greetings_greetings_image',
                 __('Card Image', 'rrze-greetings'),
-                [$this, 'displayRenderedImage'],
+                [$this, 'displayCardImage'],
                 self::$postType,
                 'side',
                 'low',
@@ -439,7 +442,7 @@ class Greeting
         }
     }
 
-    public function displayRenderedImage($post, $callbackArgs)
+    public function displayCardImage($post, $callbackArgs)
     {
         $imageUrl = $callbackArgs['args'][0];
         echo '<img class="thumbnail" src="' . $imageUrl . '" style="max-width:100%">';
@@ -488,37 +491,4 @@ class Greeting
         return $postData;
     }
 
-    public function saveQueue($postId, $post, $update)
-    {
-        if ($post->post_status != 'publish' || $update || wp_is_post_revision($postId)) {
-            return;
-        }
-
-        $mailList = [];
-        $termList = wp_get_post_terms(
-            $postId,
-            'rrze_greetings_mail_list',
-            ['fields' => 'ids']
-        );
-        foreach ($termList as $term) {
-            $termMeta = get_term_meta($term->term_id, 'rrze_greetings_mail_list', true);
-            $termMetaAry = array_filter(explode(PHP_EOL, $termMeta));
-            if (!empty($termMetaAry)) {
-                $mailList[$term->term_id][] = $termMetaAry;
-            }
-        }
-
-        $subject = $post->post_title;
-        $message = $post->post_content;
-        $headers = [
-            'Content-Type: text/html; charset=UTF-8',
-            'Content-Transfer-Encoding: 8bit'
-        ];
-
-        $mailAtts = [
-            'subject' => $subject,
-            'message' => $message,
-            'headers' => $headers,
-        ];
-    }
 }
