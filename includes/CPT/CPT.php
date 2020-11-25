@@ -18,7 +18,8 @@ class CPT
 
         $greetingQueue = new GreetingQueue;
         $greetingQueue->onLoaded();
-
+      
+        // Add Menu
         add_action('admin_menu', [$this, 'addMenu']);
         add_filter('parent_file', [$this, 'filterParentMenu']);
     }
