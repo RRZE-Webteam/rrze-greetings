@@ -55,4 +55,21 @@ class Functions
         return $rgb;
     }
 
+    public static function filterText($value)
+    {
+        $allowedHtml = [
+            'a' => [
+                'href' => [],
+                'title' => [],
+                'style' => []
+            ],
+            'br' => [],
+            'em' => [],
+            'strong' => [],
+            'p' => []
+        ];
+
+        return wp_kses($value, $allowedHtml);
+    }    
+
 }
