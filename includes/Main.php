@@ -36,17 +36,7 @@ class Main
         $actions = new Actions;
         $actions->onLoaded();       
 
-        add_action('admin_init', [$this, 'adminInit']);
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
-    }
-
-    public function adminInit()
-    {
-        global $post_type;
-
-        if (in_array($post_type, $this->cpt->getAllCPT())) {
-            require_once plugin()->getPath('vendor/cmb2') . 'init.php';
-        }
     }
 
     public function adminEnqueueScripts($hook)
