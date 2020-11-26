@@ -58,6 +58,9 @@ class Metaboxes
             'name' => __('Title', 'rrze-greetings'),
             'desc' => __('The title of the content of the greeting card.', 'rrze-greetings'),
             'type' => 'text',
+            'attributes' => [
+                'required' => 'required'
+            ],            
             'show_on_cb' => [$this, 'showIfTemplate'],
             'sanitization_cb' => 'sanitize_text_field'
         ]);
@@ -68,7 +71,8 @@ class Metaboxes
             'desc' => __('Text that will be shown after the greeting card image.', 'rrze-greetings'),
             'type' => 'textarea',
             'attributes' => [
-                'rows' => '8'
+                'rows' => '8',
+                'required' => 'required'
             ],
             'show_on_cb' => [$this, 'showIfTemplate'],
             'sanitization_cb' => 'sanitize_textarea_field'
@@ -101,7 +105,8 @@ class Metaboxes
             'desc' => __('Footer text containing the unsubscribe link.', 'rrze-greetings'),
             'type' => 'textarea',
             'attributes' => [
-                'rows' => '3'
+                'rows' => '3',
+                'required' => 'required'
             ],
             'show_on_cb' => [$this, 'showIfTemplate'],
             'sanitization_cb' => [$this, 'filterText']
