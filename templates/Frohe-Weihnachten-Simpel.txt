@@ -1,0 +1,9 @@
+{{=title}}
+
+{{=content}}
+
+{{=unsubscribe_text}}
+{{=unsubscribe_url}}
+
+{{=site_name}}
+{{=site_url}}
