@@ -58,6 +58,7 @@ class Cron
     {
         Events::mailQueue();
         Events::mailSend();
+        Events::handleQueuedStatus();
     }
 
     public static function clearSchedule()
