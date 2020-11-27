@@ -38,8 +38,8 @@ class GreetingQueue
 		add_action('restrict_manage_posts', [$this, 'applyFilters']);
 		add_filter('parse_query', [$this, 'filterQuery']);
 		// List Actions
-		//add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
-		//add_filter('bulk_actions-edit-greeting_queue', [$this, 'bulkActions']);
+		add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
+		add_filter('bulk_actions-edit-greeting_queue', [$this, 'bulkActions']);
 		// List Views
 		add_filter('views_edit-greeting_queue', [$this, 'views']);
 	}
@@ -226,15 +226,27 @@ class GreetingQueue
 	 */
 	public function rowActions(array $actions, \WP_Post $post): array
 	{
-		if ($post->post_type != 'greeting_queue' || $post->post_status != 'publish') {
+		if (
+			$post->post_type != 'greeting_queue'
+			|| !in_array($post->post_status, ['mail_queue_queued', 'mail_queue_sent', 'mail_queue_error'])
+		) {
 			return $actions;
 		}
-		return [];
+		if (isset($actions['edit'])) {
+			unset($actions['edit']);
+		}
+		if (isset($actions['inline hide-if-no-js'])) {
+			unset($actions['inline hide-if-no-js']);
+		}
+		return $actions;
 	}
 
 	public function bulkActions($actions)
 	{
-		return [];
+		if (isset($actions['edit'])) {
+			unset($actions['edit']);
+		}
+		return $actions;
 	}
 
 	public function views($views)
