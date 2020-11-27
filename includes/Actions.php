@@ -18,7 +18,9 @@ class Actions
 		add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
 		add_filter('post_type_link', [$this, 'postLink'], 10, 2);
 
-		add_action('wp', [$this, 'listActions']);
+		add_action('wp', [$this, 'buttonActions']);
+
+		add_action('admin_notices', [$this, 'adminNotices']);
 
 		add_action('template_redirect', [$this, 'redirectTemplate']);
 	}
@@ -46,7 +48,7 @@ class Actions
 		return $url;
 	}
 
-	public function listActions()
+	public function buttonActions()
 	{
 		if (isset($_GET['id']) && isset($_GET['rrze_greetings_action']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'rrze_greetings_action')) {
 			$postId = absint($_GET['id']);
@@ -61,22 +63,38 @@ class Actions
 			if (!$data) {
 				return;
 			}
-	
-			$subject = $post->post_title;
-			$message = $post->post_content;
-			$headers = [
-				'Content-Type: text/html; charset=UTF-8',
-				'Content-Transfer-Encoding: 8bit'
-			];
-	
-			$mailAtts = [
-				'subject' => $subject,
-				'message' => $message,
-				'headers' => $headers,
-			];
+
+			$transientData = new TransientData('rrze_greetings_errors');
+			switch ($action) {
+				case 'send':
+					update_post_meta($postId, 'rrze_greetings_status', 'send');
+					$transientData->addData('success', __('Greetings mails have been sent to the mail queue.', 'rrze-greetings'));
+					break;
+				case 'cancel':
+					delete_post_meta($postId, 'rrze_greetings_status');
+					$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));
+					break;
+				default:
+					//				
+			}
 
 			wp_redirect(get_admin_url() . 'edit.php?post_type=greeting');
 			exit;
+		}
+	}
+
+	public function adminNotices()
+	{
+		$transientData = new TransientData('rrze_greetings_errors');
+		if (empty($errorMessages = $transientData->getData())) {
+			return;
+		}
+		if (isset($errorMessages['success'])) {
+			printf('<div class="notice notice-success is-dismissible"><p>%s</p></div>', esc_html($errorMessages['success']));
+		} else {
+			foreach ($errorMessages as $message) {
+				printf('<div class="notice notice-warning"><p>%s</p></div>', esc_html($message));
+			}
 		}
 	}
 
