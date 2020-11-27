@@ -71,9 +71,13 @@ class Greeting
         add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
-		// List Actions
-		add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
-		add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);	        
+        // Taxonomy Custom Columns
+        add_filter('manage_edit-greetings_category_columns', [$this, 'categoryColumns']);
+        add_filter('manage_edit-greetings_mail_list_columns', [$this, 'mailListColumns']);
+        add_filter('manage_greetings_mail_list_custom_column', [$this, 'mailListCustomColumns'], 10, 3);
+        // List Actions
+        add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
+        add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);
     }
 
     public function registerPostType()
@@ -216,6 +220,36 @@ class Greeting
         );
     }
 
+    public function categoryColumns($columns)
+    {
+        $columns['posts'] = __('Greetings', 'rrze-greetings');
+        return $columns;
+    }
+
+    public function mailListColumns($columns)
+    {
+        $columns['posts'] = __('Greetings', 'rrze-greetings');
+        $columns['emails'] = __('Emails', 'rrze-greetings');
+        return $columns;
+    }
+
+    public function mailListCustomColumns($content, $columnName, $termId)
+    {
+        $term = get_term($termId, 'greetings_mail_list');
+        switch ($columnName) {
+            case 'emails':
+                if (empty($list = (string) get_term_meta($term->term_id, 'rrze_greetings_mail_list', true))) {
+                    $content = 0;
+                }
+                $mailList = explode(PHP_EOL, $list);
+                $content = count($mailList);
+                break;
+            default:
+                break;
+        }
+        return $content;
+    }
+
     public static function getData(int $postId): array
     {
         $data = [];
@@ -352,98 +386,98 @@ class Greeting
         }
     }
 
-	/**
-	 * Filters the array of row action links on the Greetings list table.
-	 * The filter is evaluated only for non-hierarchical post types.
-	 * @param array $actions An array of row action links.
-	 * @param object $post \WP_Post The post object.
-	 * @return array $actions
-	 */
-	public function rowActions(array $actions, \WP_Post $post): array
-	{
-		if ($post->post_type != 'greeting' || $post->post_status != 'publish') {
-			return $actions;
-		}
+    /**
+     * Filters the array of row action links on the Greetings list table.
+     * The filter is evaluated only for non-hierarchical post types.
+     * @param array $actions An array of row action links.
+     * @param object $post \WP_Post The post object.
+     * @return array $actions
+     */
+    public function rowActions(array $actions, \WP_Post $post): array
+    {
+        if ($post->post_type != 'greeting' || $post->post_status != 'publish') {
+            return $actions;
+        }
 
-		$actions = [];
-		$title = _draft_or_post_title();
-		$status = get_post_meta($post->ID, 'rrze_greetings_status', true);
-		$isQueued = in_array($status, ['send', 'queued']);
-		$canEdit = current_user_can('edit_post', $post->ID);
-		$canDelete = current_user_can('delete_post', $post->ID);
+        $actions = [];
+        $title = _draft_or_post_title();
+        $status = get_post_meta($post->ID, 'rrze_greetings_status', true);
+        $isQueued = in_array($status, ['send', 'queued']);
+        $canEdit = current_user_can('edit_post', $post->ID);
+        $canDelete = current_user_can('delete_post', $post->ID);
 
-		if (!$isQueued && $canEdit) {
-			$actions['edit'] = sprintf(
-				'<a href="%s" aria-label="%s">%s</a>',
-				get_edit_post_link($post->ID),
-				/* translators: %s: Post title. */
-				esc_attr(sprintf(__('Edit &#8220;%s&#8221;'), $title)),
-				__('Edit')
-			);
-		}
+        if (!$isQueued && $canEdit) {
+            $actions['edit'] = sprintf(
+                '<a href="%s" aria-label="%s">%s</a>',
+                get_edit_post_link($post->ID),
+                /* translators: %s: Post title. */
+                esc_attr(sprintf(__('Edit &#8220;%s&#8221;'), $title)),
+                __('Edit')
+            );
+        }
 
-		if (!$isQueued && $canDelete) {
-			if (EMPTY_TRASH_DAYS) {
-				$actions['trash'] = sprintf(
-					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
-					get_delete_post_link($post->ID),
-					/* translators: %s: Post title. */
-					esc_attr(sprintf(__('Move &#8220;%s&#8221; to the Trash'), $title)),
-					_x('Delete', 'Booking', 'rrze-rsvp')
-				);
-			} else {
-				$actions['delete'] = sprintf(
-					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
-					get_delete_post_link($post->ID, '', true),
-					/* translators: %s: Post title. */
-					esc_attr(sprintf(__('Delete &#8220;%s&#8221; permanently'), $title)),
-					__('Delete Permanently')
-				);
-			}
-		}
+        if (!$isQueued && $canDelete) {
+            if (EMPTY_TRASH_DAYS) {
+                $actions['trash'] = sprintf(
+                    '<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+                    get_delete_post_link($post->ID),
+                    /* translators: %s: Post title. */
+                    esc_attr(sprintf(__('Move &#8220;%s&#8221; to the Trash'), $title)),
+                    _x('Delete', 'Booking', 'rrze-rsvp')
+                );
+            } else {
+                $actions['delete'] = sprintf(
+                    '<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+                    get_delete_post_link($post->ID, '', true),
+                    /* translators: %s: Post title. */
+                    esc_attr(sprintf(__('Delete &#8220;%s&#8221; permanently'), $title)),
+                    __('Delete Permanently')
+                );
+            }
+        }
 
-		$actions['view'] = sprintf(
-			'<a href="%s" rel="bookmark" aria-label="%s">%s</a>',
-			get_permalink($post->ID),
-			/* translators: %s: Post title. */
-			esc_attr(sprintf(__('View &#8220;%s&#8221;'), $title)),
-			__('View')
-		);
+        $actions['view'] = sprintf(
+            '<a href="%s" rel="bookmark" aria-label="%s">%s</a>',
+            get_permalink($post->ID),
+            /* translators: %s: Post title. */
+            esc_attr(sprintf(__('View &#8220;%s&#8221;'), $title)),
+            __('View')
+        );
 
-		return $actions;
-	}
-
-	public function bulkActionsHandler($redirectTo, $doaction, $postIds)
-	{
-		switch ($doaction) {
-			case 'edit':
-				foreach ((array) $postIds as $key => $postId) {
-					$post = get_post($postId);
-                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
-                    $isQueued = in_array($status, ['send', 'queued']);
-					if ($post->post_status == 'publish' && $isQueued) {
-						unset($postIds[$key]);
-						continue;
-					}
-				}
-				break;
-			case 'trash':
-				foreach ((array) $postIds as $key => $postId) {
-					$post = get_post($postId);
-                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
-                    $isQueued = in_array($status, ['send', 'queued']);
-					if ($post->post_status == 'publish' && $isQueued) {
-						unset($postIds[$key]);
-						continue;
-					}
-				}
-				break;
-			default:
-				//
-		}
-		return $redirectTo;
+        return $actions;
     }
-        
+
+    public function bulkActionsHandler($redirectTo, $doaction, $postIds)
+    {
+        switch ($doaction) {
+            case 'edit':
+                foreach ((array) $postIds as $key => $postId) {
+                    $post = get_post($postId);
+                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
+                    $isQueued = in_array($status, ['send', 'queued']);
+                    if ($post->post_status == 'publish' && $isQueued) {
+                        unset($postIds[$key]);
+                        continue;
+                    }
+                }
+                break;
+            case 'trash':
+                foreach ((array) $postIds as $key => $postId) {
+                    $post = get_post($postId);
+                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
+                    $isQueued = in_array($status, ['send', 'queued']);
+                    if ($post->post_status == 'publish' && $isQueued) {
+                        unset($postIds[$key]);
+                        continue;
+                    }
+                }
+                break;
+            default:
+                //
+        }
+        return $redirectTo;
+    }
+
     public function removeMonthsDropdown($months, $postType)
     {
         if ($postType == self::$postType) {
@@ -461,5 +495,4 @@ class Greeting
     {
         // @todo
     }
-
 }
