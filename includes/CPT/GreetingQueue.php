@@ -12,12 +12,12 @@ use RRZE\Greetings\Functions;
 
 class GreetingQueue
 {
-    /**
-     * Custom post type
-     * @var string
-     */
+	/**
+	 * Custom post type
+	 * @var string
+	 */
 	protected static $postType = 'greeting_queue';
-		
+
 	public function __construct()
 	{
 		//
@@ -27,6 +27,8 @@ class GreetingQueue
 	{
 		// Register CPT.
 		add_action('init', [$this, 'registerPostType']);
+		// Custom Post Status
+		add_action('init', [$this, 'registerPostStatus']);
 		// CPT Custom Columns.
 		add_filter('manage_greeting_queue_posts_columns', [$this, 'columns']);
 		add_action('manage_greeting_queue_posts_custom_column', [$this, 'customColumn'], 10, 2);
@@ -39,7 +41,7 @@ class GreetingQueue
 		//add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
 		//add_filter('bulk_actions-edit-greeting_queue', [$this, 'bulkActions']);
 		// List Views
-		//add_filter('views_edit-greeting_queue', [$this, 'views']);
+		add_filter('views_edit-greeting_queue', [$this, 'views']);
 	}
 
 	public function registerPostType()
@@ -88,6 +90,39 @@ class GreetingQueue
 		register_post_type(self::$postType, $args);
 	}
 
+	public function registerPostStatus()
+	{
+		register_post_status('mail_queue_queued', [
+			'label'                     => _x('Queued', 'Mail Queue Status', 'rrze-greetings'),
+			'public'                    => true,
+			'private'                   => false,
+			'exclude_from_search'       => true,
+			'show_in_admin_all_list'    => true,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop('Queued <span class="count">(%s)</span>', 'Queued <span class="count">(%s)</span>', 'rrze-greetings')
+		]);
+
+		register_post_status('mail_queue_sent', [
+			'label'                     => _x('Sent', 'Mail Queue Status', 'rrze-greetings'),
+			'public'                    => true,
+			'private'                   => false,
+			'exclude_from_search'       => true,
+			'show_in_admin_all_list'    => true,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop('Sent <span class="count">(%s)</span>', 'Sent <span class="count">(%s)</span>', 'rrze-greetings')
+		]);
+
+		register_post_status('mail_queue_error', [
+			'label'                     => _x('Error', 'Mail Queue Status', 'rrze-greetings'),
+			'public'                    => true,
+			'private'                   => false,
+			'exclude_from_search'       => true,
+			'show_in_admin_all_list'    => true,
+			'show_in_admin_status_list' => true,
+			'label_count'               => _n_noop('Error <span class="count">(%s)</span>', 'Error <span class="count">(%s)</span>', 'rrze-greetings')
+		]);
+	}
+
 	public static function getData(int $postId): array
 	{
 		$data = [];
@@ -99,33 +134,32 @@ class GreetingQueue
 
 		$data['id'] = $post->ID;
 
-        $sendDateGmt = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date_gmt', true));
-        $data['send_date_gmt'] = date('Y-m-d H:i:s', $sendDateGmt);
-        $sendDate = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date', true));
-        $data['send_date'] = date('Y-m-d H:i:s', $sendDate);
-        $data['send_date_format'] = sprintf(
-            __('%1$s at %2$s'),
-            Functions::dateFormat(__('Y/m/d'), $sendDate),
-            Functions::timeFormat(__('g:i a'), $sendDate)
-        );
-		
+		$sendDateGmt = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date_gmt', true));
+		$data['send_date_gmt'] = date('Y-m-d H:i:s', $sendDateGmt);
+		$sendDate = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date', true));
+		$data['send_date'] = date('Y-m-d H:i:s', $sendDate);
+		$data['send_date_format'] = sprintf(
+			__('%1$s at %2$s'),
+			Functions::dateFormat(__('Y/m/d'), $sendDate),
+			Functions::timeFormat(__('g:i a'), $sendDate)
+		);
+
 		$data['post_date_gmt'] = $post->post_date_gmt;
 		$data['post_date'] = $post->post_date;
-        $data['post_date_format'] = sprintf(
-            __('%1$s at %2$s'),
-            get_the_time(__('Y/m/d'), $post),
-            get_the_time(__('g:i a'), $post)
+		$data['post_date_format'] = sprintf(
+			__('%1$s at %2$s'),
+			get_the_time(__('Y/m/d'), $post),
+			get_the_time(__('g:i a'), $post)
 		);
-		
-		$data['post_status'] = $post->post_status;
 
-		$data['greeting_link'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_link', true);
+		$data['status'] = $post->post_status;
 		$data['subject'] = $post->post_title;
-		$data['send_date'] = get_post_meta($post->ID, 'rrze_greetings_queue_send_date', true);
+
+		$data['greeting_link'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
+		$data['send_date_gmt'] = get_post_meta($post->ID, 'rrze_greetings_queue_send_date_gmt', true);
 		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
-		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_status', true);
+		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
 		$data['retries'] = get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
-		$data['status'] = get_post_meta($post->ID, 'rrze_greetings_queue_status', true);
 
 		return $data;
 	}
@@ -135,7 +169,7 @@ class GreetingQueue
 		$columns = [
 			'cb' => $columns['cb'],
 			'subject' => __('Subject', 'rrze-greetings'),
-			'send_date' => __('Send Date', 'rrze-greetings'),
+			'send_date_gmt' => __('Send Date', 'rrze-greetings'),
 			'from' => __('From', 'rrze-greetings'),
 			'to' => __('To', 'rrze-greetings'),
 			'retries' => __('Retries', 'rrze-greetings'),
@@ -152,20 +186,21 @@ class GreetingQueue
 			case 'subject':
 				echo $data['subject'];
 				break;
-			case 'send_data':
-				echo '&mdash;';
+			case 'send_date_gmt':
+				echo get_date_from_gmt(date('Y-m-d H:i:s', $data['send_date_gmt']));
 				break;
 			case 'from':
-				echo '&mdash;';
-				break;				
+				echo esc_attr($data['from']);
+				break;
 			case 'to':
-				echo '&mdash;';
+				echo $data['to'];
 				break;
 			case 'retries':
-				echo '&mdash;';
+				echo $data['retries'];
 				break;
 			case 'status':
-				echo '&mdash;';
+				$status = get_post_stati(['show_in_admin_status_list' => true], 'objects');
+				echo $status[$data['status']]->label;
 				break;
 			default:
 				echo '&mdash;';
@@ -201,10 +236,13 @@ class GreetingQueue
 	{
 		return [];
 	}
-		
+
 	public function views($views)
 	{
-		return [];
+		if (isset($views['mine'])) {
+			unset($views['mine']);
+		}
+		return $views;
 	}
 
 	public function removeMonthsDropdown($months, $postType)
