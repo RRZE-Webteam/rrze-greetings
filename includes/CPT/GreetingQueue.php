@@ -35,6 +35,11 @@ class GreetingQueue
 		add_filter('months_dropdown_results', [$this, 'removeMonthsDropdown'], 10, 2);
 		add_action('restrict_manage_posts', [$this, 'applyFilters']);
 		add_filter('parse_query', [$this, 'filterQuery']);
+		// List Actions
+		//add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
+		//add_filter('bulk_actions-edit-greeting_queue', [$this, 'bulkActions']);
+		// List Views
+		//add_filter('views_edit-greeting_queue', [$this, 'views']);
 	}
 
 	public function registerPostType()
@@ -112,8 +117,15 @@ class GreetingQueue
             get_the_time(__('g:i a'), $post)
 		);
 		
-		$data['status'] = get_post_meta($post->ID, 'rrze_greetings_queue_status', true);
 		$data['post_status'] = $post->post_status;
+
+		$data['greeting_link'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_link', true);
+		$data['subject'] = $post->post_title;
+		$data['send_date'] = get_post_meta($post->ID, 'rrze_greetings_queue_send_date', true);
+		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
+		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_status', true);
+		$data['retries'] = get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
+		$data['status'] = get_post_meta($post->ID, 'rrze_greetings_queue_status', true);
 
 		return $data;
 	}
@@ -122,10 +134,10 @@ class GreetingQueue
 	{
 		$columns = [
 			'cb' => $columns['cb'],
-			'greeting' => __('Greeting', 'rrze-greetings'),
-			'send_date' => __('Send Date', 'rrze-greetings'),
-			'to' => __('To', 'rrze-greetings'),
 			'subject' => __('Subject', 'rrze-greetings'),
+			'send_date' => __('Send Date', 'rrze-greetings'),
+			'from' => __('From', 'rrze-greetings'),
+			'to' => __('To', 'rrze-greetings'),
 			'retries' => __('Retries', 'rrze-greetings'),
 			'status' => __('Status', 'rrze-greetings')
 		];
@@ -137,16 +149,16 @@ class GreetingQueue
 		$data = self::getData($postId);
 
 		switch ($column) {
-			case 'greeting':
-				echo '&mdash;';
+			case 'subject':
+				echo $data['subject'];
 				break;
 			case 'send_data':
 				echo '&mdash;';
 				break;
-			case 'to':
+			case 'from':
 				echo '&mdash;';
-				break;
-			case 'subject':
+				break;				
+			case 'to':
 				echo '&mdash;';
 				break;
 			case 'retries':
@@ -165,9 +177,34 @@ class GreetingQueue
 		$columns = [
 			'send_date' => 'send_date',
 			'to' => 'send_date',
-			'subject' => 'subbject'
+			'subject' => 'subject'
 		];
 		return $columns;
+	}
+
+	/**
+	 * Filters the array of row action links on the Greetings list table.
+	 * The filter is evaluated only for non-hierarchical post types.
+	 * @param array $actions An array of row action links.
+	 * @param object $post \WP_Post The post object.
+	 * @return array $actions
+	 */
+	public function rowActions(array $actions, \WP_Post $post): array
+	{
+		if ($post->post_type != 'greeting_queue' || $post->post_status != 'publish') {
+			return $actions;
+		}
+		return [];
+	}
+
+	public function bulkActions($actions)
+	{
+		return [];
+	}
+		
+	public function views($views)
+	{
+		return [];
 	}
 
 	public function removeMonthsDropdown($months, $postType)
