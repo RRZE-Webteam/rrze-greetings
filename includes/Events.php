@@ -70,6 +70,8 @@ class Events
             ];
 
             $args = [
+                'post_date' => $data['send_date'],
+                'post_date_gmt' => $data['send_date_gmt'],
                 'post_title' => $subject,
                 'post_content' => str_replace($search, site_url($unsubscribeUri), $message),
                 'post_excerpt' => str_replace($search, site_url($unsubscribeUri), $altMessage),
@@ -82,7 +84,6 @@ class Events
             if ($qId != 0 || !is_wp_error($qId)) {
                 add_post_meta($qId, 'rrze_greetings_queue_greeting_id', $postId, true);
                 add_post_meta($qId, 'rrze_greetings_queue_greeting_url', Greeting::getPostUrl($postId), true);
-                add_post_meta($qId, 'rrze_greetings_queue_send_date_gmt', strtotime($data['send_date_gmt']), true);
                 add_post_meta($qId, 'rrze_greetings_queue_from', $data['from'], true);
                 add_post_meta($qId, 'rrze_greetings_queue_to', $email, true);
                 add_post_meta($qId, 'rrze_greetings_queue_retries', 0, true);
