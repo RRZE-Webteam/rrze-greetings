@@ -51,8 +51,7 @@ class Template
      */
     protected function getTemplate($template)
     {
-        $extension = pathinfo($template, PATHINFO_EXTENSION) ? '' : '.html';
-        $templateFile = sprintf('%s%s%s', plugin()->getDirectory(), $template, $extension);
+        $templateFile = sprintf('%s%s', plugin()->getDirectory(), $template);       
         return is_readable($templateFile) ? $templateFile : '';
     }
 }
