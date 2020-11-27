@@ -38,7 +38,7 @@ class Functions
             $str = $path->__toString();
             $key = substr($str, strpos($str, $needle));
             if (in_array($path->getExtension(), $ext)) {
-                $files[$key] = rtrim($path->getFilename(), '.' . $path->getExtension());
+                $files[$key] = str_replace('.' . $path->getExtension(), '', $path->getFilename());
             }
         }
         return $files;
@@ -55,21 +55,27 @@ class Functions
         return $rgb;
     }
 
-    public static function filterText($value)
+    public static function crypt(string $string, string $action = 'encrypt')
     {
-        $allowedHtml = [
-            'a' => [
-                'href' => [],
-                'title' => [],
-                'style' => []
-            ],
-            'br' => [],
-            'em' => [],
-            'strong' => [],
-            'p' => []
-        ];
+        $secretKey = AUTH_KEY;
+        $secretSalt = AUTH_SALT;
 
-        return wp_kses($value, $allowedHtml);
+        $output = false;
+        $encryptMethod = 'AES-256-CBC';
+        $key = hash('sha256', $secretKey);
+        $salt = substr(hash('sha256', $secretSalt), 0, 16);
+
+        if ($action == 'encrypt') {
+            $output = base64_encode(openssl_encrypt($string, $encryptMethod, $key, 0, $salt));
+        } else if ($action == 'decrypt') {
+            $output = openssl_decrypt(base64_decode($string), $encryptMethod, $key, 0, $salt);
+        }
+
+        return $output;
+    }
+
+    public static function decrypt(string $string)
+    {
+        return self::crypt($string, 'decrypt');
     }    
-
 }
