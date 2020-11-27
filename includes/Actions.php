@@ -41,11 +41,15 @@ class Actions
 			$transientData = new TransientData('rrze_greetings_errors');
 			switch ($action) {
 				case 'send':
-					update_post_meta($postId, 'rrze_greetings_status', 'send');
-					$transientData->addData('success', __('Greetings mails have been sent to the mail queue.', 'rrze-greetings'));
+					if (!Events::mailQueueExists($postId)) {
+						update_post_meta($postId, 'rrze_greetings_status', 'send');
+						$transientData->addData('success', __('Greetings emails have been sent to the mail queue.', 'rrze-greetings'));	
+					} else {
+						$transientData->addData('error', __('Unable to send the emails.', 'rrze-greetings'));
+					}					
 					break;
 				case 'cancel':
-					if (empty(Events::getQueuedGreetingQueued($postId))) {
+					if (!Events::mailQueueExists($postId)) {
 						delete_post_meta($postId, 'rrze_greetings_status');
 						$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));	
 					} else {
@@ -53,11 +57,15 @@ class Actions
 					}
 					break;
 				case 'restore':
-					delete_post_meta($postId, 'rrze_greetings_status');
-					$transientData->addData('success', __('It has been changed to the default state.', 'rrze-greetings'));
+					if (!Events::mailQueueExists($postId)) {
+						delete_post_meta($postId, 'rrze_greetings_status');
+						$transientData->addData('success', __('It has been changed to the default status.', 'rrze-greetings'));
+					} else {
+						$transientData->addData('error', __('Unable to restore the default status.', 'rrze-greetings'));
+					}					
 					break;					
 				default:
-					//				
+					$transientData->addData('error', __('The action could not be executed.', 'rrze-greetings'));				
 			}
 
 			wp_redirect(get_admin_url() . 'edit.php?post_type=greeting');
