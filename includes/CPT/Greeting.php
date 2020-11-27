@@ -213,14 +213,22 @@ class Greeting
         if (!isset($_POST['rrze_greetings_mail_list'])) {
             return;
         }
-        $mailList = sanitize_textarea_field($_POST['rrze_greetings_mail_list']);
+        $mailListStr = sanitize_textarea_field($_POST['rrze_greetings_mail_list']);
 
-        // @todo email address validation
+        $mailList = [];
+        $emails = explode(PHP_EOL, $mailListStr);
+        foreach ($emails as $email) {
+            $email = trim($email);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+            $mailList[] = $email;
+        }
 
         update_term_meta(
             $termId,
             'rrze_greetings_mail_list',
-            $mailList
+            implode(PHP_EOL, $mailList)
         );
     }
 
