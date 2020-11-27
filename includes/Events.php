@@ -25,14 +25,14 @@ class Events
         //
     }
 
-    public static function handleQueuedStatus()
+    public static function handleStatus()
     {
         $posts = self::getQueuedGreeting('queued');
         if (empty($posts)) {
             return;
         }
         foreach ($posts as $postId) {
-            if (empty(self::getQueuedGreetingQueued($postId))) {
+            if (!self::mailQueueExists($postId)) {
                 update_post_meta($postId, 'rrze_greetings_status', 'sent');
             }
         }
@@ -119,7 +119,12 @@ class Events
         return get_posts($args);
     }
 
-    public static function getQueuedGreetingQueued(int $greetingId): array
+    /**
+     * Checks whether a mail queue exists.
+     * @param integer $postId
+     * @return boolean
+     */
+    public static function mailQueueExists(int $postId): bool
     {
         $args = [
             'fields'            => 'ids',
@@ -127,10 +132,10 @@ class Events
             'post_status'       => 'mail_queue_queued',
             'meta_query'        => [
                 'key'       => 'rrze_greetings_queue_greeting_id',
-                'value'     => $greetingId,
+                'value'     => $postId,
                 'compare'   => '='
             ]
         ];
-        return get_posts($args);
+        return !empty(get_posts($args));
     }
 }
