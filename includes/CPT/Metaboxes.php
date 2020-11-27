@@ -75,7 +75,7 @@ class Metaboxes
                 'required' => 'required'
             ],
             'show_on_cb' => [$this, 'showIfTemplate'],
-            'sanitization_cb' => 'sanitize_textarea_field'
+            'sanitization_cb' => [$this, 'filterText']
         ));
 
         $cmb->add_field(array(
@@ -98,19 +98,7 @@ class Metaboxes
             'show_on_cb' => [$this, 'showIfTemplate'],
             'preview_size' => 'medium'
         ));
-
-        $cmb->add_field(array(
-            'id' => 'rrze_greetings_footer',
-            'name' => __('Footer', 'rrze-greetings'),
-            'desc' => __('Footer text containing the unsubscribe link.', 'rrze-greetings'),
-            'type' => 'textarea',
-            'attributes' => [
-                'rows' => '3',
-                'required' => 'required'
-            ],
-            'show_on_cb' => [$this, 'showIfTemplate'],
-            'sanitization_cb' => [$this, 'filterText']
-        ));
+      
     }
 
     protected function imageSettings()
@@ -257,6 +245,7 @@ class Metaboxes
                 ),
                 'required' => 'required',
             ],
+            'escape_cb' => [$this, 'escapeSendDate']
         ]);
 
         $cmb->add_field([
@@ -304,8 +293,7 @@ class Metaboxes
                     return in_array($cmb->args['_id'], [
                         'rrze_greetings_title',
                         'rrze_greetings_post_content',
-                        'rrze_greetings_logo',
-                        'rrze_greetings_footer'
+                        'rrze_greetings_logo'
                     ]);
                 default:
                     return false;
@@ -329,7 +317,26 @@ class Metaboxes
 
     public function filterText($value, $field_args, $field)
     {
-        return Functions::filterText($value);
+        $allowedHtml = [
+            'a' => [
+                'href' => [],
+                'title' => [],
+                'style' => []
+            ],
+            'br' => [],
+            'em' => [],
+            'strong' => [],
+            'p' => []
+        ];
+
+        return wp_kses($value, $allowedHtml);
+    }
+    
+    public function escapeSendDate($value, $field_args, $field)
+    {
+        $gmtDate = get_gmt_from_date(date('Y-m-d H:i:s', $value));
+        update_post_meta($field->object_id, 'rrze_greetings_send_date_gmt', strtotime($gmtDate));
+        return $value;
     }
 
     public function cardImage()
@@ -435,19 +442,38 @@ class Metaboxes
         $title = (string) get_post_meta($postId, 'rrze_greetings_title', true);
         $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
         $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
-        $footer = (string) get_post_meta($postId, 'rrze_greetings_footer', true);
+        $unsubscribeText = __('Unsubscribe from this newsletter', 'rrze-greetings');
+        $unsubscribeUrl = '(=unsubscribe_url)';
+        $siteName = get_bloginfo('name') ? get_bloginfo('name') : parse_url(site_url(), PHP_URL_HOST);
+        $siteUrl = site_url();
 
-        $data = [
+        $htmlData = [
             'title' => $title,
             'content' => wpautop($content),
             'logo' => $logo,
-            'footer' => $footer
+            'unsubscribe_text' => $unsubscribeText,
+            'unsubscribe_url' => $unsubscribeUrl,
+            'site_name' => $siteName,
+            'site_url' => $siteUrl
         ];
-        $template = get_post_meta($postId, 'rrze_greetings_card_template', true);
-        $content = $this->template->getContent($template, $data);
+        $htmlTemplate = get_post_meta($postId, 'rrze_greetings_card_template', true);
+        $htmlContent = $this->template->getContent($htmlTemplate, $htmlData);
+
+        $textData = [
+            'title' => $title,
+            'content' => wp_kses($content, []),
+            'unsubscribe_text' => $unsubscribeText,
+            'unsubscribe_url' => $unsubscribeUrl,
+            'site_name' => $siteName,
+            'site_url' => $siteUrl
+        ];
+        $textTemplate = str_replace('.' . pathinfo($htmlTemplate, PATHINFO_EXTENSION), '.txt', $htmlTemplate);
+        $textContent = $this->template->getContent($textTemplate, $textData);
+
         $args = [
             'ID' => $postId,
-            'post_content' => $content,
+            'post_content' => $htmlContent,
+            'post_excerpt' => $textContent,
             'post_name' => md5($postId)
         ];
         wp_update_post($args);
