@@ -78,6 +78,10 @@ class Greeting
         // List Actions
         add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
         add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);
+        // Custom Post Links
+		add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
+		add_filter('post_type_link', [$this, 'postLink'], 10, 2);
+
     }
 
     public function registerPostType()
@@ -286,6 +290,10 @@ class Greeting
         $data['categories'] = self::getTermsList($post->ID, self::$categoryTaxonomy);
         $data['mail_lists'] = self::getTermsList($post->ID, self::$mailListTaxonomy);
 
+        $fromName = get_post_meta($post->ID, 'rrze_greetings_from_name', true);
+        $fromEmail = get_post_meta($post->ID, 'rrze_greetings_from_email_address', true);
+        $data['from'] = sprintf('%s <%s>', $fromName, $fromEmail);
+
         $data['status'] = get_post_meta($post->ID, 'rrze_greetings_status', true);
         $data['post_status'] = $post->post_status;
 
@@ -354,26 +362,34 @@ class Greeting
                     $nonce = wp_create_nonce('rrze_greetings_action');
 
                     if ($status == 'send') {
-                        $sendButton = '<button class="button button-secondary" disabled>' . _x('Send', 'Greeting', 'rrze-greetings') . '</button>';
+                        $sendButton = '<button class="button button-secondary" disabled>' . _x('Send', 'Greeting action button', 'rrze-greetings') . '</button>';
                         $cancelButton = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=cancel&nonce=%s" class="button button-secondary" data-id="%1$d">%s</a>',
                             self::$postType,
                             $data['id'],
                             $nonce,
-                            _x('Cancel', 'Greeting', 'rrze-greetings')
+                            _x('Cancel', 'Greeting action button', 'rrze-greetings')
                         );
                         $button = $sendButton . $cancelButton;
                     } elseif ($status == 'queued') {
-                        $button = '<button class="button button-primary" disabled>' . _x('Queued', 'Greeting', 'rrze-greetings') . '</button>';
+                        $button = '<button class="button button-primary" disabled>' . _x('Queued', 'Greeting action button', 'rrze-greetings') . '</button>';
                     } elseif ($status == 'sent') {
-                        $button = '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting', 'rrze-greetings') . '</button>';
+                        $sendButton = '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting action button', 'rrze-greetings') . '</button>';
+                        $restoreButton = sprintf(
+                            '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=restore&nonce=%s" class="button button-secondary" data-id="%1$d">%s</a>',
+                            self::$postType,
+                            $data['id'],
+                            $nonce,
+                            _x('Restore', 'Greeting action button', 'rrze-greetings')
+                        ); 
+                        $button = $sendButton . $restoreButton;                       
                     } else {
                         $button = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=send&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
                             self::$postType,
                             $data['id'],
                             $nonce,
-                            _x('Send', 'Greeting', 'rrze-greetings')
+                            _x('Send', 'Greeting action button', 'rrze-greetings')
                         );
                     }
                     echo $button;
@@ -494,5 +510,38 @@ class Greeting
     public function filterQuery($query)
     {
         // @todo
+    }
+
+	public function previewLink(string $url, \WP_Post $post): string
+	{
+		if ($post->post_type == 'greeting') {
+            $url = self::getPreviewUrl($post->ID);
+		}
+		return $url;
+	}
+
+	public function postLink(string $url, \WP_Post $post): string
+	{
+		if ($post->post_type == 'greeting') {
+            return self::getPostUrl($post->ID);
+		}
+		return $url;
+    }
+    
+    public static function getPreviewUrl($postId)
+    {
+        return sprintf(
+            '/greetings-card/?id=%d&nonce=%s',
+            $postId,
+            wp_create_nonce('greetings-card-preview')
+        );
+    }
+
+    public static function getPostUrl($postId)
+    {
+        return sprintf(
+            '/greetings-card/%d',
+            $postId
+        );
     }
 }
