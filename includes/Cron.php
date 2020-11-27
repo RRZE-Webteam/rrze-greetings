@@ -34,7 +34,7 @@ class Cron
     {
         $schedules['rrze_greetings_every10minutes'] = [
             'interval' => 10 * MINUTE_IN_SECONDS,
-            'display' => __('Every two minutes', 'rrze-post-expiration')
+            'display' => __('Every 10 minutes', 'rrze-greetings')
         ];
         return $schedules;
     }
@@ -56,7 +56,8 @@ class Cron
      */
     public function every10MinutesEvent()
     {
-        // @todo
+        Events::mailQueue();
+        Events::mailSend();
     }
 
     public static function clearSchedule()
