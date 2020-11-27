@@ -34,7 +34,11 @@ class Main
 
         // Actions
         $actions = new Actions;
-        $actions->onLoaded();       
+        $actions->onLoaded();    
+        
+        // Cron
+        $actions = new Cron;
+        $actions->onLoaded();         
 
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
