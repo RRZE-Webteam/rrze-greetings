@@ -15,37 +15,11 @@ class Actions
 
 	public function onLoaded()
 	{
-		add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
-		add_filter('post_type_link', [$this, 'postLink'], 10, 2);
-
 		add_action('wp', [$this, 'buttonActions']);
 
 		add_action('admin_notices', [$this, 'adminNotices']);
 
 		add_action('template_redirect', [$this, 'redirectTemplate']);
-	}
-
-	public function previewLink(string $url, \WP_Post $post): string
-	{
-		if ($post->post_type == 'greeting') {
-			$url = sprintf(
-				'/greetings-card/?id=%d&nonce=%s',
-				$post->ID,
-				wp_create_nonce('greetings-card-preview')
-			);
-		}
-		return $url;
-	}
-
-	public function postLink(string $url, \WP_Post $post): string
-	{
-		if ($post->post_type == 'greeting') {
-			$url = sprintf(
-				'/greetings-card/%d',
-				$post->ID
-			);
-		}
-		return $url;
 	}
 
 	public function buttonActions()
@@ -71,9 +45,17 @@ class Actions
 					$transientData->addData('success', __('Greetings mails have been sent to the mail queue.', 'rrze-greetings'));
 					break;
 				case 'cancel':
-					delete_post_meta($postId, 'rrze_greetings_status');
-					$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));
+					if (empty(Events::getQueuedGreetingQueued($postId))) {
+						delete_post_meta($postId, 'rrze_greetings_status');
+						$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));	
+					} else {
+						$transientData->addData('error', __('Unable to cancel the sending of emails.', 'rrze-greetings'));
+					}
 					break;
+				case 'restore':
+					delete_post_meta($postId, 'rrze_greetings_status');
+					$transientData->addData('success', __('It has been changed to the default state.', 'rrze-greetings'));
+					break;					
 				default:
 					//				
 			}
