@@ -10,41 +10,32 @@ class Events
 {
     public static function mailQueue()
     {
-        $args = [
-            'fields'            => 'ids',
-            'post_type'         => 'greeting',
-            'post_status'       => 'publish',
-            'nopaging'          => true,
-            'meta_query'        => [
-                'relation'      => 'AND',
-                'status_clause' => [
-                    'key'       => 'rrze_greetings_status',
-                    'value'     => 'send',
-                    'compare'   => '='
-                ],
-                //'send_clause' => [
-                //    'key'       => 'rrze_greetings_send_date_gmt',
-                //    'value'     => time(),
-                //    'compare'   => '<',
-                //    'type' => 'numeric'
-                //]
-            ]            
-        ];
-        $query = new \WP_Query($args);
-
-        if ($query->have_posts()) {
-            while ($query->have_posts()) {
-                $query->the_post();
-                $data = Greeting::getData(get_the_ID());
-                self::sendToMailQueue($data);
-            }
-            wp_reset_postdata();
+        $gPosts = self::getQueuedGreeting('send');
+        if (empty($gPosts)) {
+            return;
+        }
+        foreach ($gPosts as $postId) {
+            $data = Greeting::getData($postId);
+            self::sendToMailQueue($data);
         }
     }
 
     public static function mailSend()
     {
         //
+    }
+
+    public static function handleQueuedStatus()
+    {
+        $posts = self::getQueuedGreeting('queued');
+        if (empty($posts)) {
+            return;
+        }
+        foreach ($posts as $postId) {
+            if (empty(self::getQueuedGreetingQueued($postId))) {
+                update_post_meta($postId, 'rrze_greetings_status', 'sent');
+            }
+        }
     }
 
     protected static function sendToMailQueue(array $data)
@@ -83,17 +74,63 @@ class Events
                 'post_content' => str_replace($search, site_url($unsubscribeUri), $message),
                 'post_excerpt' => str_replace($search, site_url($unsubscribeUri), $altMessage),
                 'post_type' => 'greeting_queue',
-                'post_status' => 'publish',
+                'post_status' => 'mail_queue_queued',
                 'post_author' => 1
             ];
 
             $qId = wp_insert_post($args);
             if ($qId != 0 || !is_wp_error($qId)) {
+                add_post_meta($qId, 'rrze_greetings_queue_greeting_id', $postId, true);
+                add_post_meta($qId, 'rrze_greetings_queue_greeting_url', Greeting::getPostUrl($postId), true);
+                add_post_meta($qId, 'rrze_greetings_queue_send_date_gmt', strtotime($data['send_date_gmt']), true);
+                add_post_meta($qId, 'rrze_greetings_queue_from', $data['from'], true);
+                add_post_meta($qId, 'rrze_greetings_queue_to', $email, true);
+                add_post_meta($qId, 'rrze_greetings_queue_retries', 0, true);
                 $queued = true;
             }
         }
         if ($queued) {
             update_post_meta($postId, 'rrze_greetings_status', 'queued');
         }
+    }
+
+    public static function getQueuedGreeting(string $status): array
+    {
+        $args = [
+            'fields'            => 'ids',
+            'post_type'         => 'greeting',
+            'post_status'       => 'publish',
+            'nopaging'          => true,
+            'meta_query'        => [
+                'relation'      => 'AND',
+                'status_clause' => [
+                    'key'       => 'rrze_greetings_status',
+                    'value'     => $status,
+                    'compare'   => '='
+                ],
+                //'send_clause' => [
+                //    'key'       => 'rrze_greetings_send_date_gmt',
+                //    'value'     => time(),
+                //    'compare'   => '<',
+                //    'type' => 'numeric'
+                //]
+            ]
+        ];
+        return get_posts($args);
+    }
+
+    public static function getQueuedGreetingQueued(int $greetingId): array
+    {
+        $args = [
+            'fields'            => 'ids',
+            'post_type'         => 'greeting_queue',
+            'post_status'       => 'mail_queue_queued',
+            'meta_query'        => [
+                'key'       => 'rrze_greetings_queue_greeting_id',
+                'value'     => $greetingId,
+                'compare'   => '='
+            ]
+        ];
+        return get_posts($args);
     }
 }
