@@ -71,6 +71,9 @@ class Greeting
         add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
         add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
+		// List Actions
+		add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
+		add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);	        
     }
 
     public function registerPostType()
@@ -242,10 +245,14 @@ class Greeting
             get_the_time(__('g:i a'), $post)
         );
 
+        $data['title'] = $post->post_title;
+        $data['content'] = $post->post_content;
+        $data['excerpt'] = $post->post_excerpt;
+
         $data['categories'] = self::getTermsList($post->ID, self::$categoryTaxonomy);
         $data['mail_lists'] = self::getTermsList($post->ID, self::$mailListTaxonomy);
 
-        $data['status'] = get_post_meta($post->ID, 'rrze_greeting_status', true);
+        $data['status'] = get_post_meta($post->ID, 'rrze_greetings_status', true);
         $data['post_status'] = $post->post_status;
 
         return $data;
@@ -312,17 +319,8 @@ class Greeting
                 if ($publish) {
                     $nonce = wp_create_nonce('rrze_greetings_action');
 
-                    if ($status == 'cancelled') {
-                        $cancelledButton = '<button class="button button-secondary" disabled>' . _x('Cancelled', 'Greeting', 'rrze-greetings') . '</button>';
-                        $restoreButton = sprintf(
-                            '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=restore&nonce=%s" class="button">%s</a>',
-                            self::$postType,
-                            $data['id'],
-                            $nonce,
-                            _x('Restore', 'Greeting', 'rrze-greetings')
-                        );
-                        $button = $cancelledButton . $restoreButton;
-                    } else {
+                    if ($status == 'send') {
+                        $sendButton = '<button class="button button-secondary" disabled>' . _x('Send', 'Greeting', 'rrze-greetings') . '</button>';
                         $cancelButton = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=cancel&nonce=%s" class="button button-secondary" data-id="%1$d">%s</a>',
                             self::$postType,
@@ -330,17 +328,19 @@ class Greeting
                             $nonce,
                             _x('Cancel', 'Greeting', 'rrze-greetings')
                         );
-                        if ($status == 'sent') {
-                            $button = $cancelButton . '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting', 'rrze-greetings') . '</button>';
-                        } else {
-                            $button = $cancelButton . sprintf(
-                                '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=confirm&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
-                                self::$postType,
-                                $data['id'],
-                                $nonce,
-                                _x('Send', 'Greeting', 'rrze-greetings')
-                            );
-                        }
+                        $button = $sendButton . $cancelButton;
+                    } elseif ($status == 'queued') {
+                        $button = '<button class="button button-primary" disabled>' . _x('Queued', 'Greeting', 'rrze-greetings') . '</button>';
+                    } elseif ($status == 'sent') {
+                        $button = '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting', 'rrze-greetings') . '</button>';
+                    } else {
+                        $button = sprintf(
+                            '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=send&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
+                            self::$postType,
+                            $data['id'],
+                            $nonce,
+                            _x('Send', 'Greeting', 'rrze-greetings')
+                        );
                     }
                     echo $button;
                 } else {
@@ -352,6 +352,98 @@ class Greeting
         }
     }
 
+	/**
+	 * Filters the array of row action links on the Greetings list table.
+	 * The filter is evaluated only for non-hierarchical post types.
+	 * @param array $actions An array of row action links.
+	 * @param object $post \WP_Post The post object.
+	 * @return array $actions
+	 */
+	public function rowActions(array $actions, \WP_Post $post): array
+	{
+		if ($post->post_type != 'greeting' || $post->post_status != 'publish') {
+			return $actions;
+		}
+
+		$actions = [];
+		$title = _draft_or_post_title();
+		$status = get_post_meta($post->ID, 'rrze_greetings_status', true);
+		$isQueued = in_array($status, ['send', 'queued']);
+		$canEdit = current_user_can('edit_post', $post->ID);
+		$canDelete = current_user_can('delete_post', $post->ID);
+
+		if (!$isQueued && $canEdit) {
+			$actions['edit'] = sprintf(
+				'<a href="%s" aria-label="%s">%s</a>',
+				get_edit_post_link($post->ID),
+				/* translators: %s: Post title. */
+				esc_attr(sprintf(__('Edit &#8220;%s&#8221;'), $title)),
+				__('Edit')
+			);
+		}
+
+		if (!$isQueued && $canDelete) {
+			if (EMPTY_TRASH_DAYS) {
+				$actions['trash'] = sprintf(
+					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+					get_delete_post_link($post->ID),
+					/* translators: %s: Post title. */
+					esc_attr(sprintf(__('Move &#8220;%s&#8221; to the Trash'), $title)),
+					_x('Delete', 'Booking', 'rrze-rsvp')
+				);
+			} else {
+				$actions['delete'] = sprintf(
+					'<a href="%s" class="submitdelete" aria-label="%s">%s</a>',
+					get_delete_post_link($post->ID, '', true),
+					/* translators: %s: Post title. */
+					esc_attr(sprintf(__('Delete &#8220;%s&#8221; permanently'), $title)),
+					__('Delete Permanently')
+				);
+			}
+		}
+
+		$actions['view'] = sprintf(
+			'<a href="%s" rel="bookmark" aria-label="%s">%s</a>',
+			get_permalink($post->ID),
+			/* translators: %s: Post title. */
+			esc_attr(sprintf(__('View &#8220;%s&#8221;'), $title)),
+			__('View')
+		);
+
+		return $actions;
+	}
+
+	public function bulkActionsHandler($redirectTo, $doaction, $postIds)
+	{
+		switch ($doaction) {
+			case 'edit':
+				foreach ((array) $postIds as $key => $postId) {
+					$post = get_post($postId);
+                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
+                    $isQueued = in_array($status, ['send', 'queued']);
+					if ($post->post_status == 'publish' && $isQueued) {
+						unset($postIds[$key]);
+						continue;
+					}
+				}
+				break;
+			case 'trash':
+				foreach ((array) $postIds as $key => $postId) {
+					$post = get_post($postId);
+                    $status = get_post_meta($postId, 'rrze_greetings_status', true);
+                    $isQueued = in_array($status, ['send', 'queued']);
+					if ($post->post_status == 'publish' && $isQueued) {
+						unset($postIds[$key]);
+						continue;
+					}
+				}
+				break;
+			default:
+				//
+		}
+		return $redirectTo;
+    }
+        
     public function removeMonthsDropdown($months, $postType)
     {
         if ($postType == self::$postType) {
