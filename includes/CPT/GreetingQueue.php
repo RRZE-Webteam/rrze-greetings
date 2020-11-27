@@ -134,18 +134,8 @@ class GreetingQueue
 
 		$data['id'] = $post->ID;
 
-		$sendDateGmt = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date_gmt', true));
-		$data['send_date_gmt'] = date('Y-m-d H:i:s', $sendDateGmt);
-		$sendDate = absint(get_post_meta($post->ID, 'rrze_greetings_queue_send_date', true));
-		$data['send_date'] = date('Y-m-d H:i:s', $sendDate);
-		$data['send_date_format'] = sprintf(
-			__('%1$s at %2$s'),
-			Functions::dateFormat(__('Y/m/d'), $sendDate),
-			Functions::timeFormat(__('g:i a'), $sendDate)
-		);
-
-		$data['post_date_gmt'] = $post->post_date_gmt;
-		$data['post_date'] = $post->post_date;
+		$data['send_date_gmt'] = $post->post_date_gmt;
+		$data['send_date'] = $post->post_date;
 		$data['post_date_format'] = sprintf(
 			__('%1$s at %2$s'),
 			get_the_time(__('Y/m/d'), $post),
@@ -156,7 +146,6 @@ class GreetingQueue
 		$data['subject'] = $post->post_title;
 
 		$data['greeting_link'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
-		$data['send_date_gmt'] = get_post_meta($post->ID, 'rrze_greetings_queue_send_date_gmt', true);
 		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
 		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
 		$data['retries'] = get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
@@ -169,7 +158,7 @@ class GreetingQueue
 		$columns = [
 			'cb' => $columns['cb'],
 			'subject' => __('Subject', 'rrze-greetings'),
-			'send_date_gmt' => __('Send Date', 'rrze-greetings'),
+			'send_date' => __('Send Date', 'rrze-greetings'),
 			'from' => __('From', 'rrze-greetings'),
 			'to' => __('To', 'rrze-greetings'),
 			'retries' => __('Retries', 'rrze-greetings'),
@@ -186,8 +175,8 @@ class GreetingQueue
 			case 'subject':
 				echo $data['subject'];
 				break;
-			case 'send_date_gmt':
-				echo get_date_from_gmt(date('Y-m-d H:i:s', $data['send_date_gmt']));
+			case 'send_date':
+				echo $data['send_date'];
 				break;
 			case 'from':
 				echo esc_attr($data['from']);
@@ -209,11 +198,6 @@ class GreetingQueue
 
 	public function sortableColumns($columns)
 	{
-		$columns = [
-			'send_date' => 'send_date',
-			'to' => 'send_date',
-			'subject' => 'subject'
-		];
 		return $columns;
 	}
 
