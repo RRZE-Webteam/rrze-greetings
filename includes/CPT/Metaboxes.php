@@ -420,7 +420,7 @@ class Metaboxes
     {
         $attachmentId = 0;
         $file = [];
-        $file['name'] = 'greetings-card-' . $postId . '.' . $ext;
+        $file['name'] = 'greeting-card-' . bin2hex(random_bytes(8)) . '.' . $ext;
         $file['tmp_name'] = download_url($url);
 
         if (is_wp_error($file['tmp_name'])) {
@@ -438,6 +438,8 @@ class Metaboxes
 
     protected function updatePost(int $postId, $post)
     {
+        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+        $imageUrl = $targetUrl = wp_get_attachment_image_url($cardId, 'full');
         $title = (string) get_post_meta($postId, 'rrze_greetings_title', true);
         $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
         $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
@@ -449,6 +451,7 @@ class Metaboxes
         $siteUrl = site_url();
 
         $htmlData = [
+            'image_url' => $imageUrl,
             'title' => $title,
             'content' => wpautop($content),
             'logo' => $logo,
