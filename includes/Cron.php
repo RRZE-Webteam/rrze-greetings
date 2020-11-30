@@ -7,21 +7,30 @@ defined('ABSPATH') || exit;
 class Cron
 {
     /**
+     * Options
+     * @var object
+     */
+    protected $options;
+
+    protected $events;
+
+    /**
      * __construct
      */
     public function __construct()
     {
-        //
+        $this->options = (object) Settings::getOptions();
+        $this->events = new Events;
     }
 
     /**
      * onLoaded
-     */    
+     */
     public function onLoaded()
     {
         add_action('wp', [$this, 'activateScheduledEvents']);
         add_filter('cron_schedules', [$this, 'customCronSchedules']);
-        add_action('rrze_greetings_every10minutes_event', [$this, 'every10MinutesEvent']);
+        add_action('rrze_greetings_every5minutes_event', [$this, 'every5MinutesEvent']);
     }
 
     /**
@@ -32,9 +41,9 @@ class Cron
      */
     public function customCronSchedules(array $schedules): array
     {
-        $schedules['rrze_greetings_every10minutes'] = [
-            'interval' => 10 * MINUTE_IN_SECONDS,
-            'display' => __('Every 10 minutes', 'rrze-greetings')
+        $schedules['rrze_greetings_every5minutes'] = [
+            'interval' => 5 * MINUTE_IN_SECONDS,
+            'display' => __('Every 5 minutes', 'rrze-greetings')
         ];
         return $schedules;
     }
@@ -45,24 +54,23 @@ class Cron
      */
     public function activateScheduledEvents()
     {
-        if (!wp_next_scheduled('rrze_greetings_every10minutes_event')) {
-            wp_schedule_event(time(), 'rrze_greetings_every10minutes', 'rrze_greetings_every10minutes_event');
+        if (!wp_next_scheduled('rrze_greetings_every5minutes_event')) {
+            wp_schedule_event(time(), 'rrze_greetings_every5minutes', 'rrze_greetings_every5minutes_event');
         }
     }
 
     /**
-     * every10MinutesEvent
-     * Run the event every 10 minutes.
+     * every5MinutesEvent
+     * Run the event every 5 minutes.
      */
-    public function every10MinutesEvent()
+    public function every5MinutesEvent()
     {
-        Events::mailQueue();
-        Events::mailSend();
-        Events::handleStatus();
+        $this->events->setMailQueue();
+        $this->events->processMailQueue();
     }
 
     public static function clearSchedule()
     {
-        wp_clear_scheduled_hook('rrze_greetings_every10minutes_event');
+        wp_clear_scheduled_hook('rrze_greetings_every5minutes_event');
     }
 }
