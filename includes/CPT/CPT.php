@@ -43,7 +43,7 @@ class CPT
         remove_submenu_page('edit.php?post_type=greeting', 'edit.php?post_type=greeting');
         remove_submenu_page('edit.php?post_type=greeting', 'post-new.php?post_type=greeting');
         remove_submenu_page('edit.php?post_type=greeting', 'edit-tags.php?taxonomy=greetings_category&amp;post_type=greeting');
-        remove_submenu_page('edit.php?post_type=greeting', 'edit-tags.php?taxonomy=greetings_mail_list&amp;post_type=greeting');
+        remove_submenu_page('edit.php?post_type=greeting', 'edit-tags.php?taxonomy=greetings_mailing_list&amp;post_type=greeting');
 
         $cpts = self::getAllCPT();
         $hiddenMenu = 'rrze-greetings-submenu-hidden';
@@ -77,10 +77,10 @@ class CPT
 
         add_submenu_page(
             'edit.php?post_type=greeting',
-            __('Mail Lists', 'rrze-greetings'),
-            __('Mail Lists', 'rrze-greetings'),
+            __('Mailing Lists', 'rrze-greetings'),
+            __('Mailing Lists', 'rrze-greetings'),
             'edit_greetings',
-            'edit-tags.php?taxonomy=greetings_mail_list&amp;post_type=greeting'
+            'edit-tags.php?taxonomy=greetings_mailing_list&amp;post_type=greeting'
         );
 
         global $submenu;
