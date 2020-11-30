@@ -2,6 +2,9 @@
 
 {{=content}}
 
+{{=greeting_card_notice}}
+{{=greeting_card_url}}
+
 {{=unsubscribe_text}}
 {{=unsubscribe_url}}
 
