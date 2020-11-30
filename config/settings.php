@@ -162,7 +162,7 @@ function getFields(): array
                 'placeholder'       => '',
                 'type'              => 'textarea',
                 'default'           => '',
-                'sanitize_callback' => ['\RRZE\Greetings\Functions', 'validateMailingList']
+                'sanitize_callback' => ['\RRZE\Greetings\Functions', 'sanitizeMailingList']
             ],            
         ]
     ];
