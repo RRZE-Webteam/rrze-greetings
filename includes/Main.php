@@ -32,13 +32,17 @@ class Main
         $this->cpt = new CPT;
         $this->cpt->onLoaded();
 
+        // Virtual Page        
+        $virtualPage = new VirtualPage(__('Greeting Card', 'rrze-greetings'), 'greetings-card');
+        $virtualPage->onLoaded();
+
         // Actions
         $actions = new Actions;
-        $actions->onLoaded();    
-        
+        $actions->onLoaded();
+
         // Cron
         $actions = new Cron;
-        $actions->onLoaded();         
+        $actions->onLoaded();
 
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
@@ -57,7 +61,5 @@ class Main
         if (!in_array($post_type, $this->cpt->getAllCPT())) {
             return;
         }
-
-     
     }
 }
