@@ -278,7 +278,8 @@ class Settings
         foreach ($this->settingsSections as $section) {
             if ($this->settingsPrefix . $section['id'] != $this->currentTab) {
                 continue;
-            } ?>
+            }
+            ?>
             <div id="<?php echo $this->settingsPrefix . $section['id']; ?>">
                 <form method="post" action="options.php">
                     <?php settings_fields($this->settingsPrefix . $section['id']); ?>
@@ -286,7 +287,7 @@ class Settings
                     <?php submit_button(); ?>
                 </form>
             </div>
-<?php
+            <?php
         }
     }
 
