@@ -145,10 +145,11 @@ class GreetingQueue
 		$data['status'] = $post->post_status;
 		$data['subject'] = $post->post_title;
 
-		$data['greeting_link'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
-		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
-		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
-		$data['retries'] = get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
+		$data['greeting_id'] = (int) get_post_meta($post->ID, 'rrze_greetings_queue_greeting_id', true);
+		$data['greeting_url'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
+		$data['from'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
+		$data['to'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
+		$data['retries'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
 
 		return $data;
 	}
