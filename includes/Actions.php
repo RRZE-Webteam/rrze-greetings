@@ -144,9 +144,9 @@ class Actions
 
 	protected function unsubscribeResponse(string $email)
 	{
-		$mailingList = explode(PHP_EOL, sanitize_textarea_field((string) $this->options->mailing_list_unsubscribed));
+		$mailingList = explode(PHP_EOL, (string) $this->options->mailing_list_unsubscribed);
 		$mailingList[] = $email;
-		$this->options->mailing_list_unsubscribed = Functions::validateMailingList(implode(PHP_EOL, $mailingList));
+		$this->options->mailing_list_unsubscribed = Functions::sanitizeMailingList(implode(PHP_EOL, $mailingList));
 		update_option(getOptionName(), $this->options);
 
 		$data = [];
