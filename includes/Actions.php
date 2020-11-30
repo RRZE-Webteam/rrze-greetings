@@ -5,20 +5,28 @@ namespace RRZE\Greetings;
 defined('ABSPATH') || exit;
 
 use RRZE\Greetings\CPT\Greeting;
+use RRZE\Greetings\Mail\Queue;
+use function RRZE\Greetings\Config\getOptionName;
 
 class Actions
 {
+	/**
+	 * Options
+	 * @var object
+	 */
+	protected $options;
+
 	public function __construct()
 	{
-		//
+		$this->options = (object) Settings::getOptions();
+		$this->template = new Template;
 	}
 
 	public function onLoaded()
 	{
 		add_action('wp', [$this, 'buttonActions']);
-
+		add_action('wp', [$this, 'responses']);
 		add_action('admin_notices', [$this, 'adminNotices']);
-
 		add_action('template_redirect', [$this, 'redirectTemplate']);
 	}
 
@@ -33,39 +41,38 @@ class Actions
 				return;
 			}
 
-			$data = Greeting::getData($postId);
-			if (!$data) {
+			if (!Greeting::getData($postId)) {
 				return;
 			}
 
 			$transientData = new TransientData('rrze_greetings_errors');
 			switch ($action) {
 				case 'send':
-					if (!Events::mailQueueExists($postId)) {
-						update_post_meta($postId, 'rrze_greetings_status', 'send');
-						$transientData->addData('success', __('Greetings emails have been sent to the mail queue.', 'rrze-greetings'));	
+					if (!Queue::isQueueBeingCreated($postId)) {
+						Greeting::setStatus($postId, 'send');
+						$transientData->addData('success', __('Emails have been sent to the mail queue.', 'rrze-greetings'));
 					} else {
-						$transientData->addData('error', __('Unable to send the emails.', 'rrze-greetings'));
-					}					
+						$transientData->addData('error', __('Unable to send the emails to the mail queue.', 'rrze-greetings'));
+					}
 					break;
 				case 'cancel':
-					if (!Events::mailQueueExists($postId)) {
+					if (!Queue::isQueueBeingCreated($postId) && Greeting::getStatus($postId) == 'send') {
 						delete_post_meta($postId, 'rrze_greetings_status');
-						$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));	
+						$transientData->addData('success', __('The sending of emails has been cancelled.', 'rrze-greetings'));
 					} else {
 						$transientData->addData('error', __('Unable to cancel the sending of emails.', 'rrze-greetings'));
 					}
 					break;
 				case 'restore':
-					if (!Events::mailQueueExists($postId)) {
+					if (!Queue::isQueueBeingCreated($postId) && Greeting::getStatus($postId) == 'sent') {
 						delete_post_meta($postId, 'rrze_greetings_status');
-						$transientData->addData('success', __('It has been changed to the default status.', 'rrze-greetings'));
+						$transientData->addData('success', __('The status has been changed to the default status.', 'rrze-greetings'));
 					} else {
-						$transientData->addData('error', __('Unable to restore the default status.', 'rrze-greetings'));
-					}					
-					break;					
+						$transientData->addData('error', __('The status cannot be changed to the default status.', 'rrze-greetings'));
+					}
+					break;
 				default:
-					$transientData->addData('error', __('The action could not be executed.', 'rrze-greetings'));				
+					$transientData->addData('error', __('The action could not be executed.', 'rrze-greetings'));
 			}
 
 			wp_redirect(get_admin_url() . 'edit.php?post_type=greeting');
@@ -102,13 +109,12 @@ class Actions
 				echo $post->post_content;
 				exit;
 			}
-		} elseif ($segments[0] == 'greetings-card' && !empty($segments[1])) {
-			$postId = absint($segments[1]);
+		} elseif ($segments[0] == 'greetings-card' && !empty($segments[1]) && ($postId = absint($segments[1]))) {
 			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
 				echo $post->post_content;
 				exit;
 			}
-		} elseif ($segments[0] == 'greetings-card') {
+		} elseif ($segments[0] == 'greetings-card' && !isset($_GET['unsubscribe'])) {
 			global $wp_query;
 			$wp_query->set_404();
 			status_header(404);
@@ -116,4 +122,38 @@ class Actions
 			exit;
 		}
 	}
+
+	public function responses()
+	{
+		global $post;
+		if (!is_a($post, '\WP_Post') || !is_page() || $post->post_name != 'greetings-card') {
+			return;
+		}
+		if (isset($_GET['unsubscribe'])) {
+			$email = isset($_GET['unsubscribe']) ? Functions::decrypt((string) $_GET['unsubscribe']) : false;
+			if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+				add_filter('the_content', function ($content) use ($email) {
+					return $this->unsubscribeResponse($email);
+				});
+			} else {
+				wp_redirect(site_url('/greetings-card/'));
+				exit;
+			}
+		}
+	}
+
+	protected function unsubscribeResponse(string $email)
+	{
+		$mailingList = explode(PHP_EOL, sanitize_textarea_field((string) $this->options->mailing_list_unsubscribed));
+		$mailingList[] = $email;
+		$this->options->mailing_list_unsubscribed = Functions::validateMailingList(implode(PHP_EOL, $mailingList));
+		update_option(getOptionName(), $this->options);
+
+		$data = [];
+		$data['subject'] = __('UNSUBSCRIBE', 'rrze-rsvp');
+		$data['notification_text'] = __('You are unsubscribed from the mailing list.', 'rrze-greetings');
+		$data['unsubscribed_email_text'] = sprintf(__('Your email address %s was unsubscribed from our "Greetings Card" mailing list.', 'rrze-greetings'), $email);
+
+		return $this->template->getContent('responses/unsubscribe.html', $data);
+	}	
 }
