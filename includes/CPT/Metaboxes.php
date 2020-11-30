@@ -60,7 +60,7 @@ class Metaboxes
             'type' => 'text',
             'attributes' => [
                 'required' => 'required'
-            ],            
+            ],
             'show_on_cb' => [$this, 'showIfTemplate'],
             'sanitization_cb' => 'sanitize_text_field'
         ]);
@@ -98,7 +98,6 @@ class Metaboxes
             'show_on_cb' => [$this, 'showIfTemplate'],
             'preview_size' => 'medium'
         ));
-      
     }
 
     protected function imageSettings()
@@ -331,7 +330,7 @@ class Metaboxes
 
         return wp_kses($value, $allowedHtml);
     }
-    
+
     public function escapeSendDate($value, $field_args, $field)
     {
         $gmtDate = get_gmt_from_date(date('Y-m-d H:i:s', $value));
@@ -370,7 +369,7 @@ class Metaboxes
 
         $targetUrl = wp_get_attachment_image_url($cardId, 'full');
         $this->cardImagePreview($postId, $targetUrl);
-       
+
         $uploads = wp_upload_dir();
         $target = str_replace($uploads['baseurl'], $uploads['basedir'], $targetUrl);
         $targetExt = strtolower(pathinfo($target, PATHINFO_EXTENSION));
@@ -408,7 +407,7 @@ class Metaboxes
                 'low',
                 [$targetUrl]
             );
-        }        
+        }
     }
 
     public function displayCardImage($post, $callbackArgs)
@@ -421,7 +420,7 @@ class Metaboxes
     {
         $attachmentId = 0;
         $file = [];
-        $file['name'] = 'greetings-card-' . $postId . '.' . $ext;
+        $file['name'] = 'greeting-card-' . bin2hex(random_bytes(8)) . '.' . $ext;
         $file['tmp_name'] = download_url($url);
 
         if (is_wp_error($file['tmp_name'])) {
@@ -439,15 +438,20 @@ class Metaboxes
 
     protected function updatePost(int $postId, $post)
     {
+        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+        $imageUrl = $targetUrl = wp_get_attachment_image_url($cardId, 'full');
         $title = (string) get_post_meta($postId, 'rrze_greetings_title', true);
         $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
         $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
+        $greetingCardNotice = __('Greeting Card', 'rrze-greetings');
+        $greetingCardUrl = site_url('/greetings-card/' . $postId);
         $unsubscribeText = __('Unsubscribe from this newsletter', 'rrze-greetings');
         $unsubscribeUrl = '((=unsubscribe_url))';
         $siteName = get_bloginfo('name') ? get_bloginfo('name') : parse_url(site_url(), PHP_URL_HOST);
         $siteUrl = site_url();
 
         $htmlData = [
+            'image_url' => $imageUrl,
             'title' => $title,
             'content' => wpautop($content),
             'logo' => $logo,
@@ -462,6 +466,8 @@ class Metaboxes
         $textData = [
             'title' => $title,
             'content' => wp_kses($content, []),
+            'greeting_card_notice' => $greetingCardNotice,
+            'greeting_card_url' => $greetingCardUrl,
             'unsubscribe_text' => $unsubscribeText,
             'unsubscribe_url' => $unsubscribeUrl,
             'site_name' => $siteName,
@@ -483,6 +489,6 @@ class Metaboxes
         wp_update_post($args);
 
         add_filter('content_save_pre', 'wp_filter_post_kses');
-        add_filter('content_filtered_save_pre', 'wp_filter_post_kses');        
+        add_filter('content_filtered_save_pre', 'wp_filter_post_kses');
     }
 }
