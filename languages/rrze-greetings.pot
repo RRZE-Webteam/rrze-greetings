@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-11-29 23:24+0000\n"
+"POT-Creation-Date: 2020-11-30 09:58+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -90,6 +90,11 @@ msgstr ""
 
 #: includes/CPT/Greeting.php:166
 msgid "Back to lists"
+msgstr ""
+
+#: includes/Plugin.php:189
+#, php-format
+msgid "Call to undefined method %1$s::%2$s"
 msgstr ""
 
 #: includes/CPT/Metaboxes.php:404
@@ -183,6 +188,11 @@ msgstr ""
 msgid "Greeting"
 msgstr ""
 
+#: includes/CPT/Greeting.php:463
+msgctxt "Greeting"
+msgid "Delete"
+msgstr ""
+
 #: includes/CPT/Greeting.php:392
 msgctxt "Greeting action button"
 msgid "Cancel"
@@ -206,6 +216,10 @@ msgstr ""
 #: includes/CPT/Greeting.php:398
 msgctxt "Greeting action button"
 msgid "Sent"
+msgstr ""
+
+#: includes/Roles.php:82
+msgid "Greeting Agent"
 msgstr ""
 
 #: includes/Main.php:36
@@ -658,6 +672,10 @@ msgstr ""
 
 #: includes/Actions.php:55
 msgid "Unable to send the emails to the mail queue."
+msgstr ""
+
+#: includes/Actions.php:153
+msgid "UNSUBSCRIBE"
 msgstr ""
 
 #: includes/CPT/Metaboxes.php:445
