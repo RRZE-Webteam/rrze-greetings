@@ -79,7 +79,7 @@ class Roles
             return;
         }
 
-        add_role(static::GREETING_ROLE, __('Greeting Agent', 'rrze-rsvp'), ['read' => true, 'level_0' => true]);
+        add_role(static::GREETING_ROLE, __('Greeting Agent', 'rrze-greetings'), ['read' => true, 'level_0' => true]);
 
         $currentCpts = array_keys(Capabilities::getCurrentCptArgs());
 
