@@ -206,7 +206,7 @@ class Greeting
     public function saveFormFields(int $termId)
     {
         if (isset($_POST['rrze_greetings_mailing_list'])) {
-            $mailingList = Functions::validateMailingList(sanitize_textarea_field((string) $_POST['rrze_greetings_mailing_list']));
+            $mailingList = Functions::sanitizeMailingList((string) $_POST['rrze_greetings_mailing_list']);
             update_term_meta(
                 $termId,
                 'rrze_greetings_mailing_list',
