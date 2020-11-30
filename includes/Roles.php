@@ -16,10 +16,6 @@ class Roles
             'administrator' => [
                 'cpts' => array_keys(Capabilities::getCurrentCptArgs()),
                 'exceptions' => []
-            ],
-            'editor' => [
-                'cpts' => array_keys(Capabilities::getCurrentCptArgs()),
-                'exceptions' => []
             ]
         ];
     }
@@ -78,8 +74,8 @@ class Roles
         if (!is_null($roleObj)) {
             return;
         }
-
-        add_role(static::GREETING_ROLE, __('Greeting Agent', 'rrze-greetings'), ['read' => true, 'level_0' => true]);
+        $editorRoleObj = get_role('editor');
+        add_role(static::GREETING_ROLE, __('Greeting Agent', 'rrze-greetings'), $editorRoleObj->capabilities);
 
         $currentCpts = array_keys(Capabilities::getCurrentCptArgs());
 
