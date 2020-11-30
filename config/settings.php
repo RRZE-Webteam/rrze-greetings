@@ -36,12 +36,16 @@ function getSections(): array
 {
     return [
         [
-            'id'    => 'smtp',
-            'title' => __('SMTP Settings', 'rrze-greetings')
+            'id'    => 'mail_server',
+            'title' => __('Mail Server', 'rrze-greetings')
         ],
         [
-            'id'    => 'queue',
-            'title' => __('Queue Settings', 'rrze-greetings')
+            'id'    => 'mail_queue',
+            'title' => __('Mail Queue', 'rrze-greetings')
+        ],
+        [
+            'id'    => 'mailing_list',
+            'title' => __('Mailing List', 'rrze-greetings')
         ]
     ];
 }
@@ -53,7 +57,7 @@ function getSections(): array
 function getFields(): array
 {
     return [
-        'smtp' => [
+        'mail_server' => [
             [
                 'name'    => 'encryption',
                 'label'   => __('Encryption', 'rrze-greetings'),
@@ -106,55 +110,60 @@ function getFields(): array
                 'default' => ''
             ]
         ],
-        'queue' => [
+        'mail_queue' => [
             [
                 'name'              => 'limit',
                 'label'             => __('Queue Limit', 'rrze-greetings'),
-                'desc'              => __('Amount of mails processed per cronjob execution.', 'rrze-greetings'),
-                'placeholder'       => '10',
+                'desc'              => __('Maximum number of emails that can be queued at once.', 'rrze-greetings'),
+                'placeholder'       => '100',
                 'min'               => 1,
-                'max'               => 100,
+                'max'               => 200,
                 'step'              => '1',
                 'type'              => 'number',
-                'default'           => '10',
-                'sanitize_callback' => 'floatval'
-            ],
+                'default'           => '100',
+                'sanitize_callback' => [
+                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 100, 1, 200);}
+                ]
+            ],            
             [
-                'name'              => 'interval',
-                'label'             => __('WP-Cron Interval', 'rrze-greetings'),
-                'desc'              => __('Time in seconds wp_cron waits until next execution.', 'rrze-greetings'),
-                'placeholder'       => '300',
-                'min'               => 60,
-                'max'               => 3600,
-                'step'              => '1',
-                'type'              => 'number',
-                'default'           => '300',
-                'sanitize_callback' => 'floatval'
-            ],
-            [
-                'name'              => 'min_recipients',
-                'label'             => __('Min. recipients to enqueue', 'rrze-greetings'),
-                'desc'              => __('Minimum amount of recipients required to enqueue mail instead of sending immediately.', 'rrze-greetings'),
-                'placeholder'       => '1',
+                'name'              => 'send_limit',
+                'label'             => __('Send Limit', 'rrze-greetings'),
+                'desc'              => __('Maximum number of emails that can be sent per minute.', 'rrze-greetings'),
+                'placeholder'       => '15',
                 'min'               => 1,
-                'max'               => 100,
+                'max'               => 60,
                 'step'              => '1',
                 'type'              => 'number',
-                'default'           => '1',
-                'sanitize_callback' => 'floatval'
-            ],
+                'default'           => '15',
+                'sanitize_callback' => [
+                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 15, 1, 60);}
+                ]
+            ],            
             [
-                'name'              => 'max_retry',
-                'label'             => __('Max. retry for mail sending', 'rrze-greetings'),
-                'desc'              => __('Maximum number of retry for mail sending.', 'rrze-greetings'),
+                'name'              => 'max_retries',
+                'label'             => __('Max. Retries', 'rrze-greetings'),
+                'desc'              => __('Maximum number of retries until an email is sent successfully.', 'rrze-greetings'),
                 'placeholder'       => '1',
                 'min'               => 0,
-                'max'               => 100,
+                'max'               => 10,
                 'step'              => '1',
                 'type'              => 'number',
                 'default'           => '1',
-                'sanitize_callback' => 'floatval'
+                'sanitize_callback' => [
+                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 1, 0, 10);}
+                ]
             ]
+        ],
+        'mailing_list' => [
+            [
+                'name'              => 'unsubscribed',
+                'label'             => __('Unsubscribed E-mail Addresses', 'rrze-greetings'),
+                'desc'              => __('List of cancelled email addresses through the unsubscription link.', 'rrze-greetings'),
+                'placeholder'       => '',
+                'type'              => 'textarea',
+                'default'           => '',
+                'sanitize_callback' => ['\RRZE\Greetings\Functions', 'validateMailingList']
+            ],            
         ]
     ];
 }
