@@ -9,11 +9,6 @@ namespace RRZE\Greetings\CPT;
 defined('ABSPATH') || exit;
 
 use RRZE\Greetings\Functions;
-use RRZE\Greetings\Card\Text;
-use RRZE\Greetings\Mail\Queue;
-use RRZE\Greetings\Template;
-
-use function RRZE\Greetings\plugin;
 
 class Greeting
 {
@@ -33,7 +28,7 @@ class Greeting
      * Category taxonomy
      * @var string
      */
-    protected static $mailListTaxonomy = 'greetings_mail_list';
+    protected static $mailListTaxonomy = 'greetings_mailing_list';
 
     /**
      * Queue
@@ -49,7 +44,7 @@ class Greeting
 
     public function __construct()
     {
-        $this->template = new Template;
+        //
     }
 
     public function onLoaded()
@@ -67,14 +62,14 @@ class Greeting
         add_action('restrict_manage_posts', [$this, 'applyFilters'], 10, 1);
         add_filter('parse_query', [$this, 'filterQuery'], 10);
         // Taxonomy Terms Fields.
-        add_action('greetings_mail_list_add_form_fields', [$this, 'addFormFields']);
-        add_action('greetings_mail_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
-        add_action('created_greetings_mail_list', [$this, 'saveFormFields']);
-        add_action('edited_greetings_mail_list', [$this, 'saveFormFields']);
+        add_action('greetings_mailing_list_add_form_fields', [$this, 'addFormFields']);
+        add_action('greetings_mailing_list_edit_form_fields', [$this, 'editFormFields'], 10, 2);
+        add_action('created_greetings_mailing_list', [$this, 'saveFormFields']);
+        add_action('edited_greetings_mailing_list', [$this, 'saveFormFields']);
         // Taxonomy Custom Columns
         add_filter('manage_edit-greetings_category_columns', [$this, 'categoryColumns']);
-        add_filter('manage_edit-greetings_mail_list_columns', [$this, 'mailListColumns']);
-        add_filter('manage_greetings_mail_list_custom_column', [$this, 'mailListCustomColumns'], 10, 3);
+        add_filter('manage_edit-greetings_mailing_list_columns', [$this, 'mailListColumns']);
+        add_filter('manage_greetings_mailing_list_custom_column', [$this, 'mailListCustomColumns'], 10, 3);
         // List Actions
         add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
         add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);
@@ -156,8 +151,8 @@ class Greeting
         register_taxonomy(self::$categoryTaxonomy, self::$postType, $args);
 
         $labels = [
-            'name' => _x('Mail Lists', 'taxonomy general name', 'rrze-greetings'),
-            'singular_name' => _x('Mail List', 'taxonomy singular name', 'rrze-greetings'),
+            'name' => _x('Mailing Lists', 'taxonomy general name', 'rrze-greetings'),
+            'singular_name' => _x('Mailing List', 'taxonomy singular name', 'rrze-greetings'),
             'all_items' => __('All Lists', 'rrze-greetings'),
             'edit_item' => __('Edit List', 'rrze-greetings'),
             'view_item' => __('View List', 'rrze-greetings'),
@@ -187,49 +182,37 @@ class Greeting
     public function addFormFields($taxonomy)
     {
         echo '<div class="form-field">
-        <label for="greetings_mail_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
-        <textarea id="greetings_mail_list" rows="5" cols="40" name="rrze_greetings_mail_list"></textarea>
+        <label for="greetings_mailing_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
+        <textarea id="greetings_mailing_list" rows="5" cols="40" name="rrze_greetings_mailing_list"></textarea>
         <p>' . __('Enter one email address per line.', 'rrze-greetings') . '</p>
         </div>';
     }
 
     public function editFormFields($term, $taxonomy)
     {
-        $value = get_term_meta($term->term_id, 'rrze_greetings_mail_list', true);
+        $value = get_term_meta($term->term_id, 'rrze_greetings_mailing_list', true);
 
         echo '<tr class="form-field">
         <th>
-            <label for="greetings_mail_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
+            <label for="greetings_mailing_list">' . __('E-mail Addresses', 'rrze-greetings') . '</label>
         </th>
         <td>
-            <textarea id="greetings_mail_list" rows="5" cols="50" name="rrze_greetings_mail_list">' . esc_attr($value) . '</textarea>
+            <textarea id="greetings_mailing_list" rows="5" cols="50" name="rrze_greetings_mailing_list">' . esc_attr($value) . '</textarea>
             <p class="description">' . __('Enter one email address per line.', 'rrze-greetings') . '</p>
         </td>
-        </tr>';
+        </tr>';      
     }
 
-    public function saveFormFields($termId)
+    public function saveFormFields(int $termId)
     {
-        if (!isset($_POST['rrze_greetings_mail_list'])) {
-            return;
+        if (isset($_POST['rrze_greetings_mailing_list'])) {
+            $mailingList = Functions::validateMailingList(sanitize_textarea_field((string) $_POST['rrze_greetings_mailing_list']));
+            update_term_meta(
+                $termId,
+                'rrze_greetings_mailing_list',
+                $mailingList
+            );
         }
-        $mailListStr = sanitize_textarea_field($_POST['rrze_greetings_mail_list']);
-
-        $mailList = [];
-        $emails = explode(PHP_EOL, $mailListStr);
-        foreach ($emails as $email) {
-            $email = trim($email);
-            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                continue;
-            }
-            $mailList[] = $email;
-        }
-
-        update_term_meta(
-            $termId,
-            'rrze_greetings_mail_list',
-            implode(PHP_EOL, $mailList)
-        );
     }
 
     public function categoryColumns($columns)
@@ -239,7 +222,7 @@ class Greeting
     }
 
     public function mailListColumns($columns)
-    {
+    {       
         $columns['posts'] = __('Greetings', 'rrze-greetings');
         $columns['emails'] = __('Emails', 'rrze-greetings');
         return $columns;
@@ -247,10 +230,10 @@ class Greeting
 
     public function mailListCustomColumns($content, $columnName, $termId)
     {
-        $term = get_term($termId, 'greetings_mail_list');
+        $term = get_term($termId, 'greetings_mailing_list');
         switch ($columnName) {
             case 'emails':
-                if (empty($list = (string) get_term_meta($term->term_id, 'rrze_greetings_mail_list', true))) {
+                if (empty($list = (string) get_term_meta($term->term_id, 'rrze_greetings_mailing_list', true))) {
                     $content = 0;
                 }
                 $mailList = explode(PHP_EOL, $list);
@@ -298,14 +281,44 @@ class Greeting
         $data['categories'] = self::getTermsList($post->ID, self::$categoryTaxonomy);
         $data['mail_lists'] = self::getTermsList($post->ID, self::$mailListTaxonomy);
 
-        $fromName = get_post_meta($post->ID, 'rrze_greetings_from_name', true);
         $fromEmail = get_post_meta($post->ID, 'rrze_greetings_from_email_address', true);
+        $fromName = get_post_meta($post->ID, 'rrze_greetings_from_name', true);
+        $data['from_email'] = $fromEmail;
+        $data['from_name'] = $fromName;
         $data['from'] = sprintf('%s <%s>', $fromName, $fromEmail);
 
         $data['status'] = get_post_meta($post->ID, 'rrze_greetings_status', true);
         $data['post_status'] = $post->post_status;
 
         return $data;
+    }
+
+    public static function setStatus(int $postId, string $status)
+    {
+        return update_post_meta($postId, 'rrze_greetings_status', $status);
+    }
+
+    public static function getStatus(int $postId)
+    {
+        return get_post_meta($postId, 'rrze_greetings_status', true);
+    }
+
+    public static function getPostsToQueue(): array
+    {
+        $args = [
+            'fields'            => 'ids',
+            'post_type'         => 'greeting',
+            'post_status'       => 'publish',
+            'nopaging'          => true,
+            'meta_query'        => [
+                [
+                    'key'       => 'rrze_greetings_status',
+                    'value'     => ['send', 'queued'],
+                    'compare'   => 'IN'
+                ]
+            ]
+        ];
+        return get_posts($args);
     }
 
     protected static function getTermsList($postId, $taxonomy)
@@ -382,7 +395,7 @@ class Greeting
                     } elseif ($status == 'queued') {
                         $button = '<button class="button button-primary" disabled>' . _x('Queued', 'Greeting action button', 'rrze-greetings') . '</button>';
                     } elseif ($status == 'sent') {
-                        $sendButton = '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting action button', 'rrze-greetings') . '</button>';
+                        $sentButton = '<button class="button button-primary" disabled>' . _x('Sent', 'Greeting action button', 'rrze-greetings') . '</button>';
                         $restoreButton = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=restore&nonce=%s" class="button button-secondary" data-id="%1$d">%s</a>',
                             self::$postType,
@@ -390,7 +403,7 @@ class Greeting
                             $nonce,
                             _x('Restore', 'Greeting action button', 'rrze-greetings')
                         ); 
-                        $button = $sendButton . $restoreButton;                       
+                        $button = $sentButton . $restoreButton;                       
                     } else {
                         $button = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=send&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
