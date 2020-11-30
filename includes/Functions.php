@@ -27,10 +27,10 @@ class Functions
         return self::validateDate($date, $format);
     }
 
-    public static function validateMailingList(string $input): string
+    public static function sanitizeMailingList(string $input): string
     {
         $mailingList = [];
-        $emails = explode(PHP_EOL, $input);
+        $emails = explode(PHP_EOL, sanitize_textarea_field($input));
         foreach ($emails as $email) {
             $email = trim($email);
             if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
