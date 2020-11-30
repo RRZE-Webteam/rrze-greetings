@@ -8,9 +8,36 @@ use RRZE\Greetings\Settings;
 
 class SMTP
 {
+    /**
+     * The email address to send from.
+     * @var string
+     */
+    protected $emailFrom = '';
+
+    /**
+     * The name to associate with the $emailFrom email address.
+     *
+     * @var string
+     */
+    protected $emailFromName = '';
+
+    /**
+     * The plain-text message body.
+     * @var string
+     */
     protected $altBody = '';
 
+    /**
+     * File attachments
+     * @var array
+     */
     protected $attachments = [];
+
+    /**
+     * Error
+     * @var object \WP_ERROR
+     */
+    protected $error;
 
     /**
      * Options
@@ -18,10 +45,12 @@ class SMTP
      */
     protected $options;
 
+    /**
+     * __construct
+     */
     public function __construct()
     {
-        $options = Settings::getOptions();
-        $this->options = (object) $options['smtp'];
+        $this->options = (object) Settings::getOptions();
     }
 
     public function onLoaded()
@@ -37,12 +66,22 @@ class SMTP
      * @param string $subject
      * @param string $body
      * @param string $altBody
-     * @param string $headers
-     * @param string $attachment
+     * @param array $headers
+     * @param array $attachment
      * @return boolean
      */
-    public function send(string $to, string $subject, string $body, string $altBody, string $headers, string $attachments = []): bool
-    {
+    public function send(
+        string $from,
+        string $fromName,
+        string $to,
+        string $subject,
+        string $body,
+        string $altBody,
+        array $headers,
+        array $attachments = []
+    ): bool {
+        $this->emailFrom = $from;
+        $this->emailFromName = $fromName;
         $this->altBody = $altBody;
         $this->attachments = $attachments;
 
@@ -74,12 +113,12 @@ class SMTP
         $phpmailer->SMTPKeepAlive = true;
         $phpmailer->IsSMTP();
 
-        $phpmailer->Host = $this->options->host;
-        $phpmailer->Port = $this->options->port;
-        $phpmailer->SMTPSecure = ($this->options->encryption == 'none') ? false : $this->options->encryption;
-        $phpmailer->SMTPAuth = ($this->options->auth == 'on');
-        $phpmailer->Username = $this->options->username;
-        $phpmailer->Password = $this->options->password;
+        $phpmailer->Host = $this->options->mail_server_host;
+        $phpmailer->Port = $this->options->mail_server_port;
+        $phpmailer->SMTPSecure = ($this->options->mail_server_encryption == 'none') ? false : $this->options->mail_server_encryption;
+        $phpmailer->SMTPAuth = ($this->options->mail_server_auth == 'on');
+        $phpmailer->Username = $this->options->mail_server_username;
+        $phpmailer->Password = $this->options->mail_server_password;
 
         $phpmailer->AltBody = $this->altBody;
 
@@ -105,8 +144,7 @@ class SMTP
      */
     public function filterFrom($from): string
     {
-        $newFrom = $this->options->email_sender_email;
-        return ($newFrom != '') ? $newFrom : $from;
+        return (filter_var($this->emailFrom, FILTER_VALIDATE_EMAIL)) ? $this->emailFrom : $from;
     }
 
     /**
@@ -118,8 +156,7 @@ class SMTP
      */
     public function filterName($name): string
     {
-        $newName = $this->options->email_sender_name;
-        return ($newName != '') ? $newName : $name;
+        return ($this->emailFromName != '') ? $this->emailFrom : $name;
     }
 
     /**
@@ -130,6 +167,11 @@ class SMTP
      */
     public function onMailError($error)
     {
-        return $error;
+        $this->error = $error;
+    }
+
+    public function getError()
+    {
+        return $this->error;
     }
 }
