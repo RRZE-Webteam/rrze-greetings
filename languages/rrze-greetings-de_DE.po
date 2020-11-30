@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-29 23:24+0000\n"
-"PO-Revision-Date: 2020-11-30 09:03+0000\n"
+"PO-Revision-Date: 2020-11-30 09:59+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -91,6 +91,11 @@ msgstr ""
 #: includes/CPT/Greeting.php:166
 msgid "Back to lists"
 msgstr "Zurück zu den Listen"
+
+#: includes/Plugin.php:189
+#, php-format
+msgid "Call to undefined method %1$s::%2$s"
+msgstr "Aufruf der undefinierten Methode %1$s::%2$s"
 
 #: includes/CPT/Metaboxes.php:404
 msgid "Card Image Preview"
@@ -183,6 +188,11 @@ msgstr "Absendername"
 msgid "Greeting"
 msgstr "Grußkarte"
 
+#: includes/CPT/Greeting.php:463
+msgctxt "Greeting"
+msgid "Delete"
+msgstr "Löschen"
+
 #: includes/CPT/Greeting.php:392
 msgctxt "Greeting action button"
 msgid "Cancel"
@@ -207,6 +217,10 @@ msgstr "Sende"
 msgctxt "Greeting action button"
 msgid "Sent"
 msgstr "Gesendet"
+
+#: includes/Roles.php:82
+msgid "Greeting Agent"
+msgstr "Greeting Agent"
 
 #: includes/Main.php:36
 msgid "Greeting Card"
@@ -667,6 +681,10 @@ msgstr "Das Senden von E-Mails kann nicht abgebrochen werden."
 #: includes/Actions.php:55
 msgid "Unable to send the emails to the mail queue."
 msgstr "Die E-Mails können nicht an die E-Mail-Queue gesendet werden."
+
+#: includes/Actions.php:153
+msgid "UNSUBSCRIBE"
+msgstr "ABMELDEN"
 
 #: includes/CPT/Metaboxes.php:445
 msgid "Unsubscribe from this newsletter"

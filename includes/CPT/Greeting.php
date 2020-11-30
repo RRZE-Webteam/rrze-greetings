@@ -460,7 +460,7 @@ class Greeting
                     get_delete_post_link($post->ID),
                     /* translators: %s: Post title. */
                     esc_attr(sprintf(__('Move &#8220;%s&#8221; to the Trash'), $title)),
-                    _x('Delete', 'Booking', 'rrze-rsvp')
+                    _x('Delete', 'Greeting', 'rrze-greetings')
                 );
             } else {
                 $actions['delete'] = sprintf(

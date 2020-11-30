@@ -150,7 +150,7 @@ class Actions
 		update_option(getOptionName(), $this->options);
 
 		$data = [];
-		$data['subject'] = __('UNSUBSCRIBE', 'rrze-rsvp');
+		$data['subject'] = __('UNSUBSCRIBE', 'rrze-greetings');
 		$data['notification_text'] = __('You are unsubscribed from the mailing list.', 'rrze-greetings');
 		$data['unsubscribed_email_text'] = sprintf(__('Your email address %s was unsubscribed from our "Greetings Card" mailing list.', 'rrze-greetings'), $email);
 
