@@ -1,6 +1,6 @@
 {
   "name": "rrze-greetings",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha",
   "description": "WordPress-Plugin zum Versand von Grußkarten und Newslettern",
   "main": "rrze-greetings.php",
   "textdomain": "rrze-greetings",
