@@ -27,6 +27,30 @@ class Functions
         return self::validateDate($date, $format);
     }
 
+    public static function validateMailingList(string $input): string
+    {
+        $mailingList = [];
+        $emails = explode(PHP_EOL, $input);
+        foreach ($emails as $email) {
+            $email = trim($email);
+            if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                continue;
+            }
+            $mailingList[] = $email;
+        }
+        return implode(PHP_EOL, array_unique($mailingList));
+    }
+
+    public static function validateIntRange(string $input, int $default, int $min, int $max, bool $absint = true): int
+    {
+        $integer = $absint ? absint($input) : intval($input);
+        if (filter_var(absint($input), FILTER_VALIDATE_INT, ['options' => ['min_range' => $min, 'max_range' => $max]]) === false) {
+            return $integer;
+        } else {
+            return $default;
+        }
+    }
+
     public static function getFiles(string $path, array $ext, string $needle): array
     {
         $iterator = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path));
@@ -77,5 +101,5 @@ class Functions
     public static function decrypt(string $string)
     {
         return self::crypt($string, 'decrypt');
-    }    
+    }
 }
