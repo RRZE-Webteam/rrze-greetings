@@ -443,7 +443,7 @@ class Metaboxes
         $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
         $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
         $unsubscribeText = __('Unsubscribe from this newsletter', 'rrze-greetings');
-        $unsubscribeUrl = '(=unsubscribe_url)';
+        $unsubscribeUrl = '((=unsubscribe_url))';
         $siteName = get_bloginfo('name') ? get_bloginfo('name') : parse_url(site_url(), PHP_URL_HOST);
         $siteUrl = site_url();
 
@@ -476,6 +476,13 @@ class Metaboxes
             'post_excerpt' => $textContent,
             'post_name' => md5($postId)
         ];
+
+        remove_filter('content_save_pre', 'wp_filter_post_kses');
+        remove_filter('content_filtered_save_pre', 'wp_filter_post_kses');
+
         wp_update_post($args);
+
+        add_filter('content_save_pre', 'wp_filter_post_kses');
+        add_filter('content_filtered_save_pre', 'wp_filter_post_kses');        
     }
 }
