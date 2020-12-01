@@ -44,6 +44,9 @@ class Main
         $actions = new Cron;
         $actions->onLoaded();
 
+        // Media Library
+        new Media;
+
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
 
