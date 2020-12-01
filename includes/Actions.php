@@ -104,18 +104,18 @@ class Actions
 		$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$segments = array_values(array_filter(explode('/', $path)));
 
-		if ($segments[0] == 'greetings-card' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greetings-card-preview')) {
+		if ($segments[0] == 'greeting-card' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greeting-card-preview')) {
 			$postId = absint($_GET['id']);
 			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
 				echo $post->post_content;
 				exit;
 			}
-		} elseif ($segments[0] == 'greetings-card' && !empty($segments[1]) && ($postId = absint($segments[1]))) {
+		} elseif ($segments[0] == 'greeting-card' && !empty($segments[1]) && ($postId = absint($segments[1]))) {
 			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
 				echo $post->post_content;
 				exit;
 			}
-		} elseif ($segments[0] == 'greetings-card' && !isset($_GET['unsubscribe'])) {
+		} elseif ($segments[0] == 'greeting-card' && !isset($_GET['unsubscribe'])) {
 			global $wp_query;
 			$wp_query->set_404();
 			status_header(404);
@@ -127,7 +127,7 @@ class Actions
 	public function responses()
 	{
 		global $post;
-		if (!is_a($post, '\WP_Post') || !is_page() || $post->post_name != 'greetings-card') {
+		if (!is_a($post, '\WP_Post') || !is_page() || $post->post_name != 'greeting-card') {
 			return;
 		}
 		if (isset($_GET['unsubscribe'])) {
@@ -137,7 +137,7 @@ class Actions
 					return $this->unsubscribeResponse($email);
 				});
 			} else {
-				wp_redirect(site_url('/greetings-card/'));
+				wp_redirect(site_url('/greeting-card/'));
 				exit;
 			}
 		}

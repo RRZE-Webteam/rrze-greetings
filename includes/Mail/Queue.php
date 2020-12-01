@@ -193,7 +193,7 @@ class Queue
             if ($count > $this->queueLimit()) {
                 break;
             }
-            $unsubscribeUri = '/greetings-card/?unsubscribe=' . Functions::crypt($email);
+            $unsubscribeUri = '/greeting-card/?unsubscribe=' . Functions::crypt($email);
             $content = str_replace($search, site_url($unsubscribeUri), $message);
             $excerpt = str_replace($search, site_url($unsubscribeUri), $altMessage);
 
