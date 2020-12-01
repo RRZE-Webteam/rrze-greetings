@@ -33,7 +33,7 @@ class Main
         $this->cpt->onLoaded();
 
         // Virtual Page        
-        $virtualPage = new VirtualPage(__('Greeting Card', 'rrze-greetings'), 'greetings-card');
+        $virtualPage = new VirtualPage(__('Greeting Card', 'rrze-greetings'), 'greeting-card');
         $virtualPage->onLoaded();
 
         // Actions

@@ -1,7 +1,7 @@
 <?php
 
 /* ---------------------------------------------------------------------------
- * Custom Post Type 'greetings'
+ * Custom Post Type 'greeting'
  * ------------------------------------------------------------------------- */
 
 namespace RRZE\Greetings\CPT;
@@ -134,8 +134,8 @@ class Greeting
     public function registerTaxonomies()
     {
         $labels = [
-            'name' => _x('Categories', 'taxonomy general name', 'rrze-greetings'),
-            'singular_name' => _x('Category', 'taxonomy singular name', 'rrze-greetings'),
+            'name' => _x('Categories', 'Taxonomy general name', 'rrze-greetings'),
+            'singular_name' => _x('Category', 'Taxonomy singular name', 'rrze-greetings'),
         ];
         $args = [
             'labels' => $labels,
@@ -151,8 +151,8 @@ class Greeting
         register_taxonomy(self::$categoryTaxonomy, self::$postType, $args);
 
         $labels = [
-            'name' => _x('Mailing Lists', 'taxonomy general name', 'rrze-greetings'),
-            'singular_name' => _x('Mailing List', 'taxonomy singular name', 'rrze-greetings'),
+            'name' => _x('Mailing Lists', 'Taxonomy general name', 'rrze-greetings'),
+            'singular_name' => _x('Mailing List', 'Taxonomy singular name', 'rrze-greetings'),
             'all_items' => __('All Lists', 'rrze-greetings'),
             'edit_item' => __('Edit List', 'rrze-greetings'),
             'view_item' => __('View List', 'rrze-greetings'),
@@ -361,7 +361,7 @@ class Greeting
         return $columns;
     }
 
-    function customColumn($column, $postId)
+    public function customColumn($column, $postId)
     {
         $data = self::getData($postId);
 
@@ -552,16 +552,16 @@ class Greeting
     public static function getPreviewUrl($postId)
     {
         return sprintf(
-            '/greetings-card/?id=%d&nonce=%s',
+            '/greeting-card/?id=%d&nonce=%s',
             $postId,
-            wp_create_nonce('greetings-card-preview')
+            wp_create_nonce('greeting-card-preview')
         );
     }
 
     public static function getPostUrl($postId)
     {
         return sprintf(
-            '/greetings-card/%d',
+            '/greeting-card/%d',
             $postId
         );
     }

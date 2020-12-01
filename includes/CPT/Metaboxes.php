@@ -452,7 +452,7 @@ class Metaboxes
         $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
         $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
         $greetingCardNotice = __('Greeting Card', 'rrze-greetings');
-        $greetingCardUrl = site_url('/greetings-card/' . $postId);
+        $greetingCardUrl = site_url('/greeting-card/' . $postId);
         $unsubscribeText = __('Unsubscribe from this newsletter', 'rrze-greetings');
         $unsubscribeUrl = '((=unsubscribe_url))';
         $siteName = get_bloginfo('name') ? get_bloginfo('name') : parse_url(site_url(), PHP_URL_HOST);
