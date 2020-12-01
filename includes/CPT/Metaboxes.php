@@ -6,6 +6,7 @@ defined('ABSPATH') || exit;
 
 use RRZE\Greetings\Functions;
 use RRZE\Greetings\Template;
+use RRZE\Greetings\Media;
 use RRZE\Greetings\Card\Text;
 use function RRZE\Greetings\plugin;
 
@@ -418,22 +419,29 @@ class Metaboxes
 
     protected function uploadImage(string $url, int $postId, string $ext)
     {
-        $attachmentId = 0;
+        $fileId = 0;
         $file = [];
         $file['name'] = 'greeting-card-' . bin2hex(random_bytes(8)) . '.' . $ext;
         $file['tmp_name'] = download_url($url);
 
         if (is_wp_error($file['tmp_name'])) {
             @unlink($file['tmp_name']);
-            return $file['tmp_name'];
+            return $file['tmp_name']; // Return \WP_Error
         } else {
-            $attachmentId = media_handle_sideload($file, $postId);
-            if (is_wp_error($attachmentId)) {
+            $fileId = media_handle_sideload($file, $postId);
+            if (is_wp_error($fileId)) {
                 @unlink($file['tmp_name']);
-                return $attachmentId;
+                return $fileId; // Return \WP_Error
             }
         }
-        return $attachmentId;
+
+        if ($fileId) {
+            // Trigger to hide files from the Media Library's overlay/list view
+            update_post_meta($fileId, 'rrze_greetings_hide_file', 1);
+            // Update file metadata (remove intermediate sizes)
+            Media::updateFileMetadata($fileId);
+        }
+        return $fileId;
     }
 
     protected function updatePost(int $postId, $post)
