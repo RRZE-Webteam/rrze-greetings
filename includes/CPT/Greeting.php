@@ -107,7 +107,7 @@ class Greeting
 
         $args = [
             'label'                     => __('Greeting', 'rrze-greetings'),
-            'description'               => __('Add and edit Greetings Cards', 'rrze-greetings'),
+            'description'               => __('Add and edit Greeting Cards', 'rrze-greetings'),
             'labels'                    => $labels,
             'supports'                  => ['title', 'thumbnail'],
             'hierarchical'              => false,
@@ -460,7 +460,7 @@ class Greeting
                     get_delete_post_link($post->ID),
                     /* translators: %s: Post title. */
                     esc_attr(sprintf(__('Move &#8220;%s&#8221; to the Trash'), $title)),
-                    _x('Delete', 'Greeting', 'rrze-greetings')
+                    _x('Trash', 'verb')
                 );
             } else {
                 $actions['delete'] = sprintf(

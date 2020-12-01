@@ -60,9 +60,9 @@ class GreetingQueue
 			'search_items'			=> __('Search Mail Queue', 'rrze-greetings'),
 			'not_found'				=> __('No Mail Queue found.', 'rrze-greetings'),
 			'not_found_in_trash'	=> __('No Mail Queue found in Trash.', 'rrze-greetings'),
-			'filter_items_list'		=> _x('Filter Mail Queue list', 'Screen reader text for the filter links heading on the post type listing screen. Default “Filter posts list”/”Filter pages list”. Added in 4.4', 'rrze-greetings'),
-			'items_list_navigation'	=> _x('Mail Queue list navigation', 'Screen reader text for the pagination heading on the post type listing screen. Default “Posts list navigation”/”Pages list navigation”. Added in 4.4', 'rrze-greetings'),
-			'items_list'			=> _x('Mail Queue list', 'Screen reader text for the items list heading on the post type listing screen. Default “Posts list”/”Pages list”. Added in 4.4', 'rrze-greetings'),
+			'filter_items_list'		=> _x('Filter Mail Queue list', 'Screen reader text for the filter links heading on the post type listing screen.', 'rrze-greetings'),
+			'items_list_navigation'	=> _x('Mail Queue list navigation', 'Screen reader text for the pagination heading on the post type listing screen.', 'rrze-greetings'),
+			'items_list'			=> _x('Mail Queue list', 'Screen reader text for the items list heading on the post type listing screen.', 'rrze-greetings'),
 		];
 
 		$args = [
