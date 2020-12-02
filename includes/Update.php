@@ -27,8 +27,15 @@ class Update
     }
 
     /**
+     * onLoaded
+     */
+    public function onLoaded()
+    {
+        add_action('init', [$this, 'updateVersion']);
+    }
+
+    /**
      * Compare & update the update version.
-     * @return void
      */
     public function updateVersion()
     {
@@ -41,7 +48,6 @@ class Update
 
     /**
      * Update if version is lower than 1.0.0.
-     * @return void
      */
     protected function updateTo100()
     {
