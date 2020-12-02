@@ -145,17 +145,19 @@ class GreetingQueue
 		$data['status'] = $post->post_status;
 		$data['subject'] = $post->post_title;
 
-		$data['greeting_id'] = (int) get_post_meta($post->ID, 'rrze_greetings_queue_greeting_id', true);
-		$data['greeting_url'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
-		$data['from'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
-		$data['to'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
-		$data['retries'] = (string) get_post_meta($post->ID, 'rrze_greetings_queue_retries', true);
+		$data['greeting_id'] = absint(get_post_meta($post->ID, 'rrze_greetings_queue_greeting_id', true));
+		$data['greeting_url'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
+		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
+		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
+		$data['retries'] = absint(get_post_meta($post->ID, 'rrze_greetings_queue_retries', true));
+		$data['error'] = get_post_meta($post->ID, 'rrze_greetings_queue_error', true);
 
 		return $data;
 	}
 
 	public function columns($columns)
 	{
+		$queryVar = get_query_var('post_status');
 		$columns = [
 			'cb' => $columns['cb'],
 			'subject' => __('Subject', 'rrze-greetings'),
@@ -163,14 +165,22 @@ class GreetingQueue
 			'from' => __('From', 'rrze-greetings'),
 			'to' => __('To', 'rrze-greetings'),
 			'retries' => __('Retries', 'rrze-greetings'),
-			'status' => __('Status', 'rrze-greetings')
+			'status' => __('Status', 'rrze-greetings'),
+			'error' => __('Error', 'rrze-greetings')
 		];
+
+		if ($queryVar != 'mail_queue_error') {
+			unset($columns['error']);
+		}
 		return $columns;
 	}
 
 	public function customColumn($column, $postId)
 	{
 		$data = self::getData($postId);
+		$status = $data['status'];
+		$stati = get_post_stati(['show_in_admin_status_list' => true], 'objects');
+		$statusLabel = $stati[$status]->label;
 
 		switch ($column) {
 			case 'subject':
@@ -189,9 +199,11 @@ class GreetingQueue
 				echo $data['retries'];
 				break;
 			case 'status':
-				$status = get_post_stati(['show_in_admin_status_list' => true], 'objects');
-				echo $status[$data['status']]->label;
+				echo $statusLabel;
 				break;
+			case 'error':
+				echo $data['error'];
+				break;				
 			default:
 				echo '&mdash;';
 		}

@@ -113,16 +113,17 @@ class Queue
                 wp_update_post($args);
             } else {
                 $error = $this->smtp->getError();
-                update_post_meta($post->ID, 'rrze_greetings_queue_error', $error, true);
+                update_post_meta($post->ID, 'rrze_greetings_queue_error', $error->get_error_message());
                 $retries = absint(get_post_meta($post->ID, 'rrze_greetings_queue_retries', true));
-                if ($retries > $this->maxRetries()) {
+                if ($retries >= $this->maxRetries()) {
                     $args = [
                         'ID' => $post->ID,
                         'post_status' => 'mail_queue_error'
                     ];
                     wp_update_post($args);
                 } else {
-                    update_post_meta($post->ID, 'rrze_greetings_queue_retries', $retries++, true);
+                    $retries++;
+                    update_post_meta($post->ID, 'rrze_greetings_queue_retries', $retries);
                 }
             }
         }
