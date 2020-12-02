@@ -24,6 +24,10 @@ class Main
 
     public function onLoaded()
     {
+        // Update
+        $update = new Update();
+        $update->onLoaded();
+
         // Settings 
         $settings = new Settings;
         $settings->onLoaded();
@@ -47,6 +51,7 @@ class Main
         // Media Library
         new Media;
 
+        // Enqueue admin scripts
         add_action('admin_enqueue_scripts', [$this, 'adminEnqueueScripts']);
     }
 
