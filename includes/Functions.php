@@ -27,6 +27,15 @@ class Functions
         return self::validateDate($date, $format);
     }
 
+    public static function sanitizeEmail(string $input): string
+    {
+        $email = sanitize_text_field($input);
+        if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            return $email;
+        }
+        return '';
+    }
+
     public static function sanitizeMailingList(string $input): string
     {
         $mailingList = [];

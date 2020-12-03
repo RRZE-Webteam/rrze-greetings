@@ -454,16 +454,6 @@ class Metaboxes
         ]);
 
         $cmb->add_field([
-            'name' => __('Sender Address', 'rrze-greetings'),
-            'id' => 'rrze_greetings_sender_email_address',
-            'type' => 'text_email',
-            'description' => __('The email address of the sender acting on behalf of the email address listed in the From Email Address field.', 'rrze-greetings'),
-            'attributes' =>  [
-                'required' => 'required',
-            ],
-        ]);
-
-        $cmb->add_field([
             'name' => __('Reply-To Email Address', 'rrze-greetings'),
             'id' => 'rrze_greetings_replyto_email_address',
             'type' => 'text_email',
