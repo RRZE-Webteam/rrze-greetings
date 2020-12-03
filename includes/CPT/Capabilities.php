@@ -20,7 +20,12 @@ class Capabilities
                     'create_posts' => 'do_not_allow'
                 ],
                 'map_meta_cap' => false
-            ]
+            ],
+            'greeting_template' => [
+                'capability_type' => ['greeting_template', 'greeting_templates'],
+                'capabilities' => [],
+                'map_meta_cap' => false
+            ]            
         ];
     }
 
