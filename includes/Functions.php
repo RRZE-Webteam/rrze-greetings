@@ -79,6 +79,16 @@ class Functions
         return $rgb;
     }
 
+    public static function htmlEncode(string $value): string
+    {
+        return htmlentities(stripslashes($value));
+    }
+
+    public static function htmlDecode(string $value): string
+    {
+        return html_entity_decode(stripslashes($value));
+    }
+
     public static function crypt(string $string, string $action = 'encrypt')
     {
         $secretKey = AUTH_KEY;
