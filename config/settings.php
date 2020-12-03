@@ -92,6 +92,15 @@ function getFields(): array
                 'sanitize_callback' => 'sanitize_text_field'
             ],
             [
+                'name'              => 'sender',
+                'label'             => __('Sender Addresse', 'rrze-greetings'),
+                'desc'              => '',
+                'placeholder'       => '',
+                'type'              => 'text',
+                'default'           => '',
+                'sanitize_callback' => ['\RRZE\Greetings\Functions', 'sanitizeEmail']
+            ],
+            [
                 'name'  => 'auth',
                 'label' => __('Authentication', 'rrze-greetings'),
                 'desc'  => __('Authentication is required to access the SMTP server', 'rrze-greetings'),
@@ -126,9 +135,11 @@ function getFields(): array
                 'type'              => 'number',
                 'default'           => '100',
                 'sanitize_callback' => [
-                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 100, 1, 200);}
+                    function ($input) {
+                        return \RRZE\Greetings\Functions::validateIntRange($input, 100, 1, 200);
+                    }
                 ]
-            ],            
+            ],
             [
                 'name'              => 'send_limit',
                 'label'             => __('Send Limit', 'rrze-greetings'),
@@ -140,9 +151,11 @@ function getFields(): array
                 'type'              => 'number',
                 'default'           => '15',
                 'sanitize_callback' => [
-                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 15, 1, 60);}
+                    function ($input) {
+                        return \RRZE\Greetings\Functions::validateIntRange($input, 15, 1, 60);
+                    }
                 ]
-            ],            
+            ],
             [
                 'name'              => 'max_retries',
                 'label'             => __('Max. Retries', 'rrze-greetings'),
@@ -154,7 +167,9 @@ function getFields(): array
                 'type'              => 'number',
                 'default'           => '1',
                 'sanitize_callback' => [
-                    function($input) {return \RRZE\Greetings\Functions::validateIntRange($input, 1, 0, 10);}
+                    function ($input) {
+                        return \RRZE\Greetings\Functions::validateIntRange($input, 1, 0, 10);
+                    }
                 ]
             ]
         ],
@@ -167,7 +182,7 @@ function getFields(): array
                 'type'              => 'textarea',
                 'default'           => '',
                 'sanitize_callback' => ['\RRZE\Greetings\Functions', 'sanitizeMailingList']
-            ],            
+            ],
         ],
         'templates' => [
             [
@@ -181,7 +196,7 @@ function getFields(): array
                     'christmas-de_DE' => __('Christmas (de_DE)', 'rrze-greetings')
                 ],
                 'sanitize_callback' => ['\RRZE\Greetings\Template', 'import']
-            ],            
+            ],
         ]
     ];
 }
