@@ -322,7 +322,6 @@ class Greeting
         $columns = [];
         $columns['cb'] = true;
         $columns['title'] = __('Title', 'rrze-greetings');
-        $columns['category'] = __('Category', 'rrze-greetings');
         $columns['mail_list'] = __('Mail List', 'rrze-greetings');
         $columns['send_date'] = __('Send Date', 'rrze-greetings');
         $columns['action'] = __('Action', 'rrze-greetings');
@@ -342,9 +341,6 @@ class Greeting
         $data = self::getData($postId);
 
         switch ($column) {
-            case 'category':
-                echo $data['categories']['links'] ?? '&mdash;';
-                break;
             case 'mail_list':
                 echo $data['mail_lists']['links'] ?? '&mdash;';
                 break;
