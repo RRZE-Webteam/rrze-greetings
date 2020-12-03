@@ -1,0 +1,9 @@
+{{=title}}
+
+{{=content}}
+
+Link der Grußkarte:
+{{=card_url}}
+
+{{=website_name}}
+{{=website_url}}
