@@ -6,22 +6,34 @@ defined('ABSPATH') || exit;
 
 use RRZE\Greetings\Functions;
 use RRZE\Greetings\Template;
-use RRZE\Greetings\Media;
-use RRZE\Greetings\Card\Text;
 use function RRZE\Greetings\plugin;
 
 class Metaboxes
 {
+    protected $presetFields = [];
+
     public function __construct()
     {
         require_once plugin()->getPath('vendor/cmb2') . 'init.php';
         $this->template = new Template;
+
+        $this->presetFields = [
+            'card_image_url' => __('The url of the greeting card image (required). Usage: {{=card_image_url}}', 'rrze-greetings'),
+            'card_url' => __('The url of the greeting card (optional). Usage: {{=card_url}}', 'rrze-greetings'),
+            'unsubscribe_url' => __('The url of the unsubscribe page (optional). Usage: {{=unsubscribe_url}}', 'rrze-greetings'),
+            'website_url' => __('The url of the website (optional). Usage: {{=website_url}}', 'rrze-greetings'),
+            'website_name' => __('The name of the website (optional). Usage: {{=website_name}}', 'rrze-greetings'),
+            'header_image_url' => __('The url of the header image (optional). Usage: {{=header_image_url}}', 'rrze-greetings')
+        ];
     }
 
     public function onLoaded()
     {
         // Greeting metaboxes
         add_action('cmb2_admin_init', [$this, 'greeting']);
+        // Greeting Template metaboxes
+        add_action('cmb2_admin_init', [$this, 'greetingTemplate']);
+        add_action('cmb2_before_form', [$this, 'beforeForm'], 10, 4);
     }
 
     public function greeting()
@@ -29,8 +41,153 @@ class Metaboxes
         $this->cardSettings();
         $this->imageSettings();
         $this->mailSettings();
-        // Card image metabox       
-        add_action('add_meta_boxes', [$this, 'cardImage']);
+        // Card image preview metabox       
+        add_action('add_meta_boxes', [$this, 'cardImagePreview'], 10, 2);
+    }
+
+    public function greetingTemplate()
+    {
+        $this->contentField();
+        add_action('add_meta_boxes', [$this, 'presetFields']);
+        $this->customFields();
+    }
+
+    public function presetFields()
+    {
+        add_meta_box(
+            'rrze_greetings_template_preset_fields',
+            __('Preset Field Names', 'rrze-greetings'),
+            [$this, 'presetFieldsList'],
+            'greeting_template',
+            'normal',
+            'high'
+        );
+    }
+
+    protected function contentField()
+    {
+        $cmb = new_cmb2_box([
+            'id' => 'rrze_greetings_template_post',
+            'title' => __('Template Content', 'rrze-greetings'),
+            'object_types' => ['greeting_template'],
+            'context' => 'normal',
+            'priority' => 'high',
+            'show_names' => true
+        ]);
+
+        $cmb->add_field(array(
+            'id' => 'rrze_greetings_template_post_content',
+            'name' => __('HTML', 'rrze-greetings'),
+            'desc' => __('HTML version of the template.', 'rrze-greetings'),
+            'type' => 'textarea',
+            'attributes' => [
+                'rows' => '8',
+                'required' => 'required'
+            ],
+            'sanitization_cb' => [$this, 'sanitizeHtml'],
+            'escape_cb' => [$this, 'escapeHtml']
+        ));
+
+
+        $cmb->add_field(array(
+            'id' => 'rrze_greetings_template_post_excerpt',
+            'name' => __('Plain Text', 'rrze-greetings'),
+            'desc' => __('Plain text version of the template.', 'rrze-greetings'),
+            'type' => 'textarea',
+            'attributes' => [
+                'rows' => '8',
+                'required' => 'required'
+            ],
+            'sanitization_cb' => 'sanitize_textarea'
+        ));
+    }
+
+    public function presetFieldsList()
+    {
+        echo '<div class="cmb2-wrap">';
+
+        echo '<p>' . __('The preset fields can be used directly in the template using the {{=field-name}} format.', 'rrze-greetings') . '</p>';
+        echo '<p>' . __('The value of the preset fields are set dynamically and cannot be modified during the editing of the greeting card.', 'rrze-greetings') . '</p>';
+
+        echo '<div class="cmb2-metabox cmb-field-list">';
+        foreach ($this->presetFields as $field => $description) {
+            echo '<div class="cmb-row">';
+            echo '<div class="cmb-th">' . $field . '</div>';
+            echo '<div class="cmb-td"><p class="cmb2-metabox-description">' . $description . '</p></div>';
+            echo '</div>';
+        }
+        echo '</div>';
+        echo '</div>';
+    }
+
+    public function beforeForm($cmb_id, $object_id, $object_type, $cmb)
+    {
+        if ('rrze_greetings_template_custom_fields' !== $cmb_id) {
+            return;
+        }
+        echo '<p>' . __('Custom fields can be used directly in the template using the {{=field-name}} format.', 'rrze-greetings') . '</p>';
+        echo '<p>' . __('The value of the custom fields are entered manually during the editing of the greeting card.', 'rrze-greetings') . '</p>';
+    }
+
+    protected function customFields()
+    {
+        $cmb = new_cmb2_box([
+            'id' => 'rrze_greetings_template_custom_fields',
+            'title' => __('Custom Fields', 'rrze-greetings'),
+            'object_types' => ['greeting_template'],
+            'context' => 'normal',
+            'priority' => 'high',
+            'show_names' => true
+        ]);
+
+        $group = $cmb->add_field([
+            'id'          => 'rrze_greetings_template_fields',
+            'type'        => 'group',
+            'repeatable'  => true,
+            'options'     => [
+                'group_title'   => __('Custom Fields {#}', 'rrze-greetings'),
+                'add_button'    => __('Add Another Field', 'rrze-greetings'),
+                'remove_button' => __('Remove Field', 'rrze-greetings'),
+                'closed'        => false,
+                'sortable'      => false,
+            ],
+        ]);
+
+        $cmb->add_group_field($group, [
+            'id'   => 'id',
+            'name' => __('Field Name', 'rrze-greetings'),
+            'desc' => __('Enter the name of the field that will be used by the template. Usage: {{=field-name}}', 'rrze-greetings'),
+            'type' => 'text',
+            'sanitization_cb' => [$this, 'sanitizeFieldName']
+        ]);
+
+        $cmb->add_group_field($group, [
+            'id'               => 'type',
+            'name'             => __('Field Type', 'rrze-greetings'),
+            'desc'             => __('Select a field type.', 'rrze-greetings'),
+            'type'             => 'select',
+            'options'          => [
+                'text' => __('Text', 'rrze-greetings'),
+                'textarea'   => __('Textarea', 'rrze-greetings'),
+                'file'     => __('File', 'rrze-greetings'),
+            ],
+        ]);
+
+        $cmb->add_group_field($group, [
+            'id'   => 'name',
+            'name' => __('Label Name', 'rrze-greetings'),
+            'desc' => __('Enter the name of the field label (for editing purposes only).', 'rrze-greetings'),
+            'type' => 'text',
+            'sanitization_cb' => 'sanitize_text_field'
+        ]);
+
+        $cmb->add_group_field($group, [
+            'id'   => 'desc',
+            'name' => __('Description', 'rrze-greetings'),
+            'desc' => __('Enter the description of the field (for editing purposes only).', 'rrze-greetings'),
+            'type' => 'text',
+            'sanitization_cb' => 'sanitize_text_field'
+        ]);
     }
 
     protected function cardSettings()
@@ -54,51 +211,79 @@ class Metaboxes
             'sanitization_cb' => 'sanitize_text_field'
         ]);
 
-        $cmb->add_field([
-            'id'   => 'rrze_greetings_title',
-            'name' => __('Title', 'rrze-greetings'),
-            'desc' => __('The title of the content of the greeting card.', 'rrze-greetings'),
-            'type' => 'text',
-            'attributes' => [
-                'required' => 'required'
-            ],
-            'show_on_cb' => [$this, 'showIfTemplate'],
-            'sanitization_cb' => 'sanitize_text_field'
-        ]);
+        // Add dynamic fields during normal view.
+        add_action('cmb2_init_hookup_rrze_greetings_post', [$this, 'addTplFields']);
 
-        $cmb->add_field(array(
-            'id' => 'rrze_greetings_post_content',
-            'name' => __('Text', 'rrze-greetings'),
-            'desc' => __('Text that will be shown after the greeting card image.', 'rrze-greetings'),
-            'type' => 'textarea',
-            'attributes' => [
-                'rows' => '8',
-                'required' => 'required'
-            ],
-            'show_on_cb' => [$this, 'showIfTemplate'],
-            'sanitization_cb' => [$this, 'filterText']
-        ));
+        // Add dynamic fields during save process.
+        add_action('cmb2_post_process_fields_rrze_greetings_post', [$this, 'addTplFields']);
+    }
 
-        $cmb->add_field(array(
-            'id' => 'rrze_greetings_logo',
-            'name' => 'Logo (Optional)',
-            'desc' => 'The image of the website logo that will be displayed on the greeting card.',
-            'type' => 'file',
-            'options' => [
-                'url' => false,
-            ],
-            'text' => [
-                'add_upload_file_text' => 'Add Logo Image'
-            ],
-            'query_args' => [
-                'type' => [
-                    'image/jpeg',
-                    'image/png',
-                ],
-            ],
-            'show_on_cb' => [$this, 'showIfTemplate'],
-            'preview_size' => 'medium'
-        ));
+    public function addTplFields($cmb)
+    {
+        if (!$cmb->object_id()) {
+            return;
+        }
+        $postId = $cmb->object_id();
+        if (!($tplId = get_post_meta($postId, 'rrze_greetings_card_template', true))) {
+            return;
+        }
+
+        $tplFields = get_post_meta($tplId, 'rrze_greetings_template_fields', true);
+        $position = 2;
+
+        foreach ($tplFields as $field) {
+            if (empty($field['id'])) {
+                continue;
+            }
+            
+            $id = sprintf('rrze_greetings_template_%d_field_%s', $tplId, $field['id']);
+            $name = $field['name'] ?? __('Field #', 'rrze-greetings');
+            $desc = $field['desc'];
+
+            switch ($field['type']) {
+                case 'text':
+                    $cmb->add_field(array(
+                        'id' => $id,
+                        'name' => $name,
+                        'desc' => $desc,
+                        'type' => 'text',
+                        'sanitization_cb' => 'sanitize_text_field'
+                    ), $position++);
+                    break;
+                case 'textarea':
+                    $cmb->add_field(array(
+                        'id' => $id,
+                        'name' => $name,
+                        'desc' => $desc,
+                        'type' => 'textarea',
+                        'sanitization_cb' => 'sanitize_textarea'
+                    ), $position++);
+                    break;
+                case 'file':
+                    $cmb->add_field(array(
+                        'id' => $id,
+                        'name' => $name,
+                        'desc' => $desc,
+                        'type' => 'file',
+                        'options' => [
+                            'url' => false,
+                        ],
+                        'text' => [
+                            'add_upload_file_text' => __('Add Image', 'rrze-greetings')
+                        ],
+                        'query_args' => [
+                            'type' => [
+                                'image/jpeg',
+                                'image/png',
+                            ],
+                        ],
+                        'preview_size' => 'medium'
+                    ), $position++);
+                    break;
+                default:
+                    //
+            }
+        }
     }
 
     protected function imageSettings()
@@ -110,7 +295,7 @@ class Metaboxes
             'context' => 'normal',
             'priority' => 'low',
             'show_names' => true,
-            'show_on_cb' => [$this, 'showIfTemplate']
+            'show_on_cb' => [$this, 'showIfHasImage']
         ]);
 
         $cmb->add_field(array(
@@ -227,7 +412,7 @@ class Metaboxes
             'context' => 'normal',
             'priority' => 'low',
             'show_names' => true,
-            'show_on_cb' => [$this, 'showIfTemplate']
+            'show_on_cb' => [$this, 'showIfHasTemplate']
         ]);
 
         $cmb->add_field([
@@ -252,6 +437,7 @@ class Metaboxes
             'name' => __('From Name', 'rrze-greetings'),
             'id' => 'rrze_greetings_from_name',
             'type' => 'text_medium',
+            'description' => __('The name of the person sending the message.', 'rrze-greetings'),
             'attributes' =>  [
                 'required' => 'required',
             ],
@@ -261,51 +447,59 @@ class Metaboxes
             'name' => __('From Email Address', 'rrze-greetings'),
             'id' => 'rrze_greetings_from_email_address',
             'type' => 'text_email',
+            'description' => __('The email address that sent the message.', 'rrze-greetings'),
             'attributes' =>  [
                 'required' => 'required',
             ],
         ]);
 
-        $postId = null;
-        if (isset($_GET['post'])) {
-            $postId = $_GET['post'];
-        } elseif (isset($_POST['post_ID'])) {
-            $postId = $_POST['post_ID'];
-        }
+        $cmb->add_field([
+            'name' => __('Sender Address', 'rrze-greetings'),
+            'id' => 'rrze_greetings_sender_email_address',
+            'type' => 'text_email',
+            'description' => __('The email address of the sender acting on behalf of the email address listed in the From Email Address field.', 'rrze-greetings'),
+            'attributes' =>  [
+                'required' => 'required',
+            ],
+        ]);
 
-        if (!$postId || !has_post_thumbnail($postId)) {
-            return;
-        }
+        $cmb->add_field([
+            'name' => __('Reply-To Email Address', 'rrze-greetings'),
+            'id' => 'rrze_greetings_replyto_email_address',
+            'type' => 'text_email',
+            'description' => __('The email address that will be used to reply to the message.', 'rrze-greetings'),
+            'attributes' =>  [
+                'required' => 'required',
+            ],
+        ]);
     }
 
-    public function showIfTemplate($cmb)
+    public function sanitizeFieldName($value, $field_args, $field)
     {
-        $template = get_post_meta($cmb->object_id(), 'rrze_greetings_card_template', true);
-        if ($template && is_a($cmb, 'CMB2')) {
-            return in_array($cmb->meta_box['id'], [
-                'rrze_greetings_imagetext',
-                'rrze_greetings_mail'
-            ]);
+        if (!empty($value)) {
+            $value = sanitize_title($value);
         }
-        if (is_a($cmb, 'CMB2_Field')) {
-            switch ($template) {
-                case 'templates/Frohe-Weihnachten-Simpel.html':
-                    return in_array($cmb->args['_id'], [
-                        'rrze_greetings_title',
-                        'rrze_greetings_post_content',
-                        'rrze_greetings_logo'
-                    ]);
-                default:
-                    return false;
-            }
-        }
+        return $value;
+    }
+
+    public function showIfHasTemplate($cmb)
+    {
+        return (bool) get_post_meta($cmb->object_id(), 'rrze_greetings_card_template', true);
+    }
+
+    public function showIfHasImage($cmb)
+    {
+        return has_post_thumbnail($cmb->object_id());
     }
 
     public function templatesOptions($field)
     {
-        $templates = Functions::getFiles(plugin()->getPath('templates'), ['html'], 'templates');
-        asort($templates);
-        return array_merge(['' => __('None', 'rrze-greetings')], $templates);
+        $tplArry = ['' => __('None', 'rrze-greetings')];
+        $templates = GreetingTemplate::getTemplates();
+        foreach ($templates as $post) {
+            $tplArry[$post->ID] = $post->post_title;
+        }
+        return $tplArry;
     }
 
     public function fontsOptions($field)
@@ -313,6 +507,16 @@ class Metaboxes
         $fonts = Functions::getFiles(plugin()->getPath('assets/fonts'), ['ttf', 'otf'], 'fonts');
         asort($fonts);
         return $fonts;
+    }
+
+    public function sanitizeHtml($value, $field_args, $field)
+    {
+        return Functions::htmlEncode($value);
+    }
+
+    public function escapeHtml($value, $field_args, $field)
+    {
+        return Functions::htmlDecode($value);
     }
 
     public function filterText($value, $field_args, $field)
@@ -332,171 +536,37 @@ class Metaboxes
         return wp_kses($value, $allowedHtml);
     }
 
-    public function escapeSendDate($value, $field_args, $field)
+    public function escapeSendDate($value, $fieldArgs, $field)
     {
         $gmtDate = get_gmt_from_date(date('Y-m-d H:i:s', $value));
         update_post_meta($field->object_id, 'rrze_greetings_send_date_gmt', strtotime($gmtDate));
         return $value;
     }
 
-    public function cardImage()
+    public function cardImagePreview($postType, $post)
     {
-        $screen = get_current_screen();
-        if (!$screen->base == 'post' || $screen->post_type != 'greeting') {
+        if ($postType != 'greeting' || !has_post_thumbnail($post->ID)) {
             return;
         }
-
-        global $post;
-        $postId = $post->ID;
-        if ($post->post_type != 'greeting' || wp_is_post_revision($postId) || !has_post_thumbnail($postId)) {
+        $hasTemplate = get_post_meta($post->ID, 'rrze_greetings_card_template', true);
+        $hasCardId = absint(get_post_meta($post->ID, 'rrze_greetings_card_id', true));
+        if (!$hasTemplate || !$hasCardId) {
             return;
         }
-
-        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
-
-        wp_delete_attachment($cardId, true);
-
-        $sourceUrl = wp_get_attachment_image_url(get_post_thumbnail_id(), 'full');
-        $uploads = wp_upload_dir();
-        $source = str_replace($uploads['baseurl'], $uploads['basedir'], $sourceUrl);
-        $sourceExt = strtolower(pathinfo($source, PATHINFO_EXTENSION));
-
-        $cardId = $this->uploadImage($sourceUrl, $postId, $sourceExt);
-        if (is_wp_error($cardId)) {
-            return;
-        }
-
-        update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
-
-        $targetUrl = wp_get_attachment_image_url($cardId, 'full');
-        $this->cardImagePreview($postId, $targetUrl);
-
-        $uploads = wp_upload_dir();
-        $target = str_replace($uploads['baseurl'], $uploads['basedir'], $targetUrl);
-        $targetExt = strtolower(pathinfo($target, PATHINFO_EXTENSION));
-        $target = rtrim($target, '.' . $targetExt);
-
-        $text = get_post_meta($postId, 'rrze_greetings_post_excerpt', true);
-        $font = get_post_meta($postId, 'rrze_greetings_imagetext_font', true);
-        $color = Functions::hexToRgb(get_post_meta($postId, 'rrze_greetings_imagetext_color', true));
-        $atts = [
-            'width' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_width', true)),
-            'startX' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_startx', true)),
-            'startY' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_starty', true)),
-            'align' => get_post_meta($postId, 'rrze_greetings_imagetext_align', true),
-            'font' => plugin()->getPath('assets') . $font,
-            'lineHeight' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_lineheight', true)),
-            'size' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_size', true)),
-            'color' => $color
-        ];
-
-        $text = new Text($source, $target, $text, $atts);
-        $text->renderToImage();
-
-        $this->updatePost($postId, $post);
+        add_meta_box(
+            'rrze_greetings_greetings_image',
+            __('Card Image Preview', 'rrze-greetings'),
+            [$this, 'displayCardImage'],
+            'greeting',
+            'side',
+            'low'
+        );
     }
 
-    protected function cardImagePreview(int $postId, string $targetUrl)
+    public function displayCardImage($post)
     {
-        if (get_post_meta($postId, 'rrze_greetings_card_template', true)) {
-            add_meta_box(
-                'rrze_greetings_greetings_image',
-                __('Card Image Preview', 'rrze-greetings'),
-                [$this, 'displayCardImage'],
-                'greeting',
-                'side',
-                'low',
-                [$targetUrl]
-            );
-        }
-    }
-
-    public function displayCardImage($post, $callbackArgs)
-    {
-        $imageUrl = $callbackArgs['args'][0];
+        $cardId = absint(get_post_meta($post->ID, 'rrze_greetings_card_id', true));
+        $imageUrl = wp_get_attachment_image_url($cardId, 'full');
         echo '<img class="thumbnail" src="' . $imageUrl . '" style="max-width:100%">';
-    }
-
-    protected function uploadImage(string $url, int $postId, string $ext)
-    {
-        $fileId = 0;
-        $file = [];
-        $file['name'] = 'greeting-card-' . bin2hex(random_bytes(8)) . '.' . $ext;
-        $file['tmp_name'] = download_url($url);
-
-        if (is_wp_error($file['tmp_name'])) {
-            @unlink($file['tmp_name']);
-            return $file['tmp_name']; // Return \WP_Error
-        } else {
-            $fileId = media_handle_sideload($file, $postId);
-            if (is_wp_error($fileId)) {
-                @unlink($file['tmp_name']);
-                return $fileId; // Return \WP_Error
-            }
-        }
-
-        if ($fileId) {
-            // Trigger to hide files from the Media Library's overlay/list view
-            update_post_meta($fileId, 'rrze_greetings_hide_file', 1);
-            // Update file metadata (remove intermediate sizes)
-            Media::updateFileMetadata($fileId);
-        }
-        return $fileId;
-    }
-
-    protected function updatePost(int $postId, $post)
-    {
-        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
-        $imageUrl = $targetUrl = wp_get_attachment_image_url($cardId, 'full');
-        $title = (string) get_post_meta($postId, 'rrze_greetings_title', true);
-        $content = (string) get_post_meta($postId, 'rrze_greetings_post_content', true);
-        $logo = (string) get_post_meta($postId, 'rrze_greetings_logo', true);
-        $greetingCardNotice = __('Greeting Card', 'rrze-greetings');
-        $greetingCardUrl = site_url('/greeting-card/' . $postId);
-        $unsubscribeText = __('Unsubscribe from this newsletter', 'rrze-greetings');
-        $unsubscribeUrl = '((=unsubscribe_url))';
-        $siteName = get_bloginfo('name') ? get_bloginfo('name') : parse_url(site_url(), PHP_URL_HOST);
-        $siteUrl = site_url();
-
-        $htmlData = [
-            'image_url' => $imageUrl,
-            'title' => $title,
-            'content' => wpautop($content),
-            'logo' => $logo,
-            'unsubscribe_text' => $unsubscribeText,
-            'unsubscribe_url' => $unsubscribeUrl,
-            'site_name' => $siteName,
-            'site_url' => $siteUrl
-        ];
-        $htmlTemplate = get_post_meta($postId, 'rrze_greetings_card_template', true);
-        $htmlContent = $this->template->getContent($htmlTemplate, $htmlData);
-
-        $textData = [
-            'title' => $title,
-            'content' => wp_kses($content, []),
-            'greeting_card_notice' => $greetingCardNotice,
-            'greeting_card_url' => $greetingCardUrl,
-            'unsubscribe_text' => $unsubscribeText,
-            'unsubscribe_url' => $unsubscribeUrl,
-            'site_name' => $siteName,
-            'site_url' => $siteUrl
-        ];
-        $textTemplate = str_replace('.' . pathinfo($htmlTemplate, PATHINFO_EXTENSION), '.txt', $htmlTemplate);
-        $textContent = $this->template->getContent($textTemplate, $textData);
-
-        $args = [
-            'ID' => $postId,
-            'post_content' => $htmlContent,
-            'post_excerpt' => $textContent,
-            'post_name' => md5($postId)
-        ];
-
-        remove_filter('content_save_pre', 'wp_filter_post_kses');
-        remove_filter('content_filtered_save_pre', 'wp_filter_post_kses');
-
-        wp_update_post($args);
-
-        add_filter('content_save_pre', 'wp_filter_post_kses');
-        add_filter('content_filtered_save_pre', 'wp_filter_post_kses');
     }
 }
