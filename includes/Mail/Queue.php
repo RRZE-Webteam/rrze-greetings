@@ -8,6 +8,8 @@ use RRZE\Greetings\Settings;
 use RRZE\Greetings\Functions;
 use RRZE\Greetings\CPT\Greeting;
 
+use function RRZE\Greetings\plugin;
+
 class Queue
 {
     /**
@@ -84,20 +86,28 @@ class Queue
             $from = get_post_meta($greetingId, 'rrze_greetings_from_email_address', true);
             $fromName = get_post_meta($greetingId, 'rrze_greetings_from_name', true);
 
+            $sender = get_post_meta($greetingId, 'rrze_greetings_sender_email_address', true);
+
+            $replyTo = get_post_meta($greetingId, 'rrze_greetings_replyto_email_address', true);
+
             $to  = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
 
             $subject = $post->post_title;
-            $body = $post->post_content;
-            $altBody = $post->post_excerpt;
+            $body = Functions::htmlDecode($post->post_content);
+            $altBody = Functions::htmlDecode($post->post_excerpt);
 
+            $website = get_bloginfo('name') ?? parse_url(site_url(), PHP_URL_HOST);
             $headers = [
                 'Content-Type: text/html; charset=UTF-8',
-                'Content-Transfer-Encoding: 8bit'
+                'Content-Transfer-Encoding: 8bit',
+                'X-Mailtool: RRZE-Greetings Plugin V' . plugin()->getVersion() . ' on ' . $website,
+                'Reply-To: ' . $replyTo
             ];
 
             $isSent = $this->smtp->send(
                 $from,
                 $fromName,
+                $sender,
                 $to,
                 $subject,
                 $body,
