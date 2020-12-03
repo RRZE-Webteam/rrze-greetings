@@ -1,0 +1,53 @@
+<mjml>
+  <mj-head>
+    <mj-attributes>
+      <mj-text font-family="Georgia, Helvetica, Arial, sans-serif" font-size="14px"></mj-text>
+      <mj-section background-color="#ffffff"></mj-section>
+    </mj-attributes>
+    <mj-style inline="inline">
+      a {
+        text-decoration: none !important;
+      }
+    </mj-style>
+  </mj-head>
+  <mj-body background-color="#F4F4F4" color="#55575d" font-family="Arial, sans-serif">
+    <mj-raw>{{logo}}</mj-raw>
+    <mj-section background-color="#ffffff" background-repeat="repeat" padding-bottom="0px" padding-top="30px" padding="20px 0" text-align="center" vertical-align="top">
+      <mj-column>
+        <mj-image align="center" padding="10px 25px" src="{{=logo}}" target="_blank" width="214px"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-raw>{{/logo}}</mj-raw>
+    <mj-section background-repeat="repeat" padding-bottom="0px" padding-top="0px" padding="20px 0" text-align="center" vertical-align="top">
+      <mj-column>
+        <mj-image align="center" padding-bottom="0px" padding-left="0px" padding-right="0px" padding-top="0px" padding="10px 25px" src="{{=card_image_url}}" target="_blank" width="600px"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" background-repeat="repeat" background-size="auto" padding-bottom="0px" padding-top="30px" padding="20px 0" text-align="center" vertical-align="top">
+      <mj-column>
+        <mj-text align="left" color="#55575d" font-family="Arial, sans-serif" font-size="30px" line-height="22px" padding-bottom="10px" padding-top="10px" padding="10px 25px">
+          <p style="line-height: 30px; margin: 10px 0; text-align: center; color:#151e23; font-size:30p; font-family:Georgia,Helvetica,Arial,sans-serif">{{=title}}</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-section background-color="#ffffff" background-repeat="repeat" padding-bottom="0px" padding="20px 0" text-align="center" vertical-align="top">
+      <mj-column>
+        <mj-text align="left" color="#55575d" font-family="Arial, sans-serif" font-size="13px" line-height="22px" padding-bottom="0px" padding-left="40px" padding-right="40px" padding-top="0px" padding="10px 25px">
+          <p style="line-height: 16px; margin: 10px 0;font-size:14px; color:#151e23; font-family:Georgia,Helvetica,Arial,sans-serif; color:#354552">{{=content}}</p>
+        </mj-text>
+      </mj-column>
+    </mj-section>
+    <mj-raw>{{logo}}</mj-raw>
+    <mj-section background-color="#ffffff" background-repeat="repeat" padding="20px 0" text-align="center" vertical-align="top">
+      <mj-column>
+        <mj-image align="center" padding="10px 25px" src="{{=logo}}" target="_blank" width="202px"></mj-image>
+      </mj-column>
+    </mj-section>
+    <mj-raw>{{/logo}}</mj-raw>
+    <mj-section padding="10px 0 20px 0">
+      <mj-column>
+        <mj-text align="center" color="#9B9B9B" font-size="11px"><a href="{{=website_url}}" style="color: #9B9B9B; text-decoration:none;">{{=website_name}}</a></mj-text>
+      </mj-column>
+    </mj-section>
+  </mj-body>
+</mjml>
