@@ -17,12 +17,15 @@ class CPT
         $greeting->onLoaded();
 
         $greetingQueue = new GreetingQueue;
-        $greetingQueue->onLoaded();     
+        $greetingQueue->onLoaded();
+
+        $greetingTemplate = new GreetingTemplate;
+        $greetingTemplate->onLoaded();
 
         // CMB2 Metaboxes
         $metaboxes = new Metaboxes;
-        $metaboxes->onLoaded(); 
-                
+        $metaboxes->onLoaded();
+
         // Add Menu
         add_action('admin_menu', [$this, 'addMenu']);
         add_filter('parent_file', [$this, 'filterParentMenu']);
@@ -36,13 +39,15 @@ class CPT
 
         $greetingQueue = new GreetingQueue;
         $greetingQueue->registerPostType();
+
+        $greetingTemplate = new GreetingTemplate;
+        $greetingTemplate->registerPostType();        
     }
 
     public function addMenu()
     {
         remove_submenu_page('edit.php?post_type=greeting', 'edit.php?post_type=greeting');
         remove_submenu_page('edit.php?post_type=greeting', 'post-new.php?post_type=greeting');
-        remove_submenu_page('edit.php?post_type=greeting', 'edit-tags.php?taxonomy=greetings_category&amp;post_type=greeting');
         remove_submenu_page('edit.php?post_type=greeting', 'edit-tags.php?taxonomy=greetings_mailing_list&amp;post_type=greeting');
 
         $cpts = self::getAllCPT();
@@ -66,14 +71,6 @@ class CPT
                 'post-new.php?post_type=' . $cpt
             );
         }
-
-        add_submenu_page(
-            'edit.php?post_type=greeting',
-            __('Categories', 'rrze-greetings'),
-            __('Categories', 'rrze-greetings'),
-            'edit_greetings',
-            'edit-tags.php?taxonomy=greetings_category&amp;post_type=greeting'
-        );
 
         add_submenu_page(
             'edit.php?post_type=greeting',
