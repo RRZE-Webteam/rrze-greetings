@@ -107,12 +107,18 @@ class Actions
 		if ($segments[0] == 'greeting-card' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greeting-card-preview')) {
 			$postId = absint($_GET['id']);
 			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
-				echo $post->post_content;
+				echo Functions::htmlDecode($post->post_content);
+				exit;
+			}
+		} elseif ($segments[0] == 'greeting-template' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greeting-template-preview')) {
+			$postId = absint($_GET['id']);
+			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
+				echo Functions::htmlDecode($post->post_content);
 				exit;
 			}
 		} elseif ($segments[0] == 'greeting-card' && !empty($segments[1]) && ($postId = absint($segments[1]))) {
 			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
-				echo $post->post_content;
+				echo Functions::htmlDecode($post->post_content);
 				exit;
 			}
 		} elseif ($segments[0] == 'greeting-card' && !isset($_GET['unsubscribe'])) {
