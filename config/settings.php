@@ -46,6 +46,10 @@ function getSections(): array
         [
             'id'    => 'mailing_list',
             'title' => __('Mailing List', 'rrze-greetings')
+        ],
+        [
+            'id'    => 'templates',
+            'title' => __('Templates', 'rrze-greetings')
         ]
     ];
 }
@@ -116,8 +120,8 @@ function getFields(): array
                 'label'             => __('Queue Limit', 'rrze-greetings'),
                 'desc'              => __('Maximum number of emails that can be queued at once.', 'rrze-greetings'),
                 'placeholder'       => '100',
-                'min'               => 1,
-                'max'               => 200,
+                'min'               => '1',
+                'max'               => '200',
                 'step'              => '1',
                 'type'              => 'number',
                 'default'           => '100',
@@ -130,8 +134,8 @@ function getFields(): array
                 'label'             => __('Send Limit', 'rrze-greetings'),
                 'desc'              => __('Maximum number of emails that can be sent per minute.', 'rrze-greetings'),
                 'placeholder'       => '15',
-                'min'               => 1,
-                'max'               => 60,
+                'min'               => '1',
+                'max'               => '60',
                 'step'              => '1',
                 'type'              => 'number',
                 'default'           => '15',
@@ -144,8 +148,8 @@ function getFields(): array
                 'label'             => __('Max. Retries', 'rrze-greetings'),
                 'desc'              => __('Maximum number of retries until an email is sent successfully.', 'rrze-greetings'),
                 'placeholder'       => '1',
-                'min'               => 0,
-                'max'               => 10,
+                'min'               => '0',
+                'max'               => '10',
                 'step'              => '1',
                 'type'              => 'number',
                 'default'           => '1',
@@ -163,6 +167,20 @@ function getFields(): array
                 'type'              => 'textarea',
                 'default'           => '',
                 'sanitize_callback' => ['\RRZE\Greetings\Functions', 'sanitizeMailingList']
+            ],            
+        ],
+        'templates' => [
+            [
+                'name'    => 'import',
+                'label'   => __('Import Template', 'rrze-greetings'),
+                'desc'    => __('Import a default template.', 'rrze-greetings'),
+                'type'    => 'select',
+                'default' => '',
+                'options' => [
+                    '' => __('None', 'rrze-greetings'),
+                    'christmas-de_DE' => __('Christmas (de_DE)', 'rrze-greetings')
+                ],
+                'sanitize_callback' => ['\RRZE\Greetings\Template', 'import']
             ],            
         ]
     ];

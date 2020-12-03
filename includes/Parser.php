@@ -193,19 +193,12 @@ class Parser
 
     /**
      * [parse description]
-     * @param  string $template [description]
+     * @param  string $content [description]
      * @param  array $data      [description]
      * @return string           [description]
      */
-    public function parse($templateFile, $data)
+    public function parse($content, $data)
     {
-        if (!is_readable($templateFile)) {
-            return '';
-        }
-        ob_start();
-        include($templateFile);
-        $content = ob_get_contents();
-        @ob_end_clean();
         $this->vars = (array) $data;
         return $this->render($content);
     }

@@ -8,7 +8,11 @@ namespace RRZE\Greetings\CPT;
 
 defined('ABSPATH') || exit;
 
+use RRZE\Greetings\Media;
+use RRZE\Greetings\Template;
 use RRZE\Greetings\Functions;
+use RRZE\Greetings\Card\Text;
+use function RRZE\Greetings\plugin;
 
 class Greeting
 {
@@ -17,12 +21,6 @@ class Greeting
      * @var string
      */
     protected static $postType = 'greeting';
-
-    /**
-     * Category taxonomy
-     * @var string
-     */
-    protected static $categoryTaxonomy = 'greetings_category';
 
     /**
      * Category taxonomy
@@ -42,9 +40,11 @@ class Greeting
 
     protected $filterDate;
 
+    protected $template;
+
     public function __construct()
     {
-        //
+        $this->template = new Template;
     }
 
     public function onLoaded()
@@ -67,16 +67,16 @@ class Greeting
         add_action('created_greetings_mailing_list', [$this, 'saveFormFields']);
         add_action('edited_greetings_mailing_list', [$this, 'saveFormFields']);
         // Taxonomy Custom Columns
-        add_filter('manage_edit-greetings_category_columns', [$this, 'categoryColumns']);
         add_filter('manage_edit-greetings_mailing_list_columns', [$this, 'mailListColumns']);
         add_filter('manage_greetings_mailing_list_custom_column', [$this, 'mailListCustomColumns'], 10, 3);
         // List Actions
         add_filter('post_row_actions', [$this, 'rowActions'], 10, 2);
         add_filter('handle_bulk_actions-edit-greeting', [$this, 'bulkActionsHandler'], 10, 3);
         // Custom Post Links
-		add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
-		add_filter('post_type_link', [$this, 'postLink'], 10, 2);
-
+        add_filter('preview_post_link', [$this, 'previewLink'], 10, 2);
+        add_filter('post_type_link', [$this, 'postLink'], 10, 2);
+        // Save Template
+        add_action('save_post', [$this, 'savePost'], 99, 2);
     }
 
     public function registerPostType()
@@ -134,23 +134,6 @@ class Greeting
     public function registerTaxonomies()
     {
         $labels = [
-            'name' => _x('Categories', 'Taxonomy general name', 'rrze-greetings'),
-            'singular_name' => _x('Category', 'Taxonomy singular name', 'rrze-greetings'),
-        ];
-        $args = [
-            'labels' => $labels,
-            'hierarchical' => true,
-            'rewrite' => self::$categoryTaxonomy,
-            'capabilities' => [
-                'manage_terms' => 'edit_greetings',
-                'edit_terms' => 'edit_greetings',
-                'delete_terms' => 'edit_greetings',
-                'assign_terms' => 'edit_greetings'
-            ]
-        ];
-        register_taxonomy(self::$categoryTaxonomy, self::$postType, $args);
-
-        $labels = [
             'name' => _x('Mailing Lists', 'Taxonomy general name', 'rrze-greetings'),
             'singular_name' => _x('Mailing List', 'Taxonomy singular name', 'rrze-greetings'),
             'all_items' => __('All Lists', 'rrze-greetings'),
@@ -200,7 +183,7 @@ class Greeting
             <textarea id="greetings_mailing_list" rows="5" cols="50" name="rrze_greetings_mailing_list">' . esc_attr($value) . '</textarea>
             <p class="description">' . __('Enter one email address per line.', 'rrze-greetings') . '</p>
         </td>
-        </tr>';      
+        </tr>';
     }
 
     public function saveFormFields(int $termId)
@@ -215,14 +198,8 @@ class Greeting
         }
     }
 
-    public function categoryColumns($columns)
-    {
-        $columns['posts'] = __('Greetings', 'rrze-greetings');
-        return $columns;
-    }
-
     public function mailListColumns($columns)
-    {       
+    {
         $columns['posts'] = __('Greetings', 'rrze-greetings');
         $columns['emails'] = __('Emails', 'rrze-greetings');
         return $columns;
@@ -278,7 +255,6 @@ class Greeting
         $data['content'] = $post->post_content;
         $data['excerpt'] = $post->post_excerpt;
 
-        $data['categories'] = self::getTermsList($post->ID, self::$categoryTaxonomy);
         $data['mail_lists'] = self::getTermsList($post->ID, self::$mailListTaxonomy);
 
         $fromEmail = get_post_meta($post->ID, 'rrze_greetings_from_email_address', true);
@@ -402,8 +378,8 @@ class Greeting
                             $data['id'],
                             $nonce,
                             _x('Restore', 'Greeting action button', 'rrze-greetings')
-                        ); 
-                        $button = $sentButton . $restoreButton;                       
+                        );
+                        $button = $sentButton . $restoreButton;
                     } else {
                         $button = sprintf(
                             '<a href="edit.php?post_type=%s&id=%d&rrze_greetings_action=send&nonce=%s" class="button button-primary" data-id="%1$d">%s</a>',
@@ -533,22 +509,22 @@ class Greeting
         // @todo
     }
 
-	public function previewLink(string $url, \WP_Post $post): string
-	{
-		if ($post->post_type == 'greeting') {
+    public function previewLink(string $url, \WP_Post $post): string
+    {
+        if ($post->post_type == 'greeting') {
             $url = self::getPreviewUrl($post->ID);
-		}
-		return $url;
-	}
-
-	public function postLink(string $url, \WP_Post $post): string
-	{
-		if ($post->post_type == 'greeting') {
-            return self::getPostUrl($post->ID);
-		}
-		return $url;
+        }
+        return $url;
     }
-    
+
+    public function postLink(string $url, \WP_Post $post): string
+    {
+        if ($post->post_type == 'greeting') {
+            return self::getPostUrl($post->ID);
+        }
+        return $url;
+    }
+
     public static function getPreviewUrl($postId)
     {
         return sprintf(
@@ -564,5 +540,136 @@ class Greeting
             '/greeting-card/%d',
             $postId
         );
+    }
+
+    public function savePost($postId, $post)
+    {
+        if ($post->post_type != self::$postType || wp_is_post_revision($postId)) {
+            return;
+        }
+
+        if (has_post_thumbnail($post->ID)) {
+            $this->generateCardImage($post->ID);
+        }
+
+        $this->saveCard($postId, $post);
+    }
+
+    protected function saveCard(int $postId, $post)
+    {
+        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+        $cardImageUrl = wp_get_attachment_image_url($cardId, 'full');
+
+        $cardUrl = site_url('/greeting-card/' . $postId);
+        $unsubscribeUrl = '((=unsubscribe_url))';
+        $websiteUrl = site_url();
+        $websiteName = get_bloginfo('name') ?? parse_url(site_url(), PHP_URL_HOST);
+        $headerImageUrl = has_header_image() ? get_header_image() : '';        
+
+        $tplId = get_post_meta($postId, 'rrze_greetings_card_template', true);
+        if (!($tplFields = get_post_meta($tplId, 'rrze_greetings_template_fields', true))) {
+            return;
+        }
+
+        $data = [
+            'card_image_url' => $cardImageUrl,
+            'card_url' => $cardUrl,
+            'unsubscribe_url' => $unsubscribeUrl,
+            'website_url' => $websiteUrl,
+            'website_name' => $websiteName,
+            'header_image_url' => $headerImageUrl
+        ];
+
+        foreach($tplFields as $field) {
+            $metaKey = sprintf('rrze_greetings_template_%d_field_%s', $tplId, $field['id']);
+            $data[$field['id']] = get_post_meta($postId, $metaKey, true);
+        }
+
+        $tplContent = get_post_meta($tplId, 'rrze_greetings_template_post_content', true);
+        $tplExcerpt = get_post_meta($tplId, 'rrze_greetings_template_post_excerpt', true);
+
+        $content = $this->template->getContent(Functions::htmlDecode($tplContent), $data, false);
+        $excerpt = $this->template->getContent($tplExcerpt, $data, false);
+        
+        $args = [
+            'ID' => $postId,
+            'post_content' => Functions::htmlEncode($content),
+            'post_excerpt' => Functions::htmlEncode($excerpt),
+            'post_name' => md5($postId)
+        ];
+
+        remove_action('save_post', [$this, 'savePost'], 99);
+        wp_update_post($args);
+        add_action('save_post', [$this, 'savePost'], 99, 2);        
+    }
+
+    protected function generateCardImage(int $postId)
+    {
+        $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+
+        wp_delete_attachment($cardId, true);
+
+        $sourceUrl = wp_get_attachment_image_url(get_post_thumbnail_id(), 'full');
+        $uploads = wp_upload_dir();
+        $source = str_replace($uploads['baseurl'], $uploads['basedir'], $sourceUrl);
+        $sourceExt = strtolower(pathinfo($source, PATHINFO_EXTENSION));
+
+        $cardId = $this->uploadImage($sourceUrl, $postId, $sourceExt);
+        if (is_wp_error($cardId)) {
+            return;
+        }
+
+        update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
+
+        $targetUrl = wp_get_attachment_image_url($cardId, 'full');
+
+        $uploads = wp_upload_dir();
+        $target = str_replace($uploads['baseurl'], $uploads['basedir'], $targetUrl);
+        $targetExt = strtolower(pathinfo($target, PATHINFO_EXTENSION));
+        $target = rtrim($target, '.' . $targetExt);
+
+        $text = get_post_meta($postId, 'rrze_greetings_post_excerpt', true);
+        $font = get_post_meta($postId, 'rrze_greetings_imagetext_font', true);
+        $color = Functions::hexToRgb(get_post_meta($postId, 'rrze_greetings_imagetext_color', true));
+        $atts = [
+            'width' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_width', true)),
+            'startX' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_startx', true)),
+            'startY' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_starty', true)),
+            'align' => get_post_meta($postId, 'rrze_greetings_imagetext_align', true),
+            'font' => plugin()->getPath('assets') . $font,
+            'lineHeight' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_lineheight', true)),
+            'size' => absint(get_post_meta($postId, 'rrze_greetings_imagetext_size', true)),
+            'color' => $color
+        ];
+
+        $text = new Text($source, $target, $text, $atts);
+        $text->renderToImage();
+    }
+
+    protected function uploadImage(string $url, int $postId, string $ext)
+    {
+        $fileId = 0;
+        $file = [];
+        $file['name'] = 'greeting-card-' . bin2hex(random_bytes(8)) . '.' . $ext;
+        $file['tmp_name'] = download_url($url);
+
+        if (is_wp_error($file['tmp_name'])) {
+            @unlink($file['tmp_name']);
+            return $file['tmp_name']; // Return \WP_Error
+        } else {
+            $fileId = media_handle_sideload($file, $postId);
+            if (is_wp_error($fileId)) {
+                @unlink($file['tmp_name']);
+                return $fileId; // Return \WP_Error
+            }
+        }
+
+        if ($fileId) {
+            // Trigger to hide files from the Media Library's overlay/list view
+            update_post_meta($fileId, 'rrze_greetings_hide_file', 1);
+            // Update file metadata (remove intermediate sizes)
+            Media::updateFileMetadata($fileId);
+        }
+        return $fileId;
     }
 }

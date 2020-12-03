@@ -16,10 +16,15 @@ class SMTP
 
     /**
      * The name to associate with the $emailFrom email address.
-     *
      * @var string
      */
     protected $emailFromName = '';
+
+    /**
+     * The name to associate with the Sender email address.
+     * @var string
+     */
+    protected $sender = '';    
 
     /**
      * The plain-text message body.
@@ -62,6 +67,9 @@ class SMTP
     /**
      * send
      * Send an email.
+     * @param string $from
+     * @param string $fromName
+     * @param string $sender
      * @param string $to
      * @param string $subject
      * @param string $body
@@ -73,6 +81,7 @@ class SMTP
     public function send(
         string $from,
         string $fromName,
+        string $sender,        
         string $to,
         string $subject,
         string $body,
@@ -82,6 +91,7 @@ class SMTP
     ): bool {
         $this->emailFrom = $from;
         $this->emailFromName = $fromName;
+        $this->sender = $sender;
         $this->altBody = $altBody;
         $this->attachments = $attachments;
 
@@ -120,6 +130,8 @@ class SMTP
         $phpmailer->Username = $this->options->mail_server_username;
         $phpmailer->Password = $this->options->mail_server_password;
 
+        $phpmailer->Sender = $this->sender;
+
         $phpmailer->AltBody = $this->altBody;
 
         // Add attachments to email (if any).
@@ -156,7 +168,7 @@ class SMTP
      */
     public function filterName($name): string
     {
-        return ($this->emailFromName != '') ? $this->emailFrom : $name;
+        return ($this->emailFromName != '') ? $this->emailFromName : $name;
     }
 
     /**

@@ -3,9 +3,9 @@ msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-29 23:24+0000\n"
-"PO-Revision-Date: 2020-12-01 10:38+0000\n"
+"PO-Revision-Date: 2020-12-03 14:29+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
-"Language-Team: \n"
+"Language-Team: Deutsch (Sie)\n"
 "Language: de_DE_formal\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "MIME-Version: 1.0\n"
@@ -22,7 +22,7 @@ msgstr ""
 msgid "%s not supported"
 msgstr "%s wird nicht unterstützt"
 
-#: includes/CPT/Greeting.php:352
+#: includes/CPT/Greeting.php:328
 msgid "Action"
 msgstr "Aktion"
 
@@ -35,12 +35,20 @@ msgstr "Grußkarten hinzufügen und bearbeiten"
 msgid "Add and edit mailing list data"
 msgstr "Hinzufügen und Bearbeiten von Mailinglistendaten"
 
-#: includes/CPT/GreetingTemplate.php:84
+#: includes/CPT/GreetingTemplate.php:76
 msgid "Add and edit Templates"
 msgstr "Vorlagen hinzufügen und bearbeiten"
 
+#: includes/CPT/Metaboxes.php:149
+msgid "Add Another Field"
+msgstr "Fügen Sie ein weiteres Feld hinzu"
+
+#: includes/CPT/Metaboxes.php:272
+msgid "Add Image"
+msgstr "Bild hinzufügen"
+
 #: includes/CPT/GreetingQueue.php:54 includes/CPT/Greeting.php:89
-#: includes/CPT/GreetingTemplate.php:63
+#: includes/CPT/GreetingTemplate.php:55
 msgid "Add New"
 msgstr "Neue hinzufügen"
 
@@ -48,7 +56,7 @@ msgstr "Neue hinzufügen"
 msgid "Add New Greeting"
 msgstr "Neue Grußkarte hinzufügen"
 
-#: includes/CPT/Greeting.php:160
+#: includes/CPT/Greeting.php:143
 msgid "Add New List"
 msgstr "Neue Liste hinzufügen"
 
@@ -66,12 +74,12 @@ msgctxt "Add New on Toolbar"
 msgid "Mail Queue"
 msgstr "Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:62
+#: includes/CPT/GreetingTemplate.php:54
 msgctxt "Add New on Toolbar"
 msgid "Template"
 msgstr "Vorlage"
 
-#: includes/CPT/GreetingTemplate.php:64
+#: includes/CPT/GreetingTemplate.php:56
 msgid "Add New Template"
 msgstr "Neue Vorlage hinzufügen"
 
@@ -85,7 +93,7 @@ msgctxt "Admin Menu text"
 msgid "Mail Queue"
 msgstr "Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:61
+#: includes/CPT/GreetingTemplate.php:53
 msgctxt "Admin Menu text"
 msgid "Templates"
 msgstr "Vorlagen"
@@ -94,7 +102,7 @@ msgstr "Vorlagen"
 msgid "All Greetings"
 msgstr "Alle Grußkarten"
 
-#: includes/CPT/Greeting.php:156
+#: includes/CPT/Greeting.php:139
 msgid "All Lists"
 msgstr "Alle Listen"
 
@@ -102,53 +110,73 @@ msgstr "Alle Listen"
 msgid "All Mail Queue"
 msgstr "Alle Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:68
+#: includes/CPT/GreetingTemplate.php:60
 msgid "All Templates"
 msgstr "Alle Vorlagen"
 
-#: config/settings.php:92
+#: config/settings.php:96
 msgid "Authentication"
 msgstr "Authentifizierung"
 
-#: config/settings.php:93
+#: config/settings.php:97
 msgid "Authentication is required to access the SMTP server"
 msgstr ""
 "Für den Zugriff auf den SMTP-Server ist eine Authentifizierung erforderlich"
 
-#: includes/CPT/Greeting.php:166
+#: includes/CPT/Greeting.php:149
 msgid "Back to lists"
 msgstr "Zurück zu den Listen"
 
-#: includes/Plugin.php:189
+#: includes/Plugin.php:186
 #, php-format
 msgid "Call to undefined method %1$s::%2$s"
 msgstr "Aufruf der undefinierten Methode %1$s::%2$s"
 
-#: includes/CPT/Metaboxes.php:404
+#: includes/CPT/Metaboxes.php:558
 msgid "Card Image Preview"
 msgstr "Kartenbildvorschau"
 
-#: includes/CPT/Metaboxes.php:40
+#: includes/CPT/Metaboxes.php:197
 msgid "Card Settings"
 msgstr "Grußkarteneinstellungen"
 
-#: includes/CPT/CPT.php:72 includes/CPT/CPT.php:73
-msgid "Categories"
-msgstr "Kategorien"
-
-#: includes/CPT/Greeting.php:349
+#: includes/CPT/Greeting.php:325
 msgid "Category"
 msgstr "Kategorie"
 
-#: includes/CPT/Metaboxes.php:173
+#: includes/CPT/Metaboxes.php:358
 msgid "Center"
 msgstr "Center"
 
-#: includes/CPT/Metaboxes.php:237
+#: config/settings.php:181 includes/Template.php:89
+msgid "Christmas (de_DE)"
+msgstr "Weihnachten (de_DE)"
+
+#: includes/CPT/Metaboxes.php:136
+msgid "Custom Fields"
+msgstr "Benutzerdefinierte Felder"
+
+#: includes/CPT/Metaboxes.php:128
+msgid ""
+"Custom fields can be used directly in the template using the {{=field-name}} "
+"format."
+msgstr ""
+"Benutzerdefinierte Felder können direkt in der Vorlage im Format {{=Feldname}"
+"} verwendet werden."
+
+#: includes/CPT/Metaboxes.php:148
+msgid "Custom Fields {#}"
+msgstr "Benutzerdefinierte Felder {#}"
+
+#: includes/CPT/Metaboxes.php:422
 msgid "d-m-Y"
 msgstr "d.m.Y"
 
-#: includes/CPT/Greeting.php:185 includes/CPT/Greeting.php:197
+#: includes/CPT/Metaboxes.php:186
+msgid "Description"
+msgstr "Beschreibung"
+
+#: includes/CPT/Greeting.php:168 includes/CPT/Greeting.php:180
 msgid "E-mail Addresses"
 msgstr "E-Mail-Adressen"
 
@@ -156,7 +184,7 @@ msgstr "E-Mail-Adressen"
 msgid "Edit Greeting"
 msgstr "Grußkarte bearbeiten"
 
-#: includes/CPT/Greeting.php:157
+#: includes/CPT/Greeting.php:140
 msgid "Edit List"
 msgstr "Liste bearbeiten"
 
@@ -164,11 +192,11 @@ msgstr "Liste bearbeiten"
 msgid "Edit Mail Queue"
 msgstr "Mail-Queue bearbeiten"
 
-#: includes/CPT/GreetingTemplate.php:66
+#: includes/CPT/GreetingTemplate.php:58
 msgid "Edit Template"
 msgstr "Vorlage bearbeiten"
 
-#: includes/CPT/Greeting.php:227
+#: includes/CPT/Greeting.php:204
 msgid "Emails"
 msgstr "E-Mails"
 
@@ -176,13 +204,35 @@ msgstr "E-Mails"
 msgid "Emails have been sent to the mail queue."
 msgstr "E-Mails wurden an die Mail-Queue gesendet."
 
-#: config/settings.php:63
+#: config/settings.php:67
 msgid "Encryption"
 msgstr "Verschlüsselung"
 
-#: includes/CPT/Greeting.php:187 includes/CPT/Greeting.php:201
+#: includes/CPT/Greeting.php:170 includes/CPT/Greeting.php:184
 msgid "Enter one email address per line."
 msgstr "Geben Sie eine E-Mail-Adresse pro Zeile ein."
+
+#: includes/CPT/Metaboxes.php:187
+msgid "Enter the description of the field (for editing purposes only)."
+msgstr ""
+"Geben Sie die Beschreibung des Feldes ein (nur zu Bearbeitungszwecken)."
+
+#: includes/CPT/Metaboxes.php:179
+msgid "Enter the name of the field label (for editing purposes only)."
+msgstr ""
+"Geben Sie den Namen der Feldbezeichnung ein (nur zu Bearbeitungszwecken)."
+
+#: includes/CPT/Metaboxes.php:159
+msgid ""
+"Enter the name of the field that will be used by the template. Usage: "
+"{{=field-name}}"
+msgstr ""
+"Geben Sie den Namen des Feldes ein, das von der Vorlage verwendet werden "
+"soll. Verwendung: {{=Feldname}}"
+
+#: includes/CPT/GreetingQueue.php:169
+msgid "Error"
+msgstr "Fehler"
 
 #: includes/CPT/GreetingQueue.php:122
 #, php-format
@@ -195,23 +245,39 @@ msgstr[1] "Fehler <span class=\"count\">(%s)</span>"
 msgid "Every 5 minutes"
 msgstr "Alle 5 Minuten"
 
-#: includes/CPT/Metaboxes.php:180
+#: includes/CPT/Metaboxes.php:240
+msgid "Field #"
+msgstr "Feld #"
+
+#: includes/CPT/Metaboxes.php:158
+msgid "Field Name"
+msgstr "Feldname"
+
+#: includes/CPT/Metaboxes.php:166
+msgid "Field Type"
+msgstr "Feldtyp"
+
+#: includes/CPT/Metaboxes.php:172
+msgid "File"
+msgstr "Datei"
+
+#: includes/CPT/Metaboxes.php:365
 msgid "Font"
 msgstr "Schriftart"
 
-#: includes/CPT/Metaboxes.php:189
+#: includes/CPT/Metaboxes.php:374
 msgid "Font color"
 msgstr "Schriftfarbe"
 
-#: includes/CPT/GreetingQueue.php:163
+#: includes/CPT/GreetingQueue.php:165
 msgid "From"
 msgstr "Absender"
 
-#: includes/CPT/Metaboxes.php:261
+#: includes/CPT/Metaboxes.php:447
 msgid "From Email Address"
 msgstr "Absender-E-Mail-Adresse"
 
-#: includes/CPT/Metaboxes.php:252
+#: includes/CPT/Metaboxes.php:437
 msgid "From Name"
 msgstr "Absendername"
 
@@ -219,27 +285,27 @@ msgstr "Absendername"
 msgid "Greeting"
 msgstr "Grußkarte"
 
-#: includes/CPT/Greeting.php:392
+#: includes/CPT/Greeting.php:368
 msgctxt "Greeting action button"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: includes/CPT/Greeting.php:396
+#: includes/CPT/Greeting.php:372
 msgctxt "Greeting action button"
 msgid "Queued"
 msgstr "In Queue"
 
-#: includes/CPT/Greeting.php:404
+#: includes/CPT/Greeting.php:380
 msgctxt "Greeting action button"
 msgid "Restore"
 msgstr "Wiederherstellen"
 
-#: includes/CPT/Greeting.php:386 includes/CPT/Greeting.php:413
+#: includes/CPT/Greeting.php:362 includes/CPT/Greeting.php:389
 msgctxt "Greeting action button"
 msgid "Send"
 msgstr "Sende"
 
-#: includes/CPT/Greeting.php:398
+#: includes/CPT/Greeting.php:374
 msgctxt "Greeting action button"
 msgid "Sent"
 msgstr "Gesendet"
@@ -248,12 +314,11 @@ msgstr "Gesendet"
 msgid "Greeting Agent"
 msgstr "Greeting Agent"
 
-#: includes/Main.php:36 includes/CPT/Metaboxes.php:454
+#: includes/Main.php:40
 msgid "Greeting Card"
 msgstr "Grußkarte"
 
-#: config/settings.php:23 config/settings.php:24 includes/CPT/Greeting.php:220
-#: includes/CPT/Greeting.php:226
+#: config/settings.php:23 config/settings.php:24 includes/CPT/Greeting.php:203
 msgid "Greetings"
 msgstr "Grußkarten"
 
@@ -261,21 +326,29 @@ msgstr "Grußkarten"
 msgid "Greetings Settings"
 msgstr "Grußkarten Einstellungen"
 
-#: includes/CPT/Metaboxes.php:238
+#: includes/CPT/Metaboxes.php:423
 msgid "H:i"
 msgstr "H:i"
 
-#: config/settings.php:74
+#: config/settings.php:78
 msgid "Host"
 msgstr "Servername"
 
-#: config/settings.php:75
+#: config/settings.php:79
 msgid "Host ip address."
 msgstr "Server IP Adresse"
 
-#: config/settings.php:84
+#: config/settings.php:88
 msgid "Host port."
 msgstr "Server Port"
+
+#: includes/CPT/Metaboxes.php:80
+msgid "HTML"
+msgstr "HTML"
+
+#: includes/CPT/Metaboxes.php:81
+msgid "HTML version of the template."
+msgstr "HTML-Version der Vorlage."
 
 #. Author URI of the plugin
 msgid "https://blogs.fau.de/webworking/"
@@ -285,7 +358,7 @@ msgstr "https://blogs.fau.de/webworking/"
 msgid "https://github.com/RRZE-Webteam/rrze-greetings"
 msgstr "https://github.com/RRZE-Webteam/rrze-greetings"
 
-#: includes/CPT/Metaboxes.php:108
+#: includes/CPT/Metaboxes.php:293
 msgid "Image Settings"
 msgstr "Bildeinstellungen"
 
@@ -293,19 +366,31 @@ msgstr "Bildeinstellungen"
 msgid "Image to write text does not exist."
 msgstr "Bild zum Schreiben von Text existiert nicht."
 
-#: includes/CPT/Metaboxes.php:172
+#: config/settings.php:176
+msgid "Import a default template."
+msgstr "Standardvorlage importieren."
+
+#: config/settings.php:175
+msgid "Import Template"
+msgstr "Vorlage importieren"
+
+#: includes/CPT/Metaboxes.php:178
+msgid "Label Name"
+msgstr "Label-Name"
+
+#: includes/CPT/Metaboxes.php:357
 msgid "Left"
 msgstr "Links"
 
-#: includes/CPT/Metaboxes.php:129
+#: includes/CPT/Metaboxes.php:314
 msgid "Line width"
 msgstr "Linienbreite"
 
-#: config/settings.php:161
+#: config/settings.php:165
 msgid "List of cancelled email addresses through the unsubscription link."
 msgstr "Liste der nicht abonnierten E-Mail-Adressen."
 
-#: includes/CPT/Greeting.php:350
+#: includes/CPT/Greeting.php:326
 msgid "Mail List"
 msgstr "Mailingliste"
 
@@ -332,7 +417,7 @@ msgstr "Gesendet"
 msgid "Mail Server"
 msgstr "Mail-Server"
 
-#: includes/CPT/Metaboxes.php:225
+#: includes/CPT/Metaboxes.php:410
 msgid "Mail Settings"
 msgstr "Mail-Einstellungen"
 
@@ -340,33 +425,33 @@ msgstr "Mail-Einstellungen"
 msgid "Mailing List"
 msgstr "Mailingliste"
 
-#: includes/CPT/CPT.php:80 includes/CPT/CPT.php:81
+#: includes/CPT/CPT.php:77 includes/CPT/CPT.php:78
 msgid "Mailing Lists"
 msgstr "Mailinglisten"
 
-#: includes/CPT/Greeting.php:162
+#: includes/CPT/Greeting.php:145
 msgid "Main List"
 msgstr "Hauptliste"
 
-#: includes/CPT/Greeting.php:163
+#: includes/CPT/Greeting.php:146
 msgid "Main List:"
 msgstr "Hauptliste"
 
-#: config/settings.php:144
+#: config/settings.php:148
 msgid "Max. Retries"
 msgstr "Max. Wiederholungen"
 
-#: config/settings.php:117
+#: config/settings.php:121
 msgid "Maximum number of emails that can be queued at once."
 msgstr ""
 "Maximale Anzahl von E-Mails, die gleichzeitig in die Queue gestellt werden "
 "können."
 
-#: config/settings.php:131
+#: config/settings.php:135
 msgid "Maximum number of emails that can be sent per minute."
 msgstr "Maximale Anzahl von E-Mails, die pro Minute gesendet werden können."
 
-#: config/settings.php:145
+#: config/settings.php:149
 msgid "Maximum number of retries until an email is sent successfully."
 msgstr ""
 "Maximale Anzahl von Wiederholungsversuchen, bis eine E-Mail erfolgreich "
@@ -376,7 +461,7 @@ msgstr ""
 msgid "New Greeting"
 msgstr "Neue Grußkarte"
 
-#: includes/CPT/Greeting.php:161
+#: includes/CPT/Greeting.php:144
 msgid "New List Name"
 msgstr "Neuer Listenname"
 
@@ -384,7 +469,7 @@ msgstr "Neuer Listenname"
 msgid "New Mail Queue"
 msgstr "Neue Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:65
+#: includes/CPT/GreetingTemplate.php:57
 msgid "New Template"
 msgstr "Neue Vorlage"
 
@@ -396,7 +481,7 @@ msgstr "Keine Grußkarten im Papierkorb gefunden."
 msgid "No Greetings found."
 msgstr "Keine Grußkarten gefunden."
 
-#: includes/CPT/Greeting.php:165
+#: includes/CPT/Greeting.php:148
 msgid "No lists found"
 msgstr "Keine Listen gefunden"
 
@@ -408,45 +493,54 @@ msgstr "Keine Mail-Queue im Papierkorb gefunden."
 msgid "No Mail Queue found."
 msgstr "Keine Mail-Queue gefunden."
 
-#: includes/CPT/GreetingTemplate.php:75
+#: includes/CPT/GreetingTemplate.php:67
 msgid "No Templates found in Trash."
 msgstr "Keine Vorlagen im Papierkorb gefunden."
 
-#: includes/CPT/GreetingTemplate.php:74
+#: includes/CPT/GreetingTemplate.php:66
 msgid "No Templates found."
 msgstr "Keine Vorlagen gefunden."
 
-#: config/settings.php:67 includes/CPT/Metaboxes.php:308
+#: config/settings.php:71 config/settings.php:180
+#: includes/CPT/Metaboxes.php:497
 msgid "None"
 msgstr "Keiner"
 
-#: includes/CPT/Metaboxes.php:130
+#: includes/CPT/Metaboxes.php:315
 msgid "Number of characters per line."
 msgstr "Anzahl der Zeichen pro Zeile."
 
-#: includes/CPT/Greeting.php:96 includes/CPT/GreetingTemplate.php:70
+#: includes/CPT/Greeting.php:96 includes/CPT/GreetingTemplate.php:62
 msgctxt "Overrides the “Featured Image” phrase for this post type."
 msgid "Card Image Source"
 msgstr "Kartenbildquelle"
 
-#: includes/CPT/Greeting.php:98 includes/CPT/GreetingTemplate.php:72
+#: includes/CPT/Greeting.php:98 includes/CPT/GreetingTemplate.php:64
 msgctxt "Overrides the “Remove featured image” phrase for this post type."
 msgid "Remove the card image source"
 msgstr "Kartenbildquelle entfernen"
 
-#: includes/CPT/Greeting.php:97 includes/CPT/GreetingTemplate.php:71
+#: includes/CPT/Greeting.php:97 includes/CPT/GreetingTemplate.php:63
 msgctxt "Overrides the “Set featured image” phrase for this post type."
 msgid "Set the card image source"
 msgstr "Kartenbildquelle einstellen"
 
-#: includes/CPT/Greeting.php:99 includes/CPT/GreetingTemplate.php:73
+#: includes/CPT/Greeting.php:99 includes/CPT/GreetingTemplate.php:65
 msgctxt "Overrides the “Use as featured image” phrase for this post type."
 msgid "Use as source image"
 msgstr "Als Quellbild verwenden"
 
-#: config/settings.php:107
+#: config/settings.php:111
 msgid "Password"
 msgstr "Passwort"
+
+#: includes/CPT/Metaboxes.php:94
+msgid "Plain Text"
+msgstr "Plain-Text"
+
+#: includes/CPT/Metaboxes.php:95
+msgid "Plain text version of the template."
+msgstr "Plain-Text-Version der Vorlage."
 
 #. Description of the plugin
 msgid "Plugin for creating and sending HTML greeting cards."
@@ -457,7 +551,7 @@ msgstr "Plugin zum Erstellen und Senden von HTML-Grußkarten."
 msgid "Plugins: %s: %s"
 msgstr "Plugins: %s: %s"
 
-#: config/settings.php:83
+#: config/settings.php:87
 msgid "Port"
 msgstr "Port"
 
@@ -471,7 +565,7 @@ msgctxt "Post type general name"
 msgid "Mail Queue"
 msgstr "Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:59
+#: includes/CPT/GreetingTemplate.php:51
 msgctxt "Post type general name"
 msgid "Templates"
 msgstr "Vorlagen"
@@ -486,12 +580,16 @@ msgctxt "Post type singular name"
 msgid "Mail Queue"
 msgstr "Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:60
+#: includes/CPT/GreetingTemplate.php:52
 msgctxt "Post type singular name"
 msgid "Template"
 msgstr "Vorlage"
 
-#: config/settings.php:116
+#: includes/CPT/Metaboxes.php:59
+msgid "Preset Field Names"
+msgstr "Voreingestellte Feldnamen"
+
+#: config/settings.php:120
 msgid "Queue Limit"
 msgstr "Queue-Limit"
 
@@ -502,11 +600,19 @@ msgid_plural "Queued <span class=\"count\">(%s)</span>"
 msgstr[0] "In Queue <span class=\"count\">(%s)</span>"
 msgstr[1] "In Queue <span class=\"count\">(%s)</span>"
 
-#: includes/CPT/GreetingQueue.php:165
+#: includes/CPT/Metaboxes.php:150
+msgid "Remove Field"
+msgstr "Feld entfernen"
+
+#: includes/CPT/Metaboxes.php:467
+msgid "Reply-To Email Address"
+msgstr "Reply-To-E-Mail-Adresse"
+
+#: includes/CPT/GreetingQueue.php:167
 msgid "Retries"
 msgstr "Wiederholungen"
 
-#: includes/CPT/Metaboxes.php:174
+#: includes/CPT/Metaboxes.php:359
 msgid "Right"
 msgstr "Rechts"
 
@@ -532,7 +638,7 @@ msgctxt ""
 msgid "Filter Mail Queue list"
 msgstr "Mail-Queue filtern"
 
-#: includes/CPT/GreetingTemplate.php:77
+#: includes/CPT/GreetingTemplate.php:69
 msgctxt ""
 "Screen reader text for the filter links heading on the post type listing "
 "screen."
@@ -553,7 +659,7 @@ msgctxt ""
 msgid "Mail Queue list"
 msgstr "Mail-Queue-Liste"
 
-#: includes/CPT/GreetingTemplate.php:79
+#: includes/CPT/GreetingTemplate.php:71
 msgctxt ""
 "Screen reader text for the items list heading on the post type listing "
 "screen."
@@ -574,7 +680,7 @@ msgctxt ""
 msgid "Mail Queue list navigation"
 msgstr "Navigation in der Mail-Queue"
 
-#: includes/CPT/GreetingTemplate.php:78
+#: includes/CPT/GreetingTemplate.php:70
 msgctxt ""
 "Screen reader text for the pagination heading on the post type listing "
 "screen."
@@ -585,7 +691,7 @@ msgstr "Vorlagen Navigationsliste"
 msgid "Search Greetings"
 msgstr "Suche Grußkarten"
 
-#: includes/CPT/Greeting.php:164
+#: includes/CPT/Greeting.php:147
 msgid "Search Lists"
 msgstr "Suchlisten"
 
@@ -593,29 +699,37 @@ msgstr "Suchlisten"
 msgid "Search Mail Queue"
 msgstr "Mail-Queue durchsuchen"
 
-#: includes/CPT/GreetingTemplate.php:69
+#: includes/CPT/GreetingTemplate.php:61
 msgid "Search Templates"
 msgstr "Suche Vorlagen"
 
-#: includes/CPT/Metaboxes.php:50
+#: includes/CPT/Metaboxes.php:167
+msgid "Select a field type."
+msgstr "Wählen Sie einen Feldtyp."
+
+#: includes/CPT/Metaboxes.php:207
 msgid "Select a greeting card template."
 msgstr "Grußkartenvorlage auswählen"
 
-#: includes/CPT/Metaboxes.php:181
+#: includes/CPT/Metaboxes.php:366
 msgid "Select a text font."
 msgstr "Eine Schriftart auswählen."
 
-#: includes/CPT/GreetingQueue.php:162 includes/CPT/Greeting.php:351
+#: includes/CPT/GreetingQueue.php:164 includes/CPT/Greeting.php:327
 msgid "Send Date"
 msgstr "Sende Datum"
 
-#: includes/CPT/Metaboxes.php:234
+#: includes/CPT/Metaboxes.php:419
 msgid "Send Date/Time"
 msgstr "Sende Datum / Uhrzeit"
 
-#: config/settings.php:130
+#: config/settings.php:134
 msgid "Send Limit"
 msgstr "Sende-Limit"
+
+#: includes/CPT/Metaboxes.php:457
+msgid "Sender Address"
+msgstr "Sender-Adresse"
 
 #: includes/CPT/GreetingQueue.php:112
 #, php-format
@@ -624,87 +738,117 @@ msgid_plural "Sent <span class=\"count\">(%s)</span>"
 msgstr[0] "<span class=\"count\">(%s)</span> gesendet"
 msgstr[1] "<span class=\"count\">(%s)</span> gesendet"
 
-#: config/settings.php:69
+#: config/settings.php:73
 msgid "SSL"
 msgstr "SSL"
 
-#: includes/CPT/GreetingQueue.php:166
+#: includes/CPT/GreetingQueue.php:168
 msgid "Status"
 msgstr "Status"
 
-#: includes/CPT/GreetingQueue.php:161
+#: includes/CPT/GreetingQueue.php:163
 msgid "Subject"
 msgstr "Betreff"
 
-#: includes/CPT/Greeting.php:137 includes/CPT/GreetingTemplate.php:110
-msgctxt "Taxonomy general name"
-msgid "Categories"
-msgstr "Kategorien"
-
-#: includes/CPT/Greeting.php:154
+#: includes/CPT/Greeting.php:137
 msgctxt "Taxonomy general name"
 msgid "Mailing Lists"
 msgstr "Mailinglisten"
 
-#: includes/CPT/Greeting.php:138 includes/CPT/GreetingTemplate.php:111
-msgctxt "Taxonomy singular name"
-msgid "Category"
-msgstr "Kategorie"
-
-#: includes/CPT/Greeting.php:155
+#: includes/CPT/Greeting.php:138
 msgctxt "Taxonomy singular name"
 msgid "Mailing List"
 msgstr "Mailingliste"
 
-#: includes/CPT/Metaboxes.php:49 includes/CPT/GreetingTemplate.php:83
+#: includes/CPT/Metaboxes.php:206 includes/CPT/GreetingTemplate.php:75
 msgid "Template"
 msgstr "Vorlage"
 
-#: includes/CPT/Metaboxes.php:71 includes/CPT/Metaboxes.php:118
+#: includes/CPT/Metaboxes.php:71
+msgid "Template Content"
+msgstr "Vorlageninhalt"
+
+#: config/settings.php:52
+msgid "Templates"
+msgstr "Vorlagen"
+
+#: includes/CPT/Metaboxes.php:170 includes/CPT/Metaboxes.php:303
 msgid "Text"
 msgstr "Text"
 
-#: includes/CPT/Metaboxes.php:168
+#: includes/CPT/Metaboxes.php:353
 msgid "Text alignment"
 msgstr "Textausrichtung"
 
-#: includes/CPT/Metaboxes.php:196
+#: includes/CPT/Metaboxes.php:381
 msgid "Text line height"
 msgstr "Höhe der Textzeile"
 
-#: includes/CPT/Metaboxes.php:197
+#: includes/CPT/Metaboxes.php:382
 msgid "Text line height (pts)."
 msgstr "Höhe der Textzeile (Punkte)."
 
-#: includes/CPT/Metaboxes.php:209
+#: includes/CPT/Metaboxes.php:394
 msgid "Text size"
 msgstr "Textgröße"
 
-#: includes/CPT/Metaboxes.php:210
+#: includes/CPT/Metaboxes.php:395
 msgid "Text size (pts)."
 msgstr "Textgröße (Punkte)."
 
-#: includes/CPT/Metaboxes.php:72
-msgid "Text that will be shown after the greeting card image."
-msgstr "Text, der nach dem Grußkartenbild angezeigt wird."
-
-#: includes/CPT/Metaboxes.php:119
+#: includes/CPT/Metaboxes.php:304
 msgid "Text to be printed on the card image."
 msgstr "Text, der auf das Kartenbild gedruckt werden soll."
+
+#: includes/CPT/Metaboxes.php:171
+msgid "Textarea"
+msgstr "Textarea"
 
 #: includes/Actions.php:76
 msgid "The action could not be executed."
 msgstr "Die Aktion konnte nicht ausgeführt werden."
+
+#: includes/CPT/Metaboxes.php:460
+msgid ""
+"The email address of the sender acting on behalf of the email address listed "
+"in the From Email Address field."
+msgstr ""
+"Die E-Mail-Adresse des Absenders, der im Namen der im Feld „Absender-E-Mail-"
+"Adresse“ angegebenen E-Mail-Adresse handelt."
+
+#: includes/CPT/Metaboxes.php:450
+msgid "The email address that sent the message."
+msgstr "Die E-Mail-Adresse, an die die Nachricht gesendet wurde."
+
+#: includes/CPT/Metaboxes.php:470
+msgid "The email address that will be used to reply to the message."
+msgstr "Die E-Mail-Adresse, mit der auf die Nachricht geantwortet wird."
+
+#: includes/CPT/Metaboxes.php:440
+msgid "The name of the person sending the message."
+msgstr "Der Name der Person, die die Nachricht sendet."
+
+#: includes/CPT/Metaboxes.php:25
+msgid "The name of the website (optional). Usage: {{=website_name}}"
+msgstr "Der Name der Website (optional). Verwendung: {{=website_name}}"
 
 #: includes/CPT/Greeting.php:102
 msgctxt "The post type archive label used in nav menus."
 msgid "Greeting archives"
 msgstr "Grußkartenarchiv"
 
-#: includes/CPT/GreetingTemplate.php:76
+#: includes/CPT/GreetingTemplate.php:68
 msgctxt "The post type archive label used in nav menus."
 msgid "Template archives"
 msgstr "Vorlagenarchive"
+
+#: includes/CPT/Metaboxes.php:109
+msgid ""
+"The preset fields can be used directly in the template using the {{=field-"
+"name}} format."
+msgstr ""
+"Die voreingestellten Felder können im Format {{=Feldname}} direkt in der "
+"Vorlage verwendet werden."
 
 #: includes/Actions.php:62
 msgid "The sending of emails has been cancelled."
@@ -736,19 +880,54 @@ msgstr "Der Status kann nicht in den Standardstatus geändert werden."
 msgid "The status has been changed to the default status."
 msgstr "Der Status wurde in den Standardstatus geändert."
 
-#: includes/CPT/Metaboxes.php:60
-msgid "The title of the content of the greeting card."
-msgstr "Der Titel des Inhalts der Grußkarte."
+#: includes/CPT/Metaboxes.php:22
+msgid "The url of the greeting card (optional). Usage: {{=card_url}}"
+msgstr "Die URL der Grußkarte (optional). Verwendung: {{=card_url}}"
 
-#: includes/CPT/Metaboxes.php:59 includes/CPT/Greeting.php:348
+#: includes/CPT/Metaboxes.php:21
+msgid ""
+"The url of the greeting card image (required). Usage: {{=card_image_url}}"
+msgstr ""
+"Die URL des Grußkartenbildes (erforderlich). Verwendung: {{=card_image_url}}"
+
+#: includes/CPT/Metaboxes.php:26
+msgid "The url of the header image (optional). Usage: {{=header_image_url}}"
+msgstr ""
+"Die URL des Header-Bildes (optional). Verwendung: {{=header_image_url}}"
+
+#: includes/CPT/Metaboxes.php:23
+msgid "The url of the unsubscribe page (optional). Usage: {{=unsubscribe_url}}"
+msgstr "Die URL der Abmeldeseite (optional). Verwendung: {{=unsubscribe_url}}"
+
+#: includes/CPT/Metaboxes.php:24
+msgid "The url of the website (optional). Usage: {{=website_url}}"
+msgstr "Die URL der Website (optional). Verwendung: {{=website_url}}"
+
+#: includes/CPT/Metaboxes.php:129
+msgid ""
+"The value of the custom fields are entered manually during the editing of "
+"the greeting card."
+msgstr ""
+"Der Wert der benutzerdefinierten Felder wird während der Bearbeitung der "
+"Grußkarte manuell eingegeben."
+
+#: includes/CPT/Metaboxes.php:110
+msgid ""
+"The value of the preset fields are set dynamically and cannot be modified "
+"during the editing of the greeting card."
+msgstr ""
+"Der Wert der voreingestellten Felder wird dynamisch festgelegt und kann "
+"während der Bearbeitung der Grußkarte nicht geändert werden."
+
+#: includes/CPT/Greeting.php:324
 msgid "Title"
 msgstr "Titel"
 
-#: config/settings.php:68
+#: config/settings.php:72
 msgid "TLS"
 msgstr "TLS"
 
-#: includes/CPT/GreetingQueue.php:164
+#: includes/CPT/GreetingQueue.php:166
 msgid "To"
 msgstr "An"
 
@@ -760,23 +939,19 @@ msgstr "Das Senden von E-Mails kann nicht abgebrochen werden."
 msgid "Unable to send the emails to the mail queue."
 msgstr "Die E-Mails können nicht an die E-Mail-Queue gesendet werden."
 
-#: includes/Actions.php:154
+#: includes/Actions.php:160
 msgid "UNSUBSCRIBE"
 msgstr "ABMELDEN"
 
-#: includes/CPT/Metaboxes.php:456
-msgid "Unsubscribe from this newsletter"
-msgstr "Melden Sie sich von diesem Newsletter ab"
-
-#: config/settings.php:160
+#: config/settings.php:164
 msgid "Unsubscribed E-mail Addresses"
 msgstr "Abgemeldete E-Mail-Adressen"
 
-#: includes/CPT/Greeting.php:159
+#: includes/CPT/Greeting.php:142
 msgid "Update List"
 msgstr "Aktualisierungsliste"
 
-#: config/settings.php:98
+#: config/settings.php:102
 msgid "Username"
 msgstr "Benutzername"
 
@@ -784,7 +959,7 @@ msgstr "Benutzername"
 msgid "View Greeting"
 msgstr "Grußkarte anzeigen"
 
-#: includes/CPT/Greeting.php:158
+#: includes/CPT/Greeting.php:141
 msgid "View List"
 msgstr "Liste anzeigen"
 
@@ -792,37 +967,37 @@ msgstr "Liste anzeigen"
 msgid "View Mail Queue"
 msgstr "Mail-Queue anzeigen"
 
-#: includes/CPT/GreetingTemplate.php:67
+#: includes/CPT/GreetingTemplate.php:59
 msgid "View Template"
 msgstr "Vorlage anzeigen"
 
-#: includes/CPT/Metaboxes.php:142
+#: includes/CPT/Metaboxes.php:327
 msgid "X coordinate offset"
 msgstr "X-Koordinaten-Offset"
 
-#: includes/CPT/Metaboxes.php:143
+#: includes/CPT/Metaboxes.php:328
 msgid ""
 "X coordinate offset from which text will be positioned relative to the image."
 msgstr ""
 "X-Koordinaten-Offset, von dem aus der Text relativ zum Bild positioniert "
 "wird."
 
-#: includes/CPT/Metaboxes.php:155
+#: includes/CPT/Metaboxes.php:340
 msgid "Y coordinate offset"
 msgstr "Y-Koordinaten-Offset"
 
-#: includes/CPT/Metaboxes.php:156
+#: includes/CPT/Metaboxes.php:341
 msgid ""
 "Y coordinate offset from which text will be positioned relative to the image."
 msgstr ""
 "Y-Koordinaten-Offset, von dem aus der Text relativ zum Bild positioniert "
 "wird."
 
-#: includes/Actions.php:155
+#: includes/Actions.php:161
 msgid "You are unsubscribed from the mailing list."
 msgstr "Sie werden von der Mailingliste abgemeldet."
 
-#: includes/Actions.php:156
+#: includes/Actions.php:162
 #, php-format
 msgid ""
 "Your email address %s was unsubscribed from our \"Greetings Card\" mailing "
