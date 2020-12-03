@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-29 23:24+0000\n"
-"PO-Revision-Date: 2020-12-03 14:29+0000\n"
+"PO-Revision-Date: 2020-12-03 15:43+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -111,11 +111,11 @@ msgstr "Alle Mail-Queue"
 msgid "All Templates"
 msgstr "Alle Vorlagen"
 
-#: config/settings.php:96
+#: config/settings.php:105
 msgid "Authentication"
 msgstr "Authentifizierung"
 
-#: config/settings.php:97
+#: config/settings.php:106
 msgid "Authentication is required to access the SMTP server"
 msgstr ""
 "Für den Zugriff auf den SMTP-Server ist eine Authentifizierung erforderlich"
@@ -129,7 +129,7 @@ msgstr "Zurück zu den Listen"
 msgid "Call to undefined method %1$s::%2$s"
 msgstr "Aufruf der undefinierten Methode %1$s::%2$s"
 
-#: includes/CPT/Metaboxes.php:558
+#: includes/CPT/Metaboxes.php:548
 msgid "Card Image Preview"
 msgstr "Kartenbildvorschau"
 
@@ -145,7 +145,7 @@ msgstr "Kategorie"
 msgid "Center"
 msgstr "Center"
 
-#: config/settings.php:181 includes/Template.php:89
+#: config/settings.php:196 includes/Template.php:89
 msgid "Christmas (de_DE)"
 msgstr "Weihnachten (de_DE)"
 
@@ -363,11 +363,11 @@ msgstr "Bildeinstellungen"
 msgid "Image to write text does not exist."
 msgstr "Bild zum Schreiben von Text existiert nicht."
 
-#: config/settings.php:176
+#: config/settings.php:191
 msgid "Import a default template."
 msgstr "Standardvorlage importieren."
 
-#: config/settings.php:175
+#: config/settings.php:190
 msgid "Import Template"
 msgstr "Vorlage importieren"
 
@@ -383,7 +383,7 @@ msgstr "Links"
 msgid "Line width"
 msgstr "Linienbreite"
 
-#: config/settings.php:165
+#: config/settings.php:180
 msgid "List of cancelled email addresses through the unsubscription link."
 msgstr "Liste der nicht abonnierten E-Mail-Adressen."
 
@@ -434,21 +434,21 @@ msgstr "Hauptliste"
 msgid "Main List:"
 msgstr "Hauptliste"
 
-#: config/settings.php:148
+#: config/settings.php:161
 msgid "Max. Retries"
 msgstr "Max. Wiederholungen"
 
-#: config/settings.php:121
+#: config/settings.php:130
 msgid "Maximum number of emails that can be queued at once."
 msgstr ""
 "Maximale Anzahl von E-Mails, die gleichzeitig in die Queue gestellt werden "
 "können."
 
-#: config/settings.php:135
+#: config/settings.php:146
 msgid "Maximum number of emails that can be sent per minute."
 msgstr "Maximale Anzahl von E-Mails, die pro Minute gesendet werden können."
 
-#: config/settings.php:149
+#: config/settings.php:162
 msgid "Maximum number of retries until an email is sent successfully."
 msgstr ""
 "Maximale Anzahl von Wiederholungsversuchen, bis eine E-Mail erfolgreich "
@@ -498,8 +498,8 @@ msgstr "Keine Vorlagen im Papierkorb gefunden."
 msgid "No Templates found."
 msgstr "Keine Vorlagen gefunden."
 
-#: config/settings.php:71 config/settings.php:180
-#: includes/CPT/Metaboxes.php:497
+#: config/settings.php:71 config/settings.php:195
+#: includes/CPT/Metaboxes.php:487
 msgid "None"
 msgstr "Keiner"
 
@@ -527,7 +527,7 @@ msgctxt "Overrides the “Use as featured image” phrase for this post type."
 msgid "Use as source image"
 msgstr "Als Quellbild verwenden"
 
-#: config/settings.php:111
+#: config/settings.php:120
 msgid "Password"
 msgstr "Passwort"
 
@@ -586,7 +586,7 @@ msgstr "Vorlage"
 msgid "Preset Field Names"
 msgstr "Voreingestellte Feldnamen"
 
-#: config/settings.php:120
+#: config/settings.php:129
 msgid "Queue Limit"
 msgstr "Queue-Limit"
 
@@ -601,7 +601,7 @@ msgstr[1] "In Queue <span class=\"count\">(%s)</span>"
 msgid "Remove Field"
 msgstr "Feld entfernen"
 
-#: includes/CPT/Metaboxes.php:467
+#: includes/CPT/Metaboxes.php:457
 msgid "Reply-To Email Address"
 msgstr "Reply-To-E-Mail-Adresse"
 
@@ -720,12 +720,13 @@ msgstr "Sende Datum"
 msgid "Send Date/Time"
 msgstr "Sende Datum / Uhrzeit"
 
-#: config/settings.php:134
+#: config/settings.php:145
 msgid "Send Limit"
 msgstr "Sende-Limit"
 
-#: includes/CPT/Metaboxes.php:457
-msgid "Sender Address"
+#: config/settings.php:96
+#| msgid "Sender Address"
+msgid "Sender Addresse"
 msgstr "Sender-Adresse"
 
 #: includes/CPT/GreetingQueue.php:112
@@ -805,19 +806,11 @@ msgstr "Textarea"
 msgid "The action could not be executed."
 msgstr "Die Aktion konnte nicht ausgeführt werden."
 
-#: includes/CPT/Metaboxes.php:460
-msgid ""
-"The email address of the sender acting on behalf of the email address listed "
-"in the From Email Address field."
-msgstr ""
-"Die E-Mail-Adresse des Absenders, der im Namen der im Feld „Absender-E-Mail-"
-"Adresse“ angegebenen E-Mail-Adresse handelt."
-
 #: includes/CPT/Metaboxes.php:450
 msgid "The email address that sent the message."
 msgstr "Die E-Mail-Adresse, an die die Nachricht gesendet wurde."
 
-#: includes/CPT/Metaboxes.php:470
+#: includes/CPT/Metaboxes.php:460
 msgid "The email address that will be used to reply to the message."
 msgstr "Die E-Mail-Adresse, mit der auf die Nachricht geantwortet wird."
 
@@ -940,7 +933,7 @@ msgstr "Die E-Mails können nicht an die E-Mail-Queue gesendet werden."
 msgid "UNSUBSCRIBE"
 msgstr "ABMELDEN"
 
-#: config/settings.php:164
+#: config/settings.php:179
 msgid "Unsubscribed E-mail Addresses"
 msgstr "Abgemeldete E-Mail-Adressen"
 
@@ -948,7 +941,7 @@ msgstr "Abgemeldete E-Mail-Adressen"
 msgid "Update List"
 msgstr "Aktualisierungsliste"
 
-#: config/settings.php:102
+#: config/settings.php:111
 msgid "Username"
 msgstr "Benutzername"
 

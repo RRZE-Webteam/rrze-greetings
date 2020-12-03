@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-03 14:13+0000\n"
+"POT-Creation-Date: 2020-12-03 15:43+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -111,11 +111,11 @@ msgstr ""
 msgid "All Templates"
 msgstr ""
 
-#: config/settings.php:96
+#: config/settings.php:105
 msgid "Authentication"
 msgstr ""
 
-#: config/settings.php:97
+#: config/settings.php:106
 msgid "Authentication is required to access the SMTP server"
 msgstr ""
 
@@ -128,7 +128,7 @@ msgstr ""
 msgid "Call to undefined method %1$s::%2$s"
 msgstr ""
 
-#: includes/CPT/Metaboxes.php:558
+#: includes/CPT/Metaboxes.php:548
 msgid "Card Image Preview"
 msgstr ""
 
@@ -144,7 +144,7 @@ msgstr ""
 msgid "Center"
 msgstr ""
 
-#: config/settings.php:181 includes/Template.php:89
+#: config/settings.php:196 includes/Template.php:89
 msgid "Christmas (de_DE)"
 msgstr ""
 
@@ -356,11 +356,11 @@ msgstr ""
 msgid "Image to write text does not exist."
 msgstr ""
 
-#: config/settings.php:176
+#: config/settings.php:191
 msgid "Import a default template."
 msgstr ""
 
-#: config/settings.php:175
+#: config/settings.php:190
 msgid "Import Template"
 msgstr ""
 
@@ -376,7 +376,7 @@ msgstr ""
 msgid "Line width"
 msgstr ""
 
-#: config/settings.php:165
+#: config/settings.php:180
 msgid "List of cancelled email addresses through the unsubscription link."
 msgstr ""
 
@@ -427,19 +427,19 @@ msgstr ""
 msgid "Main List:"
 msgstr ""
 
-#: config/settings.php:148
+#: config/settings.php:161
 msgid "Max. Retries"
 msgstr ""
 
-#: config/settings.php:121
+#: config/settings.php:130
 msgid "Maximum number of emails that can be queued at once."
 msgstr ""
 
-#: config/settings.php:135
+#: config/settings.php:146
 msgid "Maximum number of emails that can be sent per minute."
 msgstr ""
 
-#: config/settings.php:149
+#: config/settings.php:162
 msgid "Maximum number of retries until an email is sent successfully."
 msgstr ""
 
@@ -487,8 +487,8 @@ msgstr ""
 msgid "No Templates found."
 msgstr ""
 
-#: config/settings.php:71 config/settings.php:180
-#: includes/CPT/Metaboxes.php:497
+#: config/settings.php:71 config/settings.php:195
+#: includes/CPT/Metaboxes.php:487
 msgid "None"
 msgstr ""
 
@@ -516,7 +516,7 @@ msgctxt "Overrides the “Use as featured image” phrase for this post type."
 msgid "Use as source image"
 msgstr ""
 
-#: config/settings.php:111
+#: config/settings.php:120
 msgid "Password"
 msgstr ""
 
@@ -575,7 +575,7 @@ msgstr ""
 msgid "Preset Field Names"
 msgstr ""
 
-#: config/settings.php:120
+#: config/settings.php:129
 msgid "Queue Limit"
 msgstr ""
 
@@ -590,7 +590,7 @@ msgstr[1] ""
 msgid "Remove Field"
 msgstr ""
 
-#: includes/CPT/Metaboxes.php:467
+#: includes/CPT/Metaboxes.php:457
 msgid "Reply-To Email Address"
 msgstr ""
 
@@ -709,12 +709,12 @@ msgstr ""
 msgid "Send Date/Time"
 msgstr ""
 
-#: config/settings.php:134
+#: config/settings.php:145
 msgid "Send Limit"
 msgstr ""
 
-#: includes/CPT/Metaboxes.php:457
-msgid "Sender Address"
+#: config/settings.php:96
+msgid "Sender Addresse"
 msgstr ""
 
 #: includes/CPT/GreetingQueue.php:112
@@ -794,17 +794,11 @@ msgstr ""
 msgid "The action could not be executed."
 msgstr ""
 
-#: includes/CPT/Metaboxes.php:460
-msgid ""
-"The email address of the sender acting on behalf of the email address listed "
-"in the From Email Address field."
-msgstr ""
-
 #: includes/CPT/Metaboxes.php:450
 msgid "The email address that sent the message."
 msgstr ""
 
-#: includes/CPT/Metaboxes.php:470
+#: includes/CPT/Metaboxes.php:460
 msgid "The email address that will be used to reply to the message."
 msgstr ""
 
@@ -915,7 +909,7 @@ msgstr ""
 msgid "UNSUBSCRIBE"
 msgstr ""
 
-#: config/settings.php:164
+#: config/settings.php:179
 msgid "Unsubscribed E-mail Addresses"
 msgstr ""
 
@@ -923,7 +917,7 @@ msgstr ""
 msgid "Update List"
 msgstr ""
 
-#: config/settings.php:102
+#: config/settings.php:111
 msgid "Username"
 msgstr ""
 
