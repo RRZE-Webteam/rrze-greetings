@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-12-03 15:43+0000\n"
+"POT-Creation-Date: 2020-12-04 08:19+0000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: \n"
@@ -20,7 +20,7 @@ msgstr ""
 msgid "%s not supported"
 msgstr ""
 
-#: includes/CPT/Greeting.php:328
+#: includes/CPT/Greeting.php:327
 msgid "Action"
 msgstr ""
 
@@ -136,10 +136,6 @@ msgstr ""
 msgid "Card Settings"
 msgstr ""
 
-#: includes/CPT/Greeting.php:325
-msgid "Category"
-msgstr ""
-
 #: includes/CPT/Metaboxes.php:358
 msgid "Center"
 msgstr ""
@@ -220,7 +216,7 @@ msgid ""
 "{{=field-name}}"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:169
+#: includes/CPT/GreetingQueue.php:172
 msgid "Error"
 msgstr ""
 
@@ -259,7 +255,7 @@ msgstr ""
 msgid "Font color"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:165
+#: includes/CPT/GreetingQueue.php:168
 msgid "From"
 msgstr ""
 
@@ -275,27 +271,27 @@ msgstr ""
 msgid "Greeting"
 msgstr ""
 
-#: includes/CPT/Greeting.php:368
+#: includes/CPT/Greeting.php:364
 msgctxt "Greeting action button"
 msgid "Cancel"
 msgstr ""
 
-#: includes/CPT/Greeting.php:372
+#: includes/CPT/Greeting.php:368
 msgctxt "Greeting action button"
 msgid "Queued"
 msgstr ""
 
-#: includes/CPT/Greeting.php:380
+#: includes/CPT/Greeting.php:376
 msgctxt "Greeting action button"
 msgid "Restore"
 msgstr ""
 
-#: includes/CPT/Greeting.php:362 includes/CPT/Greeting.php:389
+#: includes/CPT/Greeting.php:358 includes/CPT/Greeting.php:385
 msgctxt "Greeting action button"
 msgid "Send"
 msgstr ""
 
-#: includes/CPT/Greeting.php:374
+#: includes/CPT/Greeting.php:370
 msgctxt "Greeting action button"
 msgid "Sent"
 msgstr ""
@@ -380,7 +376,7 @@ msgstr ""
 msgid "List of cancelled email addresses through the unsubscription link."
 msgstr ""
 
-#: includes/CPT/Greeting.php:326
+#: includes/CPT/Greeting.php:325
 msgid "Mail List"
 msgstr ""
 
@@ -594,7 +590,7 @@ msgstr ""
 msgid "Reply-To Email Address"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:167
+#: includes/CPT/GreetingQueue.php:170
 msgid "Retries"
 msgstr ""
 
@@ -608,6 +604,10 @@ msgstr ""
 
 #. Author of the plugin
 msgid "RRZE-Webteam"
+msgstr ""
+
+#: includes/CPT/GreetingQueue.php:166
+msgid "Scheduled Date"
 msgstr ""
 
 #: includes/CPT/Greeting.php:103
@@ -701,7 +701,7 @@ msgstr ""
 msgid "Select a text font."
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:164 includes/CPT/Greeting.php:327
+#: includes/CPT/GreetingQueue.php:167 includes/CPT/Greeting.php:326
 msgid "Send Date"
 msgstr ""
 
@@ -728,11 +728,11 @@ msgstr[1] ""
 msgid "SSL"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:168
+#: includes/CPT/GreetingQueue.php:171
 msgid "Status"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:163
+#: includes/CPT/GreetingQueue.php:165
 msgid "Subject"
 msgstr ""
 
@@ -893,7 +893,7 @@ msgstr ""
 msgid "TLS"
 msgstr ""
 
-#: includes/CPT/GreetingQueue.php:166
+#: includes/CPT/GreetingQueue.php:169
 msgid "To"
 msgstr ""
 
@@ -905,7 +905,7 @@ msgstr ""
 msgid "Unable to send the emails to the mail queue."
 msgstr ""
 
-#: includes/Actions.php:160
+#: includes/Actions.php:163
 msgid "UNSUBSCRIBE"
 msgstr ""
 
@@ -955,11 +955,11 @@ msgid ""
 "Y coordinate offset from which text will be positioned relative to the image."
 msgstr ""
 
-#: includes/Actions.php:161
+#: includes/Actions.php:164
 msgid "You are unsubscribed from the mailing list."
 msgstr ""
 
-#: includes/Actions.php:162
+#: includes/Actions.php:165
 #, php-format
 msgid ""
 "Your email address %s was unsubscribed from our \"Greetings Card\" mailing "

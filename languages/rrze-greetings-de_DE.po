@@ -3,7 +3,7 @@ msgstr ""
 "Project-Id-Version: RRZE Greetings\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-11-29 23:24+0000\n"
-"PO-Revision-Date: 2020-12-03 15:43+0000\n"
+"PO-Revision-Date: 2020-12-04 08:21+0000\n"
 "Last-Translator: RRZE Webteam <webmaster@fau.de>\n"
 "Language-Team: Deutsch\n"
 "Language: de_DE\n"
@@ -19,7 +19,7 @@ msgstr ""
 msgid "%s not supported"
 msgstr "%s wird nicht unterstützt"
 
-#: includes/CPT/Greeting.php:328
+#: includes/CPT/Greeting.php:327
 msgid "Action"
 msgstr "Aktion"
 
@@ -137,10 +137,6 @@ msgstr "Kartenbildvorschau"
 msgid "Card Settings"
 msgstr "Grußkarteneinstellungen"
 
-#: includes/CPT/Greeting.php:325
-msgid "Category"
-msgstr "Kategorie"
-
 #: includes/CPT/Metaboxes.php:358
 msgid "Center"
 msgstr "Center"
@@ -227,7 +223,7 @@ msgstr ""
 "Geben Sie den Namen des Feldes ein, das von der Vorlage verwendet werden "
 "soll. Verwendung: {{=Feldname}}"
 
-#: includes/CPT/GreetingQueue.php:169
+#: includes/CPT/GreetingQueue.php:172
 msgid "Error"
 msgstr "Fehler"
 
@@ -266,7 +262,7 @@ msgstr "Schriftart"
 msgid "Font color"
 msgstr "Schriftfarbe"
 
-#: includes/CPT/GreetingQueue.php:165
+#: includes/CPT/GreetingQueue.php:168
 msgid "From"
 msgstr "Absender"
 
@@ -282,27 +278,27 @@ msgstr "Absendername"
 msgid "Greeting"
 msgstr "Grußkarte"
 
-#: includes/CPT/Greeting.php:368
+#: includes/CPT/Greeting.php:364
 msgctxt "Greeting action button"
 msgid "Cancel"
 msgstr "Abbrechen"
 
-#: includes/CPT/Greeting.php:372
+#: includes/CPT/Greeting.php:368
 msgctxt "Greeting action button"
 msgid "Queued"
 msgstr "In Queue"
 
-#: includes/CPT/Greeting.php:380
+#: includes/CPT/Greeting.php:376
 msgctxt "Greeting action button"
 msgid "Restore"
 msgstr "Wiederherstellen"
 
-#: includes/CPT/Greeting.php:362 includes/CPT/Greeting.php:389
+#: includes/CPT/Greeting.php:358 includes/CPT/Greeting.php:385
 msgctxt "Greeting action button"
 msgid "Send"
 msgstr "Sende"
 
-#: includes/CPT/Greeting.php:374
+#: includes/CPT/Greeting.php:370
 msgctxt "Greeting action button"
 msgid "Sent"
 msgstr "Gesendet"
@@ -387,7 +383,7 @@ msgstr "Linienbreite"
 msgid "List of cancelled email addresses through the unsubscription link."
 msgstr "Liste der nicht abonnierten E-Mail-Adressen."
 
-#: includes/CPT/Greeting.php:326
+#: includes/CPT/Greeting.php:325
 msgid "Mail List"
 msgstr "Mailingliste"
 
@@ -605,9 +601,9 @@ msgstr "Feld entfernen"
 msgid "Reply-To Email Address"
 msgstr "Reply-To-E-Mail-Adresse"
 
-#: includes/CPT/GreetingQueue.php:167
+#: includes/CPT/GreetingQueue.php:170
 msgid "Retries"
-msgstr "Wiederholungen"
+msgstr "Wdh."
 
 #: includes/CPT/Metaboxes.php:359
 msgid "Right"
@@ -620,6 +616,10 @@ msgstr "RRZE Greetings"
 #. Author of the plugin
 msgid "RRZE-Webteam"
 msgstr "RRZE-Webteam"
+
+#: includes/CPT/GreetingQueue.php:166
+msgid "Scheduled Date"
+msgstr "Geplantes Datum"
 
 #: includes/CPT/Greeting.php:103
 msgctxt ""
@@ -712,7 +712,7 @@ msgstr "Grußkartenvorlage auswählen"
 msgid "Select a text font."
 msgstr "Eine Schriftart auswählen."
 
-#: includes/CPT/GreetingQueue.php:164 includes/CPT/Greeting.php:327
+#: includes/CPT/GreetingQueue.php:167 includes/CPT/Greeting.php:326
 msgid "Send Date"
 msgstr "Sende Datum"
 
@@ -740,11 +740,11 @@ msgstr[1] "<span class=\"count\">(%s)</span> gesendet"
 msgid "SSL"
 msgstr "SSL"
 
-#: includes/CPT/GreetingQueue.php:168
+#: includes/CPT/GreetingQueue.php:171
 msgid "Status"
 msgstr "Status"
 
-#: includes/CPT/GreetingQueue.php:163
+#: includes/CPT/GreetingQueue.php:165
 msgid "Subject"
 msgstr "Betreff"
 
@@ -917,7 +917,7 @@ msgstr "Titel"
 msgid "TLS"
 msgstr "TLS"
 
-#: includes/CPT/GreetingQueue.php:166
+#: includes/CPT/GreetingQueue.php:169
 msgid "To"
 msgstr "An"
 
@@ -929,7 +929,7 @@ msgstr "Das Senden von E-Mails kann nicht abgebrochen werden."
 msgid "Unable to send the emails to the mail queue."
 msgstr "Die E-Mails können nicht an die E-Mail-Queue gesendet werden."
 
-#: includes/Actions.php:160
+#: includes/Actions.php:163
 msgid "UNSUBSCRIBE"
 msgstr "ABMELDEN"
 
@@ -983,11 +983,11 @@ msgstr ""
 "Y-Koordinaten-Offset, von dem aus der Text relativ zum Bild positioniert "
 "wird."
 
-#: includes/Actions.php:161
+#: includes/Actions.php:164
 msgid "You are unsubscribed from the mailing list."
 msgstr "Sie werden von der Mailingliste abgemeldet."
 
-#: includes/Actions.php:162
+#: includes/Actions.php:165
 #, php-format
 msgid ""
 "Your email address %s was unsubscribed from our \"Greetings Card\" mailing "
