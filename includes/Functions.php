@@ -121,4 +121,25 @@ class Functions
     {
         return self::crypt($string, 'decrypt');
     }
+
+    public static function getPostMetaByKey(string $metaKey)
+    {
+        global $wpdb;
+        return $wpdb->get_var($wpdb->prepare("SELECT meta_value FROM $wpdb->postmeta WHERE meta_key = %s LIMIT 1", $metaKey));
+    }
+
+    public static function redirectTo404()
+    {
+        if (!empty(locate_template('404.php'))) {
+            global $wp_query;
+            $wp_query->set_404();
+            status_header(404);
+            get_template_part(404);
+            exit;
+        }
+
+        header('HTTP/1.1 301 Moved Permanently');
+        header('Location: ' . site_url());
+        exit;
+    }
 }
