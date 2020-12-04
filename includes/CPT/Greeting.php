@@ -604,9 +604,12 @@ class Greeting
 
     protected function generateCardImage(int $postId)
     {
+        $keepCardId = absint(get_post_meta($postId, 'rrze_greetings_keep_card_id', true));
         $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
-
-        wp_delete_attachment($cardId, true);
+        if ($keepCardId != $cardId) {
+            wp_delete_attachment($cardId, true);
+        }
+        delete_post_meta($postId, 'rrze_greetings_keep_card_id');
 
         $sourceUrl = wp_get_attachment_image_url(get_post_thumbnail_id(), 'full');
         $uploads = wp_upload_dir();
@@ -619,6 +622,10 @@ class Greeting
         }
 
         update_post_meta($postId, 'rrze_greetings_card_id', $cardId);
+
+        if (!get_post_meta($postId, 'rrze_greetings_print_text_on_image', true)) {
+            return;
+        }
 
         $targetUrl = wp_get_attachment_image_url($cardId, 'full');
 
