@@ -556,7 +556,7 @@ class Greeting
         $cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
         $cardImageUrl = wp_get_attachment_image_url($cardId, 'full');
 
-        $cardUrl = site_url('/greeting-card/' . $postId);
+        $cardUrl = site_url('/greeting-card/' . $cardId);
         $unsubscribeUrl = '((=unsubscribe_url))';
         $websiteUrl = site_url();
         $websiteName = get_bloginfo('name') ?? parse_url(site_url(), PHP_URL_HOST);
@@ -584,13 +584,16 @@ class Greeting
         $tplContent = get_post_meta($tplId, 'rrze_greetings_template_post_content', true);
         $tplExcerpt = get_post_meta($tplId, 'rrze_greetings_template_post_excerpt', true);
 
-        $content = $this->template->getContent(Functions::htmlDecode($tplContent), $data, false);
-        $excerpt = $this->template->getContent($tplExcerpt, $data, false);
+        $content = Functions::htmlEncode($this->template->getContent(Functions::htmlDecode($tplContent), $data, false));
+        $excerpt = Functions::htmlEncode($this->template->getContent($tplExcerpt, $data, false));
+
+        update_post_meta($postId, 'rrze_greetings_content_' . $cardId, $content);
+        update_post_meta($postId, 'rrze_greetings_excerpt_' . $cardId, $content);
         
         $args = [
             'ID' => $postId,
-            'post_content' => Functions::htmlEncode($content),
-            'post_excerpt' => Functions::htmlEncode($excerpt),
+            'post_content' => $content,
+            'post_excerpt' => $excerpt,
             'post_name' => md5($postId)
         ];
 

@@ -110,23 +110,26 @@ class Actions
 				echo Functions::htmlDecode($post->post_content);
 				exit;
 			}
+			Functions::redirectTo404();
 		} elseif ($segments[0] == 'greeting-template' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greeting-template-preview')) {
 			$postId = absint($_GET['id']);
 			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
 				echo Functions::htmlDecode($post->post_content);
 				exit;
 			}
-		} elseif ($segments[0] == 'greeting-card' && !empty($segments[1]) && ($postId = absint($segments[1]))) {
-			if ($postId && ($post = get_post($postId)) && $post->post_status == 'publish') {
-				echo Functions::htmlDecode($post->post_content);
+			Functions::redirectTo404();
+		} elseif ($segments[0] == 'greeting-card' && !empty($segments[1]) && ($id = absint($segments[1]))) {
+			if (($post = get_post($id)) && $post->post_type == 'greeting' && $post->post_status == 'publish') {
+				$content = $post->post_content;
+				echo Functions::htmlDecode($content);
+				exit;
+			} elseif ($content = Functions::getPostMetaByKey('rrze_greetings_content_' . $id)) {
+				echo Functions::htmlDecode($content);
 				exit;
 			}
+			Functions::redirectTo404();
 		} elseif ($segments[0] == 'greeting-card' && !isset($_GET['unsubscribe'])) {
-			global $wp_query;
-			$wp_query->set_404();
-			status_header(404);
-			get_template_part(404);
-			exit;
+			Functions::redirectTo404();
 		}
 	}
 
@@ -162,5 +165,5 @@ class Actions
 		$data['unsubscribed_email_text'] = sprintf(__('Your email address %s was unsubscribed from our "Greetings Card" mailing list.', 'rrze-greetings'), $email);
 
 		return $this->template->getContent('responses/unsubscribe.html', $data);
-	}	
+	}
 }

@@ -118,6 +118,7 @@ class Queue
                     'post_status' => 'mail_queue_sent'
                 ];
                 wp_update_post($args);
+                add_post_meta($post->ID, 'rrze_greetings_queue_sent_date_gmt', date('Y-m-d H:i:s', time()), true);
             } else {
                 $error = $this->smtp->getError();
                 update_post_meta($post->ID, 'rrze_greetings_queue_error', $error->get_error_message());
@@ -224,7 +225,7 @@ class Queue
             add_filter('content_save_pre', 'wp_filter_post_kses');
             add_filter('content_filtered_save_pre', 'wp_filter_post_kses');
 
-            if ($qId != 0 || !is_wp_error($qId)) {
+            if ($qId != 0 && !is_wp_error($qId)) {
                 add_post_meta($qId, 'rrze_greetings_queue_greeting_id', $postId, true);
                 add_post_meta($qId, 'rrze_greetings_queue_greeting_url', Greeting::getPostUrl($postId), true);
                 add_post_meta($qId, 'rrze_greetings_queue_from', $data['from'], true);
