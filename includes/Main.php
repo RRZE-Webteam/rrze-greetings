@@ -57,8 +57,6 @@ class Main
 
     public function adminEnqueueScripts($hook)
     {
-        global $post_type;
-
         wp_enqueue_style(
             'rrze-greetings-admin',
             plugins_url('assets/css/rrze-greetings-admin.css', plugin()->getBasename()),
@@ -66,8 +64,11 @@ class Main
             plugin()->getVersion()
         );
 
-        if (!in_array($post_type, $this->cpt->getAllCPT())) {
+        if (!in_array(get_post_type(), $this->cpt->getAllCPT())) {
             return;
         }
+
+        // Disable Autosave
+        wp_dequeue_script('autosave');
     }
 }
