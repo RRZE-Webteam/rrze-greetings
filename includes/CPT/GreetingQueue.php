@@ -149,6 +149,8 @@ class GreetingQueue
 		$data['greeting_url'] = get_post_meta($post->ID, 'rrze_greetings_queue_greeting_url', true);
 		$data['from'] = get_post_meta($post->ID, 'rrze_greetings_queue_from', true);
 		$data['to'] = get_post_meta($post->ID, 'rrze_greetings_queue_to', true);
+		$data['sent_date_gmt'] = get_post_meta($post->ID, 'rrze_greetings_queue_sent_date_gmt', true);
+		$data['sent_date'] = $data['sent_date_gmt'] ? get_date_from_gmt($data['sent_date_gmt']) : '';
 		$data['retries'] = absint(get_post_meta($post->ID, 'rrze_greetings_queue_retries', true));
 		$data['error'] = get_post_meta($post->ID, 'rrze_greetings_queue_error', true);
 
@@ -187,7 +189,8 @@ class GreetingQueue
 				echo $data['subject'];
 				break;
 			case 'send_date':
-				echo $data['send_date'];
+				$sendDate = Functions::dateFormat(get_option('date_format') . ' ' . get_option('time_format'), strtotime($data['send_date']));				
+				echo $sendDate;
 				break;
 			case 'from':
 				echo esc_attr($data['from']);
@@ -199,7 +202,13 @@ class GreetingQueue
 				echo $data['retries'];
 				break;
 			case 'status':
-				echo $statusLabel;
+				if ($status == 'mail_queue_sent') {
+					$sentDate = Functions::dateFormat(get_option('date_format') . ' ' . get_option('time_format'), strtotime($data['sent_date']));
+					$sentDateStr = $data['sent_date_gmt'] ? '<span>' . $sentDate . '</span>' : '';
+					echo $statusLabel, '<br>', $sentDateStr;
+				} else {
+					echo $statusLabel;
+				}
 				break;
 			case 'error':
 				echo $data['error'];
