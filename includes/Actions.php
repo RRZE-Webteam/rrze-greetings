@@ -50,7 +50,8 @@ class Actions
 				case 'send':
 					if (!Queue::isQueueBeingCreated($postId)) {
 						Greeting::setStatus($postId, 'send');
-						delete_post_meta($postId, 'rrze_greetings_card_id');
+						$cardId = absint(get_post_meta($postId, 'rrze_greetings_card_id', true));
+						update_post_meta($postId, 'rrze_greetings_keep_card_id', $cardId);
 						$transientData->addData('success', __('Emails have been sent to the mail queue.', 'rrze-greetings'));
 					} else {
 						$transientData->addData('error', __('Unable to send the emails to the mail queue.', 'rrze-greetings'));

@@ -39,7 +39,7 @@ class Metaboxes
     public function greeting()
     {
         $this->cardSettings();
-        $this->imageSettings();
+        $this->cardImageSettings();
         $this->mailSettings();
         // Card image preview metabox       
         add_action('add_meta_boxes', [$this, 'cardImagePreview'], 10, 2);
@@ -286,7 +286,7 @@ class Metaboxes
         }
     }
 
-    protected function imageSettings()
+    protected function cardImageSettings()
     {
         $cmb = new_cmb2_box([
             'id' => 'rrze_greetings_imagetext',
@@ -297,6 +297,13 @@ class Metaboxes
             'show_names' => true,
             'show_on_cb' => [$this, 'showIfHasImage']
         ]);
+
+        $cmb->add_field(array(
+            'id' => 'rrze_greetings_print_text_on_image',
+            'name' => __('Print text on image', 'rrze-greetings'),
+            'desc' => __('Allows to print text on the card image.', 'rrze-greetings'),
+            'type' => 'checkbox'
+        ));
 
         $cmb->add_field(array(
             'id' => 'rrze_greetings_post_excerpt',
