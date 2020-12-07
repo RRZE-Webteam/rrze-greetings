@@ -255,8 +255,20 @@ class Metaboxes
                         'id' => $id,
                         'name' => $name,
                         'desc' => $desc,
-                        'type' => 'textarea',
-                        'sanitization_cb' => 'sanitize_textarea'
+                        'type' => 'wysiwyg',
+                        'options' => [
+                            'wpautop' => true,
+                            'media_buttons' => false,
+                            'textarea_name' => 'rrze_greetings_editor_' . $field['id'],
+                            'textarea_rows' => get_option('default_post_edit_rows', 10),
+                            'tabindex' => '',
+                            'editor_css' => '',
+                            'editor_class' => '',
+                            'teeny' => true,
+                            'dfw' => false,
+                            'tinymce' => true,
+                            'quicktags' => false
+                        ]
                     ), $position++);
                     break;
                 case 'file':
@@ -334,7 +346,7 @@ class Metaboxes
             'name' => __('X coordinate offset', 'rrze-greetings'),
             'desc' => __('X coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
             'type' => 'text_small',
-            'default' => '0',
+            'default' => '100',
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
@@ -347,7 +359,7 @@ class Metaboxes
             'name' => __('Y coordinate offset', 'rrze-greetings'),
             'desc' => __('Y coordinate offset from which text will be positioned relative to the image.', 'rrze-greetings'),
             'type' => 'text_small',
-            'default' => '0',
+            'default' => '100',
             'attributes' => [
                 'type' => 'number',
                 'pattern' => '\d*',
@@ -514,23 +526,6 @@ class Metaboxes
     public function escapeHtml($value, $field_args, $field)
     {
         return Functions::htmlDecode($value);
-    }
-
-    public function filterText($value, $field_args, $field)
-    {
-        $allowedHtml = [
-            'a' => [
-                'href' => [],
-                'title' => [],
-                'style' => []
-            ],
-            'br' => [],
-            'em' => [],
-            'strong' => [],
-            'p' => []
-        ];
-
-        return wp_kses($value, $allowedHtml);
     }
 
     public function escapeSendDate($value, $fieldArgs, $field)
