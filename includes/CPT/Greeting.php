@@ -578,7 +578,11 @@ class Greeting
 
         foreach($tplFields as $field) {
             $metaKey = sprintf('rrze_greetings_template_%d_field_%s', $tplId, $field['id']);
-            $data[$field['id']] = get_post_meta($postId, $metaKey, true);
+            $meta = get_post_meta($postId, $metaKey, true);
+            if ($meta && count(explode(PHP_EOL, $meta)) > 1) {
+                $meta = wpautop($meta);
+            }
+            $data[$field['id']] = $meta;
         }
 
         $tplContent = get_post_meta($tplId, 'rrze_greetings_template_post_content', true);
