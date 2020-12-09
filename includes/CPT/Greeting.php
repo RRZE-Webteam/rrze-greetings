@@ -589,7 +589,7 @@ class Greeting
         $tplExcerpt = get_post_meta($tplId, 'rrze_greetings_template_post_excerpt', true);
 
         $content = Functions::htmlEncode($this->template->getContent(Functions::htmlDecode($tplContent), $data, false));
-        $excerpt = Functions::htmlEncode($this->template->getContent($tplExcerpt, $data, false));
+        $excerpt = wp_strip_all_tags($this->template->getContent($tplExcerpt, $data, false));
 
         update_post_meta($postId, 'rrze_greetings_content_' . $cardId, $content);
         update_post_meta($postId, 'rrze_greetings_excerpt_' . $cardId, $content);
