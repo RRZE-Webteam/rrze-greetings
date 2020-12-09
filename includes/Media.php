@@ -23,7 +23,7 @@ class Media
     public function hideMediaOverlayView($args)
     {
         if (!is_admin()) {
-            return;
+            return $args;
         }
 
         $args['meta_query'] = [
