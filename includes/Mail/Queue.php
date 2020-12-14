@@ -149,7 +149,6 @@ class Queue
         $args = [
             'post_type'         => ['greeting_queue'],
             'post_status'       => 'mail_queue_queued',
-            'nopaging'          => true,
             'numberposts'       => $sendLimit,
             'order'             => 'ASC',
             'orderby'           => 'date',            
@@ -170,21 +169,21 @@ class Queue
         if (!($data = Greeting::getData($postId))) {
             return;
         }
-
-        $mailingList = [];
-        foreach ($data['mail_lists']['terms'] as $term) {
-            if (empty($list = (string) get_term_meta($term->term_id, 'rrze_greetings_mailing_list', true))) {
-                continue;
-            }
-            $mailingList = array_merge($mailingList, explode(PHP_EOL, $list));
-        }
-        $mailingList = array_unique($mailingList);       
-        $options = (object) Settings::getOptions();
-        $unsubscribedMailingList = explode(PHP_EOL, sanitize_textarea_field((string) $options->mailing_list_unsubscribed));
-        $mailingList = array_diff($mailingList, $unsubscribedMailingList);
         
         $mailingListQueue = get_option('rrze_greetings_queue_' . $postId);
         if (empty($mailingListQueue)) {
+            $mailingList = [];
+            foreach ($data['mail_lists']['terms'] as $term) {
+                if (empty($list = (string) get_term_meta($term->term_id, 'rrze_greetings_mailing_list', true))) {
+                    continue;
+                }
+                $mailingList = array_merge($mailingList, explode(PHP_EOL, $list));
+            }
+            $mailingList = array_unique($mailingList);       
+            $options = (object) Settings::getOptions();
+            $unsubscribedMailingList = explode(PHP_EOL, sanitize_textarea_field((string) $options->mailing_list_unsubscribed));
+            $mailingList = array_diff($mailingList, $unsubscribedMailingList);
+    
             update_option('rrze_greetings_queue_' . $postId, $mailingList);
             Greeting::setStatus($postId, 'queued');
             $mailingListQueue = $mailingList;
