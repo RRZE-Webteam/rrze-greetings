@@ -104,7 +104,9 @@ class Actions
 		}
 		$path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
 		$segments = array_values(array_filter(explode('/', $path)));
-
+		if (!isset($segments[0]) || !in_array($segments[0], ['greeting-card', 'greeting-template'])) {
+			return;
+		}
 		if ($segments[0] == 'greeting-card' && isset($_GET['id']) && isset($_REQUEST['nonce']) && wp_verify_nonce($_REQUEST['nonce'], 'greeting-card-preview')) {
 			$postId = absint($_GET['id']);
 			if ($postId && ($post = get_post($postId)) && current_user_can('edit_post', $postId)) {
