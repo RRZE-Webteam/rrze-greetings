@@ -1,15 +1,12 @@
 /*
-Admin Table
+Backend Table
 */
-
-
 table {
     td {
         vertical-align: middle;
     }
 
     &.wp-list-table {
-
         table-layout: auto;
 
         th {
@@ -39,5 +36,4 @@ table {
             }
         }
     }
-
 }
