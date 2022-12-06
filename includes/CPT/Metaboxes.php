@@ -14,7 +14,6 @@ class Metaboxes
 
     public function __construct()
     {
-        require_once plugin()->getPath('vendor/cmb2') . 'init.php';
         $this->template = new Template;
 
         $this->presetFields = [
@@ -235,7 +234,7 @@ class Metaboxes
             if (empty($field['id'])) {
                 continue;
             }
-            
+
             $id = sprintf('rrze_greetings_template_%d_field_%s', $tplId, $field['id']);
             $name = $field['name'] ?? __('Field #', 'rrze-greetings');
             $desc = $field['desc'];

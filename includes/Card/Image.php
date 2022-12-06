@@ -54,7 +54,11 @@ class Image
         } elseif ($this->ext == 'gif') {
             $this->resource = imagecreatefromgif($this->imagePath);
         } else {
-            return new \WP_Error('image_ext_not_supported', sprintf(__('%s not supported', 'rrze-greetings'), $this->ext));
+            return new \WP_Error('image_ext_not_supported', sprintf(
+                /* translators: %s: Image file extension. */
+                __('%s not supported', 'rrze-greetings'),
+                $this->ext
+            ));
         }
     }
 
@@ -66,5 +70,5 @@ class Image
     public function getHeight()
     {
         return imagesy($this->resource);
-    }    
+    }
 }

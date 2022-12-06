@@ -4,7 +4,7 @@
 Plugin Name:      RRZE Greetings
 Plugin URI:       https://github.com/RRZE-Webteam/rrze-greetings
 Description:      Plugin for creating and sending HTML greeting cards.
-Version:          1.2.3
+Version:          1.2.4
 Author:           RRZE-Webteam
 Author URI:       https://blogs.fau.de/webworking/
 License:          GNU General Public License v2
@@ -22,14 +22,13 @@ defined('ABSPATH') || exit;
 use RRZE\Greetings\CPT\CPT;
 
 const RRZE_PHP_VERSION = '7.4';
-const RRZE_WP_VERSION = '5.6';
+const RRZE_WP_VERSION = '6.1';
 
 // Load the settings config file.
 require_once 'config/settings.php';
 
-// Autoloading of classes.
-require 'autoload.php';
-//require 'vendor/autoload.php';
+// Autoloader
+require_once 'vendor/autoload.php';
 
 register_activation_hook(__FILE__, __NAMESPACE__ . '\activation');
 register_deactivation_hook(__FILE__, __NAMESPACE__ . '\deactivation');
@@ -41,34 +40,58 @@ add_action('plugins_loaded', __NAMESPACE__ . '\loaded');
  */
 function loadTextdomain()
 {
-    load_plugin_textdomain('rrze-greetings', false, sprintf('%s/languages/', dirname(plugin_basename(__FILE__))));
+    load_plugin_textdomain(
+        'rrze-greetings',
+        false,
+        sprintf('%s/languages/', dirname(plugin_basename(__FILE__)))
+    );
 }
 
 /**
- * systemRequirements
+ * System requirements verification.
  * @return string Return an error message.
  */
 function systemRequirements(): string
 {
-    loadTextdomain();
-
+    global $wp_version;
+    // Strip off any -alpha, -RC, -beta, -src suffixes.
+    list($wpVersion) = explode('-', $wp_version);
+    $phpVersion = phpversion();
     $error = '';
-    if (version_compare(PHP_VERSION, RRZE_PHP_VERSION, '<')) {
-        $error = sprintf(__('The server is running PHP version %s. The Plugin requires at least PHP version %s.', 'rrze-greetings'), PHP_VERSION, RRZE_PHP_VERSION);
-    } elseif (version_compare($GLOBALS['wp_version'], RRZE_WP_VERSION, '<')) {
-        $error = sprintf(__('The server is running WordPress version %s. The Plugin requires at least WordPress version %s.', 'rrze-greetings'), $GLOBALS['wp_version'], RRZE_WP_VERSION);
+    if (!is_php_version_compatible(RRZE_PHP_VERSION)) {
+        $error = sprintf(
+            /* translators: 1: Server PHP version number, 2: Required PHP version number. */
+            __('The server is running PHP version %1$s. The Plugin requires at least PHP version %2$s.', 'rrze-greetings'),
+            $phpVersion,
+            RRZE_PHP_VERSION
+        );
+    } elseif (!is_wp_version_compatible(RRZE_WP_VERSION)) {
+        $error = sprintf(
+            /* translators: 1: Server WordPress version number, 2: Required WordPress version number. */
+            __('The server is running WordPress version %1$s. The Plugin requires at least WordPress version %2$s.', 'rrze-greetings'),
+            $wpVersion,
+            RRZE_WP_VERSION
+        );
     }
     return $error;
 }
 
 /**
- * activation
+ * Activation callback function.
  */
 function activation()
 {
+    loadTextdomain();
     if ($error = systemRequirements()) {
         deactivate_plugins(plugin_basename(__FILE__));
-        wp_die(sprintf(__('Plugins: %s: %s', 'rrze-log'), plugin_basename(__FILE__), $error));
+        wp_die(
+            sprintf(
+                /* translators: 1: The plugin name, 2: The error string. */
+                __('Plugins: %1$s: %2$s', 'rrze-greetings'),
+                plugin_basename(__FILE__),
+                $error
+            )
+        );
     }
 
     Roles::addRoleCaps();
@@ -81,7 +104,7 @@ function activation()
 }
 
 /**
- * deactivation
+ * Deactivation callback function.
  */
 function deactivation()
 {
@@ -90,14 +113,14 @@ function deactivation()
 
     Cron::clearSchedule();
 
-    flush_rewrite_rules();
+    flush_rewrite_rules(false);
 }
 
 /**
- * plugin
- * @return object
+ * Instantiate Plugin class.
+ * @return object Plugin
  */
-function plugin(): object
+function plugin()
 {
     static $instance;
     if (null === $instance) {
@@ -107,14 +130,13 @@ function plugin(): object
 }
 
 /**
- * loaded
+ * Execute on 'plugins_loaded' API/action.
  * @return void
  */
 function loaded()
 {
-    add_action('init', __NAMESPACE__ . '\loadTextdomain');
-    plugin()->onLoaded();
-
+    loadTextdomain();
+    plugin()->loaded();
     if ($error = systemRequirements()) {
         add_action('admin_init', function () use ($error) {
             if (current_user_can('activate_plugins')) {
@@ -123,7 +145,10 @@ function loaded()
                 $tag = is_plugin_active_for_network(plugin()->getBaseName()) ? 'network_admin_notices' : 'admin_notices';
                 add_action($tag, function () use ($pluginName, $error) {
                     printf(
-                        '<div class="notice notice-error"><p>' . __('Plugins: %s: %s', 'rrze-greetings') . '</p></div>',
+                        '<div class="notice notice-error"><p>' .
+                            /* translators: 1: The plugin name, 2: The error string. */
+                            __('Plugins: %1$s: %2$s', 'rrze-greetings') .
+                            '</p></div>',
                         esc_html($pluginName),
                         esc_html($error)
                     );
@@ -132,7 +157,6 @@ function loaded()
         });
         return;
     }
-
     $main = new Main;
     $main->onLoaded();
 }

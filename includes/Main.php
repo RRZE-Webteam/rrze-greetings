@@ -59,7 +59,7 @@ class Main
     {
         wp_enqueue_style(
             'rrze-greetings-admin',
-            plugins_url('assets/css/rrze-greetings-admin.css', plugin()->getBasename()),
+            plugins_url('build/admin.css', plugin()->getBasename()),
             [],
             plugin()->getVersion()
         );
