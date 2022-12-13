@@ -4,7 +4,7 @@
 Plugin Name:      RRZE Greetings
 Plugin URI:       https://github.com/RRZE-Webteam/rrze-greetings
 Description:      Plugin for creating and sending HTML greeting cards.
-Version:          1.2.4
+Version:          1.2.5
 Author:           RRZE-Webteam
 Author URI:       https://blogs.fau.de/webworking/
 License:          GNU General Public License v2
@@ -21,7 +21,7 @@ defined('ABSPATH') || exit;
 
 use RRZE\Greetings\CPT\CPT;
 
-const RRZE_PHP_VERSION = '7.4';
+const RRZE_PHP_VERSION = '8.0';
 const RRZE_WP_VERSION = '6.1';
 
 // Load the settings config file.
