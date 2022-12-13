@@ -529,6 +529,7 @@ class Metaboxes
 
     public function escapeSendDate($value, $fieldArgs, $field)
     {
+        $value = is_int($value) ? $value : current_time('timestamp') - HOUR_IN_SECONDS;
         $gmtDate = get_gmt_from_date(date('Y-m-d H:i:s', $value));
         update_post_meta($field->object_id, 'rrze_greetings_send_date_gmt', strtotime($gmtDate));
         return $value;
