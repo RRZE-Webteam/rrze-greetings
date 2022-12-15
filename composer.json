@@ -1,6 +1,4 @@
 {
-    "name": "rrze/rrze-greetings",
-    "version": "1.2.4",
     "require": {
         "cmb2/cmb2": "^2.10.1"
     },
