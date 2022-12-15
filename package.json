@@ -1,58 +1,28 @@
 {
-    "name": "rrze-greetings",
-    "version": "1.2.4",
-    "description": "WordPress-Plugin zum Versand von Grußkarten und Newslettern",
-    "main": "rrze-greetings.php",
-    "textdomain": "rrze-greetings",
     "scripts": {
         "start": "webpack --mode=development --watch",
         "build": "webpack --mode=production",
-        "clean": "rm -rf build/",
-        "major": "gulp major",
-        "minor": "gulp minor",
-        "patch": "gulp patch",
-        "prerelease": "gulp prerelease"
-    },
-    "dist": {
-        "jsdir": "./assets/js/",
-        "cssdir": "./assets/css/"
-    },
-    "repository": {
-        "type": "git",
-        "url": "git+https://github.com/RRZE-Webteam/rrze-greetings.git",
-        "issues": "https://github.com/RRZE-Webteam/rrze-greetings/issues",
-        "clone": "git+https://github.com/RRZE-Webteam/rrze-greetings.git",
-        "bugs": "https://github.com/RRZE-Webteam/rrze-greetings/issues"
+        "clean": "rm -rf build/"
     },
     "browserslist": [
-        "last 3 years",
+        "defaults",
         "ie 11"
     ],
-    "supports": {
-        "email": "webmaster@fau.de"
-    },
-    "author": "RRZE-Webteam <webmaster@fau.de> (https://www.wordpress.rrze.fau.de/person/webmaster)",
-    "homepage": "https://github.com/RRZE-Webteam/rrze-greetings#readme",
-    "license": "GPL-3.0-or-later",
     "devDependencies": {
-        "@babel/core": "7",
-        "@babel/preset-env": "7",
-        "autoprefixer": "10",
-        "babel-loader": "8",
-        "clean-webpack-plugin": "4",
-        "css-loader": "6",
-        "css-minimizer-webpack-plugin": "4",
-        "gulp": "4",
-        "gulp-bump": "3",
-        "gulp-touch-cmd": "0",
-        "mini-css-extract-plugin": "2",
-        "postcss-loader": "7",
-        "sass": "1",
-        "sass-loader": "13",
-        "semver": "7",
-        "style-loader": "3",
-        "terser-webpack-plugin": "5",
-        "webpack": "5",
-        "webpack-cli": "4"
+        "@babel/core": "^7.20.5",
+        "@babel/preset-env": "^7.20.2",
+        "autoprefixer": "^10.4.13",
+        "babel-loader": "^9.1.0",
+        "clean-webpack-plugin": "^4.0.0",
+        "css-loader": "^6.7.2",
+        "css-minimizer-webpack-plugin": "^4.2.2",
+        "mini-css-extract-plugin": "^2.7.2",
+        "postcss-loader": "^7.0.2",
+        "sass": "^1.56.2",
+        "sass-loader": "^13.2.0",
+        "style-loader": "^3.3.1",
+        "terser-webpack-plugin": "^5.3.6",
+        "webpack": "^5.75.0",
+        "webpack-cli": "^5.0.1"
     }
 }
